@@ -7,13 +7,19 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/glamour"
+	"github.com/muesli/reflow/wordwrap"
 )
 
 // RenderWithPager displays content using the system pager
 func RenderWithPager(content string, useMarkdown bool) {
 	finalContent := content
 	if useMarkdown {
-		rendered, err := glamour.Render(content, "auto")
+		// Use a specific style for better readability
+		r, _ := glamour.NewTermRenderer(
+			glamour.WithAutoStyle(),
+			glamour.WithWordWrap(100),
+		)
+		rendered, err := r.Render(content)
 		if err != nil {
 			fmt.Printf("Markdown rendering failed. Using raw output:\n\n")
 		} else {
@@ -21,19 +27,15 @@ func RenderWithPager(content string, useMarkdown bool) {
 		}
 	}
 
-	// Invoke less with options that:
-	//   • Keep ANSI colours (-R)
-	//   • Chop long lines rather than wrap (-S)
-	//   • Quit automatically if the output fits one screen (-F)
-	//   • Keep the buffer on screen after exit (-X)
-	//   • Quit automatically as soon as end-of-file is reached (-E) so users don't need to press "q"
-	//   • Override the prompt strings (-Ps, -Pm, -PM) with a single whitespace to hide the default ':' prompt
+	// Invoke less with options
 	lessArgs := []string{
 		"-R",                   // render colour sequences raw
 		"-S",                   // chop long lines
 		"-F",                   // quit if one screen
 		"-X",                   // do not clear the screen on exit
 		"-E",                   // quit at end-of-file automatically
+		"--quit-on-intr",       // quit on interrupt (Ctrl+C)
+		"--mouse",              // enable mouse scrolling
 		"-Ps ", "-Pm ", "-PM ", // blank prompts to suppress ':' window
 	}
 
@@ -44,27 +46,35 @@ func RenderWithPager(content string, useMarkdown bool) {
 
 	// Set environment variables for less behavior
 	env := os.Environ()
-	env = append(env, "LESS=-R -S -F -X -E")
 	env = append(env, "LESSCHARSET=utf-8")
 	cmd.Env = env
 
 	if err := cmd.Run(); err != nil {
-		// Fallback to direct output if less fails
-		fmt.Print(finalContent)
+		// Fallback to direct console output if less fails
+		RenderToConsole(content, useMarkdown)
 	}
 }
 
-// RenderToConsole displays content directly to the console
+// RenderToConsole displays content directly to the console with word wrapping
 func RenderToConsole(content string, useMarkdown bool) {
 	finalContent := content
 	if useMarkdown {
-		rendered, err := glamour.Render(content, "auto")
+		r, _ := glamour.NewTermRenderer(
+			glamour.WithAutoStyle(),
+			glamour.WithWordWrap(100),
+		)
+		rendered, err := r.Render(content)
 		if err != nil {
 			fmt.Printf("Markdown rendering failed. Using raw output:\n\n%s\n", content)
+			finalContent = content
 		} else {
 			finalContent = rendered
 		}
+	} else {
+		// Wrap non-markdown text for better console readability
+		finalContent = wordwrap.String(content, 100)
 	}
+
 	fmt.Print(finalContent)
 	fmt.Println() // Add a newline for better spacing
 }

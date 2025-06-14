@@ -11,15 +11,26 @@ import (
 
 // Length definitions for precise length control
 var lengthMap = map[string]string{
-	"short":    "Provide a response that is **exactly 2 sentences long**. Your entire output must be contained within two sentences. This is a strict requirement.",
-	"medium":   "Provide a response that is **between 4 and 6 sentences long**. Aim for clarity and conciseness within this range. This is a strict requirement.",
-	"long":     "Provide a comprehensive response that is **between 8 and 10 sentences long**. Cover the topic in detail within this range. This is a strict requirement.",
-	"detailed": "Provide a highly detailed response that is **between 12 and 15 sentences long**. Explore the topic thoroughly with examples and context. This is a strict requirement.",
+	"short":    "3-5 concise sentences maximum. Focus on the most essential information only.",
+	"medium":   "6-10 sentences in 2 clear paragraphs. Cover key points without redundancy.",
+	"long":     "15-20 sentences in 3-4 paragraphs. Comprehensive but focused coverage.",
+	"detailed": "Thorough summary covering all essential aspects. Be comprehensive but avoid fluff.",
 }
 
-// ProcessURL handles URL-based summarization with optional search enhancement
+// ProcessURL handles URL-based summarization with caching and search enhancement
 func ProcessURL(urlStr string, config *Config, length string, useMarkdown, enableSearch bool) (string, error) {
 	fmt.Fprintf(os.Stderr, "🌐 Fetching content from: %s\n", urlStr)
+
+	// Initialize cache manager
+	cacheManager := NewCacheManager(config)
+
+	// Check cache first
+	cacheKey := cacheManager.GetCacheKey(fmt.Sprintf("url:%s:%s:%t:%t", urlStr, length, useMarkdown, enableSearch))
+	var cachedSummary string
+	if cacheManager.Get(cacheKey, &cachedSummary) {
+		DebugLog(config, "Cache hit for URL summary")
+		return cachedSummary, nil
+	}
 
 	// Extract content from URL
 	content, title, err := ExtractWebContent(urlStr)
@@ -31,12 +42,30 @@ func ProcessURL(urlStr string, config *Config, length string, useMarkdown, enabl
 	DebugLog(config, "Page title: %s", title)
 
 	// Generate summary with optional search enhancement
-	return generateSummary(config, length, useMarkdown, enableSearch, content, title, false)
+	summary, err := generateSummary(config, length, useMarkdown, enableSearch, content, title, urlStr, false)
+	if err != nil {
+		return "", err
+	}
+
+	// Cache the result
+	cacheManager.Set(cacheKey, summary)
+	return summary, nil
 }
 
-// ProcessSearchQuery handles search-only summarization
+// ProcessSearchQuery handles search-only summarization with caching
 func ProcessSearchQuery(query string, config *Config, length string, useMarkdown bool) (string, error) {
 	fmt.Fprintf(os.Stderr, "🔍 Performing web search for: %s\n", query)
+
+	// Initialize cache manager
+	cacheManager := NewCacheManager(config)
+
+	// Check cache first
+	cacheKey := cacheManager.GetCacheKey(fmt.Sprintf("search:%s:%s:%t", query, length, useMarkdown))
+	var cachedSummary string
+	if cacheManager.Get(cacheKey, &cachedSummary) {
+		DebugLog(config, "Cache hit for search summary")
+		return cachedSummary, nil
+	}
 
 	// Create search manager and perform searches
 	searchManager := NewSearchManager(config)
@@ -62,11 +91,18 @@ func ProcessSearchQuery(query string, config *Config, length string, useMarkdown
 	DebugLog(config, "Found %d total search results", len(searchResults))
 
 	// Generate summary from search results
-	return generateSearchOnlySummary(config, length, useMarkdown, query, searchResults)
+	summary, err := generateSearchOnlySummary(config, length, useMarkdown, query, searchResults)
+	if err != nil {
+		return "", err
+	}
+
+	// Cache the result
+	cacheManager.Set(cacheKey, summary)
+	return summary, nil
 }
 
 // generateSummary creates a summary with optional search enhancement
-func generateSummary(config *Config, length string, useMarkdown, enableSearch bool, content, title string, isSearchOnly bool) (string, error) {
+func generateSummary(config *Config, length string, useMarkdown, enableSearch bool, content, title, sourceURL string, isSearchOnly bool) (string, error) {
 	DebugLog(config, "Generating summary with search enabled: %v", enableSearch)
 
 	systemPrompt := config.SystemPrompts.Summary
@@ -98,9 +134,22 @@ func generateSummary(config *Config, length string, useMarkdown, enableSearch bo
 		userPrompt += "\n\nUse both the webpage content and the search results to create a comprehensive summary."
 	}
 
-	fmt.Fprintf(os.Stderr, "🤖 Generating summary with %s...\n\n", config.DefaultModel)
+	if sourceURL != "" {
+		userPrompt += fmt.Sprintf("\n\nSource URL: %s", sourceURL)
+	}
 
-	return callOllama(config, systemPrompt, userPrompt)
+	fmt.Fprintf(os.Stderr, "🤖 Generating summary with %s...\n", config.DefaultModel)
+
+	var spinnerStop chan struct{}
+	if useMarkdown {
+		spinnerStop = StartSpinner("Generating summary")
+	}
+
+	summary, err := callOllama(config, systemPrompt, userPrompt)
+	if spinnerStop != nil {
+		close(spinnerStop)
+	}
+	return summary, err
 }
 
 // generateSearchOnlySummary creates a summary based purely on search results
@@ -114,14 +163,32 @@ func generateSearchOnlySummary(config *Config, length string, useMarkdown bool, 
 
 	userPrompt := buildSearchOnlyPrompt(query, length, searchResults)
 
-	fmt.Fprintf(os.Stderr, "🤖 Generating comprehensive summary with %s...\n\n", config.DefaultModel)
+	fmt.Fprintf(os.Stderr, "🤖 Generating comprehensive summary with %s...\n", config.DefaultModel)
 
-	return callOllama(config, systemPrompt, userPrompt)
+	var spinnerStop chan struct{}
+	if useMarkdown {
+		spinnerStop = StartSpinner("Generating summary")
+	}
+
+	summary, err := callOllama(config, systemPrompt, userPrompt)
+	if spinnerStop != nil {
+		close(spinnerStop)
+	}
+	return summary, err
 }
 
-// generateSearchQueries uses AI to generate relevant search queries
+// generateSearchQueries uses AI to generate relevant search queries with caching
 func generateSearchQueries(config *Config, contextText, purpose string) ([]string, error) {
 	DebugLog(config, "Generating search queries for: %.100s...", contextText)
+
+	// Check cache first
+	cacheManager := NewCacheManager(config)
+	cacheKey := cacheManager.GetCacheKey(fmt.Sprintf("queries:%s:%s", contextText[:Min(200, len(contextText))], purpose))
+	var cachedQueries []string
+	if cacheManager.Get(cacheKey, &cachedQueries) {
+		DebugLog(config, "Cache hit for search queries")
+		return cachedQueries, nil
+	}
 
 	prompt := fmt.Sprintf(`Based on the following context and purpose, generate 2-3 specific web search queries that would help gather additional relevant information. Return only the search queries, one per line, without numbering or additional text.
 
@@ -140,10 +207,13 @@ Generate search queries:`, contextText, purpose)
 	var cleanQueries []string
 	for _, query := range queries {
 		query = strings.TrimSpace(query)
-		if query != "" {
+		if query != "" && len(query) > 5 { // Filter out very short queries
 			cleanQueries = append(cleanQueries, query)
 		}
 	}
+
+	// Cache the results
+	cacheManager.Set(cacheKey, cleanQueries)
 
 	DebugLog(config, "Generated %d search queries: %v", len(cleanQueries), cleanQueries)
 	return cleanQueries, nil
@@ -158,32 +228,23 @@ func buildUserPrompt(userMessage, length, textContent, pageTitle string) string 
 
 	var instruction string
 	if userMessage != "" {
-		instruction = fmt.Sprintf(`Your task is to answer the following question based on the webpage content.
+		instruction = fmt.Sprintf(`Answer this question based on the webpage content: "%s"
 
-Question: "%s"
+Length requirement: %s
 
-CRITICAL LENGTH REQUIREMENT: %s
+Page: %s
 
-IMPORTANT: Count your sentences/paragraphs as you write. When you reach the exact limit specified above, STOP immediately. Do not exceed the limit under any circumstances.
-
-Page title: %s
-
-REMINDER: Follow the length requirement exactly. Count as you go and stop when you reach the limit.`, userMessage, lengthInstruction, pageTitle)
+Focus on accuracy and relevance.`, userMessage, lengthInstruction, pageTitle)
 	} else {
-		instruction = fmt.Sprintf(`Your task is to create a comprehensive summary of the following webpage content.
+		instruction = fmt.Sprintf(`Create a focused summary of this webpage content.
 
-CRITICAL LENGTH REQUIREMENT: %s
+Length requirement: %s
+Page: %s
 
-IMPORTANT: Count your sentences/paragraphs as you write. When you reach the exact limit specified above, STOP immediately. Do not exceed the limit under any circumstances.
-
-Page title: %s
-
-Focus on the main content, ignore navigation, footers, and boilerplate text.
-
-REMINDER: Follow the length requirement exactly. Count as you go and stop when you reach the limit.`, lengthInstruction, pageTitle)
+Focus on key information, insights, and actionable content. Ignore navigation, ads, and boilerplate.`, lengthInstruction, pageTitle)
 	}
 
-	return fmt.Sprintf("%s\n\n--- WEBPAGE CONTENT ---\n%s", instruction, textContent)
+	return fmt.Sprintf("%s\n\n--- CONTENT ---\n%s", instruction, textContent)
 }
 
 // buildSearchOnlyPrompt creates a prompt for search-only summarization
@@ -193,22 +254,18 @@ func buildSearchOnlyPrompt(query, length string, results []SearchResult) string 
 		lengthInstruction = lengthMap["medium"]
 	}
 
-	prompt := fmt.Sprintf(`Your task is to create a comprehensive summary based on web search results for the query: "%s"
+	prompt := fmt.Sprintf(`Create a comprehensive summary for the query: "%s"
 
-CRITICAL LENGTH REQUIREMENT: %s
+Length requirement: %s
 
-IMPORTANT: Count your sentences/paragraphs as you write. When you reach the exact limit specified above, STOP immediately. Do not exceed the limit under any circumstances.
-
-Focus on providing accurate, factual information based on the search results below. Synthesize the information to create a coherent and informative summary.
-
-REMINDER: Follow the length requirement exactly. Count as you go and stop when you reach the limit.
+Synthesize information from the search results below to provide accurate, factual information. Focus on key facts, current information, and relevant insights.
 
 %s`, query, lengthInstruction, FormatSearchResults(results))
 
 	return prompt
 }
 
-// callOllama makes a call to the Ollama API
+// callOllama makes a call to the Ollama API with better error handling
 func callOllama(config *Config, systemPrompt, userPrompt string) (string, error) {
 	client, err := api.ClientFromEnvironment()
 	if err != nil {
@@ -221,6 +278,10 @@ func callOllama(config *Config, systemPrompt, userPrompt string) (string, error)
 		System: systemPrompt,
 		Prompt: userPrompt,
 		Stream: &stream,
+		Options: map[string]interface{}{
+			"temperature": 0.1, // Lower temperature for more consistent summaries
+			"top_p":       0.9,
+		},
 	}
 
 	var responseBuilder strings.Builder
@@ -230,11 +291,68 @@ func callOllama(config *Config, systemPrompt, userPrompt string) (string, error)
 	})
 
 	if err != nil {
-		if strings.Contains(err.Error(), "model '"+config.DefaultModel+"' not found") {
-			return "", fmt.Errorf("model '%s' not found. Please run: ollama pull %s", config.DefaultModel, config.DefaultModel)
-		}
-		return "", fmt.Errorf("generation failed: %v", err)
+		return "", fmt.Errorf("failed to generate response: %v", err)
 	}
 
-	return responseBuilder.String(), nil
+	response := strings.TrimSpace(responseBuilder.String())
+	if response == "" {
+		return "", fmt.Errorf("received empty response from model")
+	}
+
+	return response, nil
+}
+
+// GenerateOutline creates an outline from a summary with caching
+func GenerateOutline(summary string, config *Config, useMarkdown bool) (string, error) {
+	if summary == "" {
+		return "", fmt.Errorf("cannot generate outline from empty summary")
+	}
+
+	// Check cache first
+	cacheManager := NewCacheManager(config)
+	cacheKey := cacheManager.GetCacheKey(fmt.Sprintf("outline:%s:%t", summary[:Min(200, len(summary))], useMarkdown))
+	var cachedOutline string
+	if cacheManager.Get(cacheKey, &cachedOutline) {
+		DebugLog(config, "Cache hit for outline")
+		return cachedOutline, nil
+	}
+
+	systemPrompt := `You are an expert at creating clear, structured outlines. Create a hierarchical outline from the provided content.
+
+Rules:
+1. Use clear, descriptive headings
+2. Create 3-5 main sections maximum  
+3. Include 2-4 subsections under each main section where relevant
+4. Focus on key concepts and important details
+5. Be concise but comprehensive`
+
+	if useMarkdown {
+		systemPrompt += `
+
+Format as clean markdown:
+- Use ## for main sections
+- Use ### for subsections  
+- Use - for bullet points
+- Use **bold** for emphasis`
+	}
+
+	userPrompt := fmt.Sprintf("Create a structured outline from this content:\n\n%s", summary)
+
+	var spinnerStop chan struct{}
+	if useMarkdown {
+		spinnerStop = StartSpinner("Generating outline")
+	}
+
+	outline, err := callOllama(config, systemPrompt, userPrompt)
+	if spinnerStop != nil {
+		close(spinnerStop)
+	}
+
+	if err != nil {
+		return "", err
+	}
+
+	// Cache the result
+	cacheManager.Set(cacheKey, outline)
+	return outline, nil
 }

@@ -1,14 +1,15 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
-	"os"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/PuerkitoBio/goquery"
 )
 
 // SearchResult represents a web search result
@@ -16,6 +17,7 @@ type SearchResult struct {
 	Title   string `json:"title"`
 	URL     string `json:"url"`
 	Snippet string `json:"snippet"`
+	Source  string `json:"source"`
 }
 
 // SearchEngine interface for different search implementations
@@ -24,7 +26,7 @@ type SearchEngine interface {
 	Name() string
 }
 
-// DuckDuckGoEngine implements search using DuckDuckGo API
+// DuckDuckGoEngine implements search using DDG HTML interface for reliability
 type DuckDuckGoEngine struct {
 	client *http.Client
 }
@@ -41,20 +43,15 @@ func (d *DuckDuckGoEngine) Name() string {
 	return "DuckDuckGo"
 }
 
+// Search scrapes the DuckDuckGo HTML results page.
 func (d *DuckDuckGoEngine) Search(query string, limit int) ([]SearchResult, error) {
-	apiURL := "https://api.duckduckgo.com/"
+	searchURL := fmt.Sprintf("https://html.duckduckgo.com/html/?q=%s", url.QueryEscape(query))
 
-	req, err := http.NewRequest("GET", apiURL, nil)
+	req, err := http.NewRequest("GET", searchURL, nil)
 	if err != nil {
 		return nil, err
 	}
-
-	q := req.URL.Query()
-	q.Add("q", query)
-	q.Add("format", "json")
-	q.Add("no_html", "1")
-	q.Add("skip_disambig", "1")
-	req.URL.RawQuery = q.Encode()
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
 
 	resp, err := d.client.Do(req)
 	if err != nil {
@@ -63,218 +60,95 @@ func (d *DuckDuckGoEngine) Search(query string, limit int) ([]SearchResult, erro
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("search API returned status %d", resp.StatusCode)
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("DuckDuckGo search failed with status %d: %s", resp.StatusCode, string(body))
 	}
 
-	var result struct {
-		Abstract      string `json:"Abstract"`
-		AbstractURL   string `json:"AbstractURL"`
-		Heading       string `json:"Heading"`
-		Answer        string `json:"Answer"`
-		Definition    string `json:"Definition"`
-		RelatedTopics []struct {
-			Text     string `json:"Text"`
-			FirstURL string `json:"FirstURL"`
-		} `json:"RelatedTopics"`
-	}
-
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	doc, err := goquery.NewDocumentFromReader(resp.Body)
+	if err != nil {
 		return nil, err
 	}
 
 	var results []SearchResult
-
-	// Add instant answer if available
-	if result.Answer != "" {
-		results = append(results, SearchResult{
-			Title:   fmt.Sprintf("Answer: %s", query),
-			URL:     "https://duckduckgo.com/?q=" + url.QueryEscape(query),
-			Snippet: result.Answer,
-		})
-	}
-
-	// Add abstract/definition
-	if result.Abstract != "" {
-		title := result.Heading
-		if title == "" {
-			title = fmt.Sprintf("Information about: %s", query)
+	doc.Find(".result").Each(func(i int, s *goquery.Selection) {
+		if len(results) >= limit {
+			return
 		}
 
-		resultURL := result.AbstractURL
-		if resultURL == "" {
-			resultURL = "https://duckduckgo.com/?q=" + url.QueryEscape(query)
-		}
+		title := strings.TrimSpace(s.Find(".result__title").Text())
+		snippet := strings.TrimSpace(s.Find(".result__snippet").Text())
+		link, _ := s.Find(".result__url").Attr("href")
 
-		results = append(results, SearchResult{
-			Title:   title,
-			URL:     resultURL,
-			Snippet: result.Abstract,
-		})
-	}
+		if title != "" && snippet != "" && link != "" {
+			// Clean up DDG's redirected URLs
+			if unescapedLink, err := url.QueryUnescape(link); err == nil {
+				if strings.Contains(unescapedLink, "uddg=") {
+					if parsedURL, err := url.Parse(unescapedLink); err == nil {
+						link = parsedURL.Query().Get("uddg")
+					}
+				}
+			}
 
-	// Add definition
-	if result.Definition != "" {
-		results = append(results, SearchResult{
-			Title:   fmt.Sprintf("Definition: %s", query),
-			URL:     "https://duckduckgo.com/?q=" + url.QueryEscape(query),
-			Snippet: result.Definition,
-		})
-	}
-
-	// Add related topics
-	for i, topic := range result.RelatedTopics {
-		if i >= limit-len(results) {
-			break
-		}
-		if topic.Text != "" && topic.FirstURL != "" {
 			results = append(results, SearchResult{
-				Title:   fmt.Sprintf("Related: %s", strings.Split(topic.Text, " - ")[0]),
-				URL:     topic.FirstURL,
-				Snippet: topic.Text,
+				Title:   title,
+				URL:     link,
+				Snippet: snippet,
+				Source:  d.Name(),
 			})
 		}
+	})
+
+	if len(results) == 0 {
+		return nil, fmt.Errorf("no results found on DuckDuckGo for '%s'", query)
 	}
 
 	return results, nil
 }
 
-// SerpAPIEngine implements search using SerpAPI (requires API key)
-type SerpAPIEngine struct {
-	apiKey string
-	client *http.Client
-}
-
-func NewSerpAPIEngine(apiKey string) *SerpAPIEngine {
-	return &SerpAPIEngine{
-		apiKey: apiKey,
-		client: &http.Client{
-			Timeout: 15 * time.Second,
-		},
-	}
-}
-
-func (s *SerpAPIEngine) Name() string {
-	return "SerpAPI"
-}
-
-func (s *SerpAPIEngine) Search(query string, limit int) ([]SearchResult, error) {
-	if s.apiKey == "" {
-		return nil, fmt.Errorf("SerpAPI key not configured")
-	}
-
-	apiURL := "https://serpapi.com/search"
-
-	req, err := http.NewRequest("GET", apiURL, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	q := req.URL.Query()
-	q.Add("q", query)
-	q.Add("api_key", s.apiKey)
-	q.Add("engine", "google")
-	q.Add("num", fmt.Sprintf("%d", limit))
-	req.URL.RawQuery = q.Encode()
-
-	resp, err := s.client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("SerpAPI returned status %d", resp.StatusCode)
-	}
-
-	var result struct {
-		OrganicResults []struct {
-			Title   string `json:"title"`
-			Link    string `json:"link"`
-			Snippet string `json:"snippet"`
-		} `json:"organic_results"`
-	}
-
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, err
-	}
-
-	var results []SearchResult
-	for _, item := range result.OrganicResults {
-		results = append(results, SearchResult{
-			Title:   item.Title,
-			URL:     item.Link,
-			Snippet: item.Snippet,
-		})
-	}
-
-	return results, nil
-}
-
-// SearchManager manages multiple search engines and performs optimized searches
+// SearchManager manages the search engine with caching and optimization
 type SearchManager struct {
-	engines []SearchEngine
-	config  *Config
+	engine SearchEngine
+	config *Config
+	cache  *CacheManager
 }
 
 func NewSearchManager(config *Config) *SearchManager {
 	sm := &SearchManager{
 		config: config,
+		cache:  NewCacheManager(config),
+		engine: NewDuckDuckGoEngine(),
 	}
 
-	// Add DuckDuckGo engine (always available)
-	sm.engines = append(sm.engines, NewDuckDuckGoEngine())
-
-	// Add SerpAPI engine if API key is available
-	if serpAPIKey := os.Getenv("SERPAPI_KEY"); serpAPIKey != "" {
-		sm.engines = append(sm.engines, NewSerpAPIEngine(serpAPIKey))
-		DebugLog(config, "SerpAPI engine enabled")
-	}
-
-	DebugLog(config, "Search manager initialized with %d engines", len(sm.engines))
+	DebugLog(config, "Search manager initialized with %s engine", sm.engine.Name())
 	return sm
 }
 
-// Search performs optimized search using available engines
+// Search performs a cached search.
 func (sm *SearchManager) Search(query string, limit int) ([]SearchResult, error) {
-	DebugLog(sm.config, "Starting search for: %s (limit: %d)", query, limit)
-
-	var allResults []SearchResult
-	var wg sync.WaitGroup
-	var mu sync.Mutex
-
-	// Try all engines in parallel for maximum speed
-	for _, engine := range sm.engines {
-		wg.Add(1)
-		go func(eng SearchEngine) {
-			defer wg.Done()
-
-			DebugLog(sm.config, "Searching with %s engine", eng.Name())
-			results, err := eng.Search(query, limit)
-			if err != nil {
-				DebugLog(sm.config, "%s search failed: %v", eng.Name(), err)
-				return
-			}
-
-			mu.Lock()
-			allResults = append(allResults, results...)
-			DebugLog(sm.config, "%s returned %d results", eng.Name(), len(results))
-			mu.Unlock()
-		}(engine)
+	cacheKey := sm.cache.GetCacheKey(fmt.Sprintf("search:%s:%d", query, limit))
+	var cachedResults []SearchResult
+	if sm.cache.Get(cacheKey, &cachedResults) {
+		DebugLog(sm.config, "Cache hit for search: %s", query)
+		return cachedResults, nil
 	}
 
-	wg.Wait()
+	DebugLog(sm.config, "Cache miss, performing search: %s", query)
 
-	// Deduplicate and limit results
-	uniqueResults := deduplicateResults(allResults)
-	if len(uniqueResults) > limit {
-		uniqueResults = uniqueResults[:limit]
+	results, err := sm.engine.Search(query, limit)
+	if err != nil {
+		DebugLog(sm.config, "%s search failed: %v", sm.engine.Name(), err)
+		return nil, err
 	}
 
-	DebugLog(sm.config, "Search completed: %d unique results", len(uniqueResults))
-	return uniqueResults, nil
+	if len(results) > 0 {
+		sm.cache.Set(cacheKey, results)
+		DebugLog(sm.config, "%s search successful: %d results", sm.engine.Name(), len(results))
+	}
+
+	return results, nil
 }
 
-// PerformParallelSearches performs multiple searches in parallel
+// PerformParallelSearches performs multiple searches with improved efficiency
 func (sm *SearchManager) PerformParallelSearches(queries []string, limitPerQuery int) []SearchResult {
 	DebugLog(sm.config, "Starting parallel searches for %d queries", len(queries))
 
@@ -282,15 +156,12 @@ func (sm *SearchManager) PerformParallelSearches(queries []string, limitPerQuery
 	var mu sync.Mutex
 	var allResults []SearchResult
 
-	// Limit concurrent searches to avoid overwhelming servers
-	semaphore := make(chan struct{}, 3)
+	semaphore := make(chan struct{}, 4) // Limit concurrency
 
 	for _, query := range queries {
 		wg.Add(1)
 		go func(q string) {
 			defer wg.Done()
-
-			// Acquire semaphore
 			semaphore <- struct{}{}
 			defer func() { <-semaphore }()
 
@@ -308,20 +179,24 @@ func (sm *SearchManager) PerformParallelSearches(queries []string, limitPerQuery
 
 	wg.Wait()
 
-	// Deduplicate final results
-	uniqueResults := deduplicateResults(allResults)
-	DebugLog(sm.config, "Parallel searches completed: %d total unique results", len(uniqueResults))
+	uniqueResults := sm.deduplicateResults(allResults)
+	if len(uniqueResults) > sm.config.MaxSearchResults {
+		uniqueResults = uniqueResults[:sm.config.MaxSearchResults]
+	}
+
+	DebugLog(sm.config, "Parallel searches completed: %d unique results", len(uniqueResults))
 	return uniqueResults
 }
 
-// deduplicateResults removes duplicate search results based on URL
-func deduplicateResults(results []SearchResult) []SearchResult {
+// deduplicateResults removes duplicate search results based on URL and content similarity
+func (sm *SearchManager) deduplicateResults(results []SearchResult) []SearchResult {
 	seen := make(map[string]bool)
 	var unique []SearchResult
 
 	for _, result := range results {
-		if !seen[result.URL] {
-			seen[result.URL] = true
+		key := result.URL // Simple dedupe by URL is sufficient for now
+		if !seen[key] {
+			seen[key] = true
 			unique = append(unique, result)
 		}
 	}
@@ -336,11 +211,11 @@ func FormatSearchResults(results []SearchResult) string {
 	}
 
 	var builder strings.Builder
-	builder.WriteString("\n--- WEB SEARCH RESULTS ---\n")
+	builder.WriteString("\n\n--- ADDITIONAL CONTEXT FROM WEB SEARCH ---\n")
 
 	for i, result := range results {
-		builder.WriteString(fmt.Sprintf("\nResult %d:\nTitle: %s\nURL: %s\nSnippet: %s\n",
-			i+1, result.Title, result.URL, result.Snippet))
+		builder.WriteString(fmt.Sprintf("\n[%d] %s\nSnippet: %s\nSource: %s <%s>\n",
+			i+1, result.Title, result.Snippet, result.Source, result.URL))
 	}
 
 	return builder.String()

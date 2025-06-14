@@ -21,7 +21,11 @@ type Config struct {
 		SearchQuery string `json:"search_query"`
 		SearchOnly  string `json:"search_only"`
 	} `json:"system_prompts"`
-	DefaultLength string `json:"default_length"`
+	DefaultLength    string `json:"default_length"`
+	SessionPersist   bool   `json:"session_persist"`
+	MaxSearchResults int    `json:"max_search_results"`
+	CacheEnabled     bool   `json:"cache_enabled"`
+	CacheTTL         int    `json:"cache_ttl_hours"`
 }
 
 // LoadConfig loads or creates the configuration file
@@ -63,17 +67,25 @@ func (c *Config) Print() {
 	fmt.Printf("Disable Pager: %t\n", c.DisablePager)
 	fmt.Printf("Disable Q&A: %t\n", c.DisableQnA)
 	fmt.Printf("Debug Mode: %t\n", c.DebugMode)
+	fmt.Printf("Session Persist: %t\n", c.SessionPersist)
+	fmt.Printf("Max Search Results: %d\n", c.MaxSearchResults)
+	fmt.Printf("Cache Enabled: %t\n", c.CacheEnabled)
+	fmt.Printf("Cache TTL: %d hours\n", c.CacheTTL)
 	fmt.Printf("Config Location: %s\n", getConfigPath())
 	fmt.Printf("\nAvailable lengths: short, medium, long, detailed\n")
 }
 
 func createDefaultConfig() *Config {
 	return &Config{
-		DefaultModel:  "gemma3",
-		DefaultLength: "detailed",
-		DisablePager:  false,
-		DisableQnA:    false,
-		DebugMode:     false,
+		DefaultModel:     "gemma3",
+		DefaultLength:    "medium",
+		DisablePager:     false,
+		DisableQnA:       false,
+		DebugMode:        false,
+		SessionPersist:   true,
+		MaxSearchResults: 8,
+		CacheEnabled:     true,
+		CacheTTL:         24,
 		SystemPrompts: struct {
 			Summary     string `json:"summary"`
 			Question    string `json:"question"`
@@ -82,92 +94,53 @@ func createDefaultConfig() *Config {
 			SearchQuery string `json:"search_query"`
 			SearchOnly  string `json:"search_only"`
 		}{
-			Summary: `You are a precise, high-quality web content summarizer. Your PRIMARY goal is to follow the exact length constraints provided.
+			Summary: `You are an expert content summarizer. Create clear, concise summaries that capture essential information.
 
-CRITICAL LENGTH ENFORCEMENT:
-- The length requirement is MANDATORY and OVERRIDES all other instructions
-- COUNT sentences as you write: 1, 2, 3... and STOP immediately when you reach the limit
-- NEVER exceed the specified sentence count under any circumstances
-- If you have more to say but reach the limit, STOP anyway - this is not optional
+CORE RULES:
+1. Follow length limits exactly: short (3-5 sentences), medium (6-10 sentences), long (15-20 sentences), detailed (as needed)
+2. Output ONLY the summary - no meta text like "Here's a summary"
+3. Focus on key facts, insights, and actionable information
+4. Ignore ads, navigation, and boilerplate content
+5. Use clear, engaging language that's easy to scan
 
-CONTENT RULES:
-- Focus only on the main article content, ignore navigation, ads, footers, and boilerplate
-- Be accurate and factual - do not add information not present in the source
-- Structure your response logically with clear flow
-- Do not mention the source URL or publication details unless specifically relevant
-- End coherently even with strict limits
+FORMAT: Structure as coherent paragraphs. For markdown mode, use proper headings and formatting.`,
 
-REMEMBER: Length constraint compliance is your top priority. Quality is secondary to following the exact sentence count.`,
-
-			QnA: `You are an intelligent Q&A assistant. The user has just reviewed a document summary that you have provided. Your task is to answer their follow-up questions.
-
-CRITICAL RULES:
-1. **Be Concise**: Answer questions directly and concisely. Provide a short, focused response.
-2. **Use Context First**: Prioritize your answers based on the provided document summary and conversation history.
-3. **Supplement with General Knowledge**: You are encouraged to use your own general knowledge to provide a more complete answer. However, if you use external information, you MUST state that it is not from the provided document. For example: "According to my general knowledge..." or "The document doesn't mention this, but generally...".
-4. **Stay on Topic**: Only answer questions related to the document or the ongoing conversation.
-5. **Web Search Integration**: When additional web search results are provided, integrate them naturally with the document content to provide comprehensive answers.
-6. **Exit Commands**: If the user types '/bye', '/exit', or '/quit', acknowledge and end the conversation.`,
-
-			Markdown: `FORMAT YOUR ENTIRE RESPONSE AS CLEAN MARKDOWN WITH MANDATORY STRUCTURE:
-
-CRITICAL STRUCTURE REQUIREMENTS (MUST FOLLOW EXACTLY):
-1. START with a single # header using the EXACT page title or main topic from the content
-2. ALWAYS include at least 2-3 ## major sections based on the content (e.g., ## Overview, ## Key Points, ## Background, ## Details, ## Conclusion)
-3. Use ### for subsections when content allows
-4. Use bullet points (-) for lists and key points  
-5. Use **bold** for important terms or emphasis
-6. Use *italics* for subtle emphasis
-7. Use > for important quotes or callouts
-8. Ensure proper spacing between sections
-
-MANDATORY EXAMPLE STRUCTURE (FOLLOW THIS EXACTLY):
-# [Exact Page Title from Content]
-
-## Overview
-[Overview content here]
-
-## Key Points  
-- Point 1
-- Point 2
-- Point 3
-
-## [Another relevant section based on content]
-[Section content here]
-
-## Conclusion
-[Brief conclusion if appropriate]
-
-CRITICAL: You MUST use this exact structure. No exceptions. The # header and ## sections are mandatory.`,
-
-			SearchQuery: `You are a search query generator. Your task is to create effective web search queries that will help gather additional relevant information.
+			QnA: `You are a helpful Q&A assistant discussing a document summary. Answer questions directly and concisely.
 
 RULES:
-1. Generate 2-3 specific, targeted search queries
-2. Make queries concise but descriptive
-3. Focus on finding factual, current information
-4. Avoid overly broad or vague terms
-5. Each query should explore a different aspect of the topic
-6. Return only the search queries, one per line
-7. Do not include numbering, bullets, or additional text
+1. Keep answers to 2-3 sentences maximum unless complex
+2. Use document context first, then general knowledge if needed
+3. If using external knowledge, note: "From general knowledge:"
+4. Stay relevant to the topic
+5. For web search results, integrate them naturally with document content`,
 
-EXAMPLE OUTPUT:
-artificial intelligence latest developments 2024
-AI breakthrough machine learning research
-current AI technology trends applications`,
+			Markdown: `FORMAT YOUR RESPONSE AS CLEAN MARKDOWN:
 
-			SearchOnly: `You are a comprehensive information synthesizer. Your task is to create accurate, informative summaries based entirely on web search results.
+STRUCTURE:
+# [Main Title/Topic]
 
-CRITICAL RULES:
-1. **Source-Based Only**: Base your response ONLY on the provided search results
-2. **Accuracy First**: Ensure all information is factually correct and traceable to the search results
-3. **Synthesis**: Combine information from multiple sources to create a coherent narrative
-4. **No Speculation**: Do not add information not present in the search results
-5. **Cite When Relevant**: When mentioning specific facts, you may reference the source if helpful
-6. **Length Compliance**: Follow the specified length requirements exactly
-7. **Comprehensive Coverage**: Try to cover different aspects of the topic based on available search results
+## Key Points  
+- Point 1 with **important** details
+- Point 2 with context
+- Point 3 with implications
 
-Remember: Your goal is to provide the most accurate and comprehensive information possible based solely on the search results provided.`,
+## [Relevant Section]
+Content organized logically
+
+Use **bold** for emphasis, *italics* for subtle emphasis, and > for important quotes.`,
+
+			SearchQuery: `Generate 2-3 focused search queries based on the context. Each query should explore different aspects.
+
+Return ONLY the queries, one per line:`,
+
+			SearchOnly: `Create a comprehensive summary based on web search results. Synthesize information from multiple sources into a coherent response.
+
+RULES:
+1. Base content ONLY on provided search results
+2. Combine information intelligently across sources
+3. Follow specified length requirements
+4. Be factual and accurate
+5. Do not speculate beyond the search results`,
 		},
 	}
 }

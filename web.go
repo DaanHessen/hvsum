@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/go-shiori/go-readability"
+	"github.com/microcosm-cc/bluemonday"
 )
 
 // ExtractWebContent fetches and extracts clean content from a URL
@@ -48,9 +49,16 @@ func ExtractWebContent(urlStr string) (string, string, error) {
 	}
 
 	textContent := article.TextContent
-	// Fallback to raw text if readability fails to extract meaningful content
+	// Fallback to stripping HTML from raw content if readability fails to extract clean text
+	if strings.TrimSpace(textContent) == "" && article.Content != "" {
+		DebugLog(nil, "Readability text content is empty, falling back to stripping HTML from raw content.")
+		// Use bluemonday to strip all HTML tags for a simple text-only version
+		p := bluemonday.StripTagsPolicy()
+		textContent = p.Sanitize(article.Content)
+	}
+
 	if strings.TrimSpace(textContent) == "" {
-		textContent = article.Content
+		return "", pageTitle, fmt.Errorf("failed to extract any meaningful content from the URL")
 	}
 
 	return textContent, pageTitle, nil
