@@ -1,434 +1,271 @@
 package main
 
 import (
-	"bufio"
-	"context"
-	"encoding/json"
 	"fmt"
-	"net/http"
-	"net/url"
 	"os"
-	"os/exec"
-	"path/filepath"
 	"strings"
+	"time"
 
-	"github.com/charmbracelet/glamour"
-	"github.com/go-shiori/go-readability"
 	"github.com/ollama/ollama/api"
 	"github.com/spf13/pflag"
 )
 
 const appName = "hvsum"
-
-// Config holds all user-configurable settings
-type Config struct {
-	DefaultModel  string `json:"default_model"`
-	SystemPrompts struct {
-		Summary  string `json:"summary"`
-		Question string `json:"question"`
-		FollowUp string `json:"follow_up"`
-		Markdown string `json:"markdown"`
-	} `json:"system_prompts"`
-	DefaultLength string `json:"default_length"` // short, medium, long, detailed
-}
-
-// Length definitions using research-backed techniques for precise length control
-var lengthMap = map[string]string{
-	"short":    "Provide a response that is **exactly 2 sentences long**. Your entire output must be contained within two sentences. This is a strict requirement.",
-	"medium":   "Provide a response that is **between 4 and 6 sentences long**. Aim for clarity and conciseness within this range. This is a strict requirement.",
-	"long":     "Provide a comprehensive response that is **between 8 and 10 sentences long**. Cover the topic in detail within this range. This is a strict requirement.",
-	"detailed": "Provide a highly detailed response that is **between 12 and 15 sentences long**. Explore the topic thoroughly with examples and context. This is a strict requirement.",
-}
-
-var (
-	length     = pflag.StringP("length", "l", "", "Summary length: short, medium, long, detailed")
-	markdown   = pflag.BoolP("markdown", "M", false, "Format output as structured markdown")
-	showHelp   = pflag.BoolP("help", "h", false, "Show help message")
-	showConfig = pflag.BoolP("config", "c", false, "Show current configuration")
-)
+const version = "0.2.0-beta"
 
 func main() {
+	// Define flags
+	var (
+		showVersion     bool
+		enableSearch    bool
+		showHelp        bool
+		useMarkdown     bool
+		disablePager    bool
+		disableQnA      bool
+		generateOutline bool
+		copyToClipboard bool
+		cleanCache      bool
+		listSessions    bool
+		cleanSessions   bool
+		debugMode       bool
+		disableCache    bool
+		length          string
+		sessionName     string
+		saveToFile      string
+		configPath      string
+	)
+
+	pflag.BoolVarP(&showVersion, "version", "v", false, "Show application version")
+	pflag.BoolVarP(&enableSearch, "search", "s", false, "Enhance summary with web search")
+	pflag.BoolVarP(&showHelp, "help", "h", false, "Show help message")
+	pflag.BoolVarP(&useMarkdown, "markdown", "m", false, "Render output as markdown")
+	pflag.BoolVar(&disablePager, "no-pager", false, "Disable pager for output")
+	pflag.BoolVar(&disableQnA, "no-qna", false, "Disable interactive Q&A session")
+	pflag.BoolVarP(&generateOutline, "outline", "o", false, "Generate a structured outline from the summary")
+	pflag.BoolVarP(&copyToClipboard, "copy", "c", false, "Copy the summary to the clipboard")
+	pflag.BoolVar(&cleanCache, "clean-cache", false, "Clean all cached data")
+	pflag.BoolVar(&listSessions, "list-sessions", false, "List recent interactive sessions")
+	pflag.BoolVar(&cleanSessions, "clean-sessions", false, "Clean all saved sessions")
+	pflag.BoolVar(&debugMode, "debug", false, "Enable debug logging")
+	pflag.BoolVar(&disableCache, "no-cache", false, "Disable caching for this session")
+	pflag.StringVarP(&length, "length", "l", "detailed", "Set summary length (short, medium, long, detailed)")
+	pflag.StringVar(&sessionName, "session", "", "Resume a saved session by name")
+	pflag.StringVarP(&saveToFile, "write", "w", "", "Save the summary to a file (.md or .txt)")
+	pflag.StringVar(&configPath, "config", "", "Path to a custom config file")
+
+	pflag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage: %s [flags] <URL or search query>\n\n", appName)
+		fmt.Fprintf(os.Stderr, "A powerful CLI tool to summarize web pages and search queries.\n\n")
+		fmt.Fprintf(os.Stderr, "Examples:\n")
+		fmt.Fprintf(os.Stderr, "  %s https://example.com                     # Summarize URL only\n", appName)
+		fmt.Fprintf(os.Stderr, "  %s -s https://example.com                 # Summarize URL + web search\n", appName)
+		fmt.Fprintf(os.Stderr, "  %s -m -l short https://wikipedia.org/...  # Markdown, short summary\n", appName)
+		fmt.Fprintf(os.Stderr, "  %s -s 'latest AI research'                # Search query with enhancement\n", appName)
+		fmt.Fprintf(os.Stderr, "  %s --session mysession                    # Resume saved session\n", appName)
+		fmt.Fprintf(os.Stderr, "  %s --list-sessions                        # List saved sessions\n", appName)
+		fmt.Fprintf(os.Stderr, "  %s --no-cache https://example.com         # Disable caching\n\n", appName)
+		fmt.Fprintf(os.Stderr, "Flags:\n")
+		pflag.PrintDefaults()
+	}
+
 	pflag.Parse()
 
-	if *showHelp {
-		printUsage()
+	if showVersion {
+		fmt.Printf("%s version %s\n", appName, version)
 		return
 	}
 
-	config, err := loadOrInitConfig()
+	if showHelp {
+		pflag.Usage()
+		return
+	}
+
+	config, err := LoadConfig()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error with configuration: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error loading config: %v\n", err)
 		os.Exit(1)
 	}
 
-	if *showConfig {
-		printConfig(config)
-		return
+	// Enable debug mode if requested
+	if debugMode {
+		config.DebugMode = true
 	}
 
-	// Handle cleanup
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Fprintf(os.Stderr, "\nUnexpected error: %v\n", r)
-		}
-		fmt.Fprintf(os.Stderr, "\nStopping model '%s'...\n", config.DefaultModel)
-		cmd := exec.Command("ollama", "stop", config.DefaultModel)
-		cmd.Run()
-	}()
+	// Disable cache if requested
+	if disableCache {
+		config.CacheEnabled = false
+	}
+
+	sessionManager := NewSessionManager(config)
+
+	// Handle standalone flags that don't require an input arg
+	if handled := handleStandaloneFlags(config, sessionManager, cleanCache, listSessions, cleanSessions); handled {
+		return
+	}
 
 	args := pflag.Args()
 
-	if len(args) != 1 {
-		printUsage()
-		fmt.Fprintf(os.Stderr, "\nError: Please provide exactly one URL as an argument.\n")
-		os.Exit(1)
-	}
-	link := args[0]
-
-	// Determine the effective length setting for the initial summary
-	effectiveLength := *length
-	if effectiveLength == "" {
-		effectiveLength = config.DefaultLength
-	}
-	if effectiveLength == "" {
-		effectiveLength = "detailed" // Fallback default
+	// Handle session resumption
+	if sessionName != "" {
+		resumeSession(sessionName, sessionManager, config, useMarkdown, enableSearch)
+		return
 	}
 
-	fmt.Fprintf(os.Stderr, "Fetching content from: %s\n", link)
-	textContent, pageTitle, err := fetchAndParseURL(link)
+	// No arguments provided - show usage
+	if len(args) == 0 {
+		pflag.Usage()
+		return
+	}
+
+	input := strings.Join(args, " ")
+
+	// Process the input (URL or search query)
+	summary, content, title, err := processInput(input, config, length, useMarkdown, enableSearch)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(1)
 	}
 
-	// Generate initial summary
-	initialPrompt := buildUserPrompt("", effectiveLength, textContent, pageTitle)
-	conversationContext, err := generateOllamaResponse(config.DefaultModel, config.SystemPrompts.Summary, initialPrompt, nil, *markdown)
+	// Generate outline if requested
+	if generateOutline {
+		outline, outlineErr := GenerateOutline(summary, config, useMarkdown, "")
+		if outlineErr != nil {
+			fmt.Fprintf(os.Stderr, "Error generating outline: %v\n", outlineErr)
+		} else {
+			summary = outline
+		}
+	}
+
+	// Display results
+	RenderOutput(summary, useMarkdown, config.DisablePager || disablePager)
+
+	// Handle file saving
+	if saveToFile != "" {
+		if err := SaveToFile(saveToFile, summary); err != nil {
+			fmt.Fprintf(os.Stderr, "Error saving to file: %v\n", err)
+		} else {
+			fmt.Printf("Summary saved to %s\n", saveToFile)
+		}
+	}
+
+	// Handle clipboard copying
+	if copyToClipboard {
+		if err := CopyToClipboard(summary); err != nil {
+			fmt.Fprintf(os.Stderr, "Error copying to clipboard: %v\n", err)
+		} else {
+			fmt.Println("Summary copied to clipboard.")
+		}
+	}
+
+	// Start interactive session if enabled
+	if !disableQnA {
+		session := &SessionData{
+			ID:             fmt.Sprintf("session_%d", time.Now().Unix()),
+			Title:          title,
+			URL:            extractURLFromInput(input),
+			Query:          extractQueryFromInput(input),
+			InitialSummary: summary,
+			ContextContent: content,
+			SearchEnabled:  enableSearch,
+			CreatedAt:      time.Now(),
+			LastAccessedAt: time.Now(),
+			Messages: []api.Message{
+				{Role: "system", Content: config.SystemPrompts.QnA},
+				{Role: "assistant", Content: "I'm ready to answer questions about: " + title},
+			},
+		}
+		StartInteractiveSession(session, config, useMarkdown, enableSearch)
+	}
+}
+
+// handleStandaloneFlags processes flags that can be run without other arguments
+func handleStandaloneFlags(config *Config, sessionManager *SessionManager, cleanCache, listSessions, cleanSessions bool) bool {
+	if cleanCache {
+		cacheManager := NewCacheManager(config)
+		cacheManager.Clear()
+		fmt.Println("✅ Cache cleared successfully")
+		return true
+	}
+
+	if listSessions {
+		sessions, err := sessionManager.ListSessions()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error listing sessions: %v\n", err)
+			return true
+		}
+
+		if len(sessions) == 0 {
+			fmt.Println("No saved sessions found.")
+			return true
+		}
+
+		fmt.Println("📜 Saved Sessions:")
+		for _, session := range sessions {
+			fmt.Printf("  %s - %s (%s)\n", session.ID, session.GetTitle(), session.GetAge())
+		}
+		return true
+	}
+
+	if cleanSessions {
+		err := sessionManager.ClearAll()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error cleaning sessions: %v\n", err)
+		} else {
+			fmt.Println("✅ All sessions cleared successfully")
+		}
+		return true
+	}
+
+	return false
+}
+
+// resumeSession resumes a saved session
+func resumeSession(sessionName string, sessionManager *SessionManager, config *Config, useMarkdown, enableSearch bool) {
+	session, err := sessionManager.LoadSession(sessionName)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error generating initial summary: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error loading session '%s': %v\n", sessionName, err)
+		fmt.Fprintf(os.Stderr, "Use --list-sessions to see available sessions.\n")
 		os.Exit(1)
 	}
 
-	startInteractiveSession(conversationContext, pageTitle, config, *markdown)
+	fmt.Printf("📂 Resuming session: %s\n", session.GetTitle())
+	StartInteractiveSession(session, config, useMarkdown, session.SearchEnabled)
 }
 
-func startInteractiveSession(context []int, pageTitle string, config *Config, renderMarkdown bool) {
-	scanner := bufio.NewScanner(os.Stdin)
-	for {
-		fmt.Fprint(os.Stderr, "> ")
-		if !scanner.Scan() {
-			break // Exit on Ctrl+D or other EOF
-		}
+// processInput handles both URLs and search queries with the new two-stage approach
+func processInput(input string, config *Config, length string, useMarkdown, enableSearch bool) (summary, content, title string, err error) {
+	var sessionID = fmt.Sprintf("temp_%d", time.Now().Unix())
 
-		question := scanner.Text()
-		if strings.TrimSpace(question) == "" {
-			continue
-		}
-
-		// For follow-up, we don't pass the full textContent again.
-		// The context from the previous turn handles memory.
-		// We use a specific, concise "short" length for answers.
-		followUpPrompt := buildUserPrompt(question, "short", "", pageTitle)
-		newContext, err := generateOllamaResponse(config.DefaultModel, config.SystemPrompts.FollowUp, followUpPrompt, context, renderMarkdown)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error generating response: %v\n", err)
-			// Don't update context on error, just continue
-			continue
-		}
-		context = newContext // Update context for the next turn
-	}
-
-	if err := scanner.Err(); err != nil {
-		fmt.Fprintf(os.Stderr, "Error reading input: %v\n", err)
-	}
-
-	fmt.Fprintln(os.Stderr, "\nExiting.")
-}
-
-func fetchAndParseURL(urlString string) (string, string, error) {
-	parsedURL, err := url.Parse(urlString)
-	if err != nil {
-		return "", "", fmt.Errorf("failed to parse URL: %w", err)
-	}
-
-	resp, err := http.Get(urlString)
-	if err != nil {
-		return "", "", err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return "", "", fmt.Errorf("HTTP %d: %s", resp.StatusCode, resp.Status)
-	}
-
-	article, err := readability.FromReader(resp.Body, parsedURL)
-	if err != nil {
-		return "", "", fmt.Errorf("failed to parse content: %v", err)
-	}
-
-	pageTitle := article.Title
-	if pageTitle == "" {
-		pageTitle = "Web Page Summary"
-	}
-
-	textContent := article.TextContent
-	// Fallback to raw text if readability fails to extract meaningful content
-	if strings.TrimSpace(textContent) == "" {
-		textContent = article.Content
-	}
-
-	return textContent, pageTitle, nil
-}
-
-func buildUserPrompt(userMessage, length, textContent, pageTitle string) string {
-	var instruction, lengthInstruction string
-
-	if userMessage != "" {
-		// This prompt is for both the initial question and follow-ups.
-		// The `FollowUp` system prompt will guide the model for interactive mode.
-		lengthInstruction = "Your answer **must be a maximum of 2 sentences**. Be concise and directly answer the question."
-		instruction = fmt.Sprintf(`Question: "%s"
-
-CRITICAL LENGTH REQUIREMENT: %s`, userMessage, lengthInstruction)
+	if IsValidURL(input) {
+		summary, content, title, err = ProcessURL(input, config, length, useMarkdown, enableSearch, sessionID)
 	} else {
-		// This is for the initial summary.
-		lengthInstruction, exists := lengthMap[length]
-		if !exists {
-			lengthInstruction = lengthMap["medium"]
-		}
-		instruction = fmt.Sprintf(`Your task is to create a comprehensive summary of the following webpage content.
-
-CRITICAL LENGTH REQUIREMENT: %s
-
-Page title: %s`, lengthInstruction, pageTitle)
+		summary, content, title, err = ProcessSearchQuery(input, config, length, useMarkdown, sessionID)
 	}
 
-	// Only append the full webpage content if it's provided (i.e., for the initial summary)
-	if textContent != "" {
-		return fmt.Sprintf("%s\n\n--- WEBPAGE CONTENT ---\n%s", instruction, textContent)
-	}
-	return instruction
+	return summary, content, title, err
 }
 
-func generateOllamaResponse(model, system, prompt string, contextIn []int, renderMarkdown bool) ([]int, error) {
-	client, err := api.ClientFromEnvironment()
-	if err != nil {
-		return nil, fmt.Errorf("failed to connect to Ollama: %v", err)
-	}
-
-	stream := !renderMarkdown // Only stream when NOT using markdown
-	req := &api.GenerateRequest{
-		Model:   model,
-		System:  system,
-		Prompt:  prompt,
-		Stream:  &stream,
-		Context: contextIn,
-	}
-
-	var responseBuilder strings.Builder
-	var finalContext []int
-
-	fmt.Fprintf(os.Stderr, "\nGenerating response with %s...\n\n", model)
-	err = client.Generate(context.Background(), req, func(resp api.GenerateResponse) error {
-		responseBuilder.WriteString(resp.Response)
-
-		if !renderMarkdown {
-			fmt.Print(resp.Response)
-		}
-
-		if resp.Done {
-			finalContext = resp.Context
-		}
-		return nil
-	})
-
-	if err != nil {
-		if strings.Contains(err.Error(), "model '"+model+"' not found") {
-			return nil, fmt.Errorf("model '%s' not found. Please run: ollama pull %s", model, model)
-		}
-		return nil, fmt.Errorf("generation failed: %v", err)
-	}
-
-	if renderMarkdown {
-		response := responseBuilder.String()
-		rendered, err := glamour.Render(response, "auto")
-		if err != nil {
-			fmt.Printf("Markdown rendering failed. Raw output:\n\n%s\n", response)
-		} else {
-			fmt.Print(rendered)
-		}
-	}
-
-	return finalContext, nil
-}
-
-func loadOrInitConfig() (*Config, error) {
-	configDir, err := os.UserConfigDir()
-	if err != nil {
-		return nil, err
-	}
-	configPath := filepath.Join(configDir, appName, "config.json")
-
-	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		fmt.Fprintf(os.Stderr, "Creating default configuration at: %s\n", configPath)
-		defaultConfig := createDefaultConfig()
-		if err := saveConfig(configPath, defaultConfig); err != nil {
-			return nil, fmt.Errorf("could not create default config: %w", err)
-		}
-		return defaultConfig, nil
-	}
-
-	file, err := os.Open(configPath)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	var config Config
-	if err := json.NewDecoder(file).Decode(&config); err != nil {
-		return nil, fmt.Errorf("config file is corrupted: %w", err)
-	}
-
-	return &config, nil
-}
-
-func createDefaultConfig() *Config {
-	return &Config{
-		DefaultModel:  "llama3.2:latest",
-		DefaultLength: "detailed",
-		SystemPrompts: struct {
-			Summary  string `json:"summary"`
-			Question string `json:"question"`
-			FollowUp string `json:"follow_up"`
-			Markdown string `json:"markdown"`
-		}{
-			Summary: `You are a precise, high-quality web content summarizer. Your PRIMARY goal is to follow the exact length constraints provided.
-
-CRITICAL LENGTH ENFORCEMENT:
-- The length requirement is MANDATORY and OVERRIDES all other instructions
-- COUNT sentences as you write and STOP immediately when you reach the limit
-- NEVER exceed the specified sentence count under any circumstances
-
-CONTENT RULES:
-- Focus only on the main article content, ignore navigation, ads, footers, and boilerplate
-- Be accurate and factual; do not add information not present in the source
-
-REMEMBER: Length constraint compliance is your top priority.`,
-
-			Question: `You are a helpful assistant that answers questions based on webpage content. Your PRIMARY goal is to follow the exact length constraints provided.
-
-CRITICAL LENGTH ENFORCEMENT:
-- The length requirement is MANDATORY and OVERRIDES all other instructions
-- COUNT sentences as you write and STOP immediately when you reach the limit
-- NEVER exceed the specified sentence count under any circumstances
-
-CONTENT RULES:
-- Answer the specific question asked using only information from the provided webpage
-- Be direct and precise in your response
-
-REMEMBER: Length constraint compliance is your top priority.`,
-
-			FollowUp: `You are a helpful Q&A assistant. The user has already been given a summary of a document. Your task is to answer their follow-up questions based on the document's content, which is in your memory.
-
-RULES:
-- Answer concisely and directly.
-- Your answer **must be a maximum of 2 sentences**.
-- Rely on the information from the original document and our conversation history.
-- If you cannot answer based on the context you have, say so.
-- Do not re-introduce the topic; just answer the question.`,
-
-			Markdown: `FORMAT YOUR ENTIRE RESPONSE AS CLEAN MARKDOWN WITH MANDATORY STRUCTURE:
-
-CRITICAL STRUCTURE REQUIREMENTS (MUST FOLLOW EXACTLY):
-1. START with a single # header using the EXACT page title or main topic from the content
-2. ALWAYS include at least 2-3 ## major sections based on the content (e.g., ## Overview, ## Key Points, ## Background, ## Details, ## Conclusion)
-3. Use ### for subsections when content allows
-4. Use bullet points (-) for lists and key points  
-5. Use **bold** for important terms or emphasis
-6. Use *italics* for subtle emphasis
-7. Use > for important quotes or callouts
-8. Ensure proper spacing between sections
-
-MANDATORY EXAMPLE STRUCTURE (FOLLOW THIS EXACTLY):
-# [Exact Page Title from Content]
-
-## Overview
-[Overview content here]
-
-## Key Points  
-- Point 1
-- Point 2
-- Point 3
-
-## [Another relevant section based on content]
-[Section content here]
-
-## Conclusion
-[Brief conclusion if appropriate]
-
-CRITICAL: You MUST use this exact structure. No exceptions. The # header and ## sections are mandatory.`,
-		},
+// RenderOutput determines whether to use a pager or print to console.
+func RenderOutput(content string, useMarkdown bool, forceNoPager bool) {
+	if !forceNoPager {
+		RenderWithPager(content, useMarkdown)
+	} else {
+		RenderToConsole(content, useMarkdown)
 	}
 }
 
-func saveConfig(path string, config *Config) error {
-	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
-		return err
+// extractURLFromInput extracts URL if input is a URL
+func extractURLFromInput(input string) string {
+	if IsValidURL(input) {
+		return input
 	}
+	return ""
+}
 
-	file, err := os.Create(path)
-	if err != nil {
-		return err
+// extractQueryFromInput extracts query if input is not a URL
+func extractQueryFromInput(input string) string {
+	if !IsValidURL(input) {
+		return input
 	}
-	defer file.Close()
-
-	encoder := json.NewEncoder(file)
-	encoder.SetIndent("", "  ")
-	return encoder.Encode(config)
-}
-
-func printConfig(config *Config) {
-	fmt.Printf("Current Configuration:\n")
-	fmt.Printf("Model: %s\n", config.DefaultModel)
-	fmt.Printf("Default Length: %s\n", config.DefaultLength)
-	fmt.Printf("Config Location: %s\n", getConfigPath())
-	fmt.Printf("\nAvailable lengths: short, medium, long, detailed\n")
-}
-
-func getConfigPath() string {
-	configDir, _ := os.UserConfigDir()
-	return filepath.Join(configDir, appName, "config.json")
-}
-
-func printUsage() {
-	fmt.Printf(`%s - Website Summarizer & Interactive Q&A
-
-USAGE:
-    %s [flags] <URL>
-
-DESCRIPTION:
-    %s first generates a summary of the given URL.
-    After the summary, it enters an interactive mode where you can ask
-    follow-up questions about the content. Press Ctrl+C or Ctrl+D to exit.
-
-FLAGS:
-`, appName, appName, appName)
-	pflag.PrintDefaults()
-
-	fmt.Printf(`
-EXAMPLES:
-    %s https://example.com                               # Summary then interactive Q&A
-    %s -l short -M https://example.com                   # Short, markdown summary then Q&A
-    %s -c                                                # Show current configuration
-
-LENGTH OPTIONS (for initial summary):
-    short    - 2 sentences exactly
-    medium   - 4-6 sentences
-    long     - 8-10 sentences
-    detailed - 12-15 sentences [default]
-
-CONFIG:
-    Configuration is stored at: ~/.config/hvsum/config.json
-    Edit this file to customize the AI model and system prompts.
-`, appName, appName, appName)
+	return ""
 }
