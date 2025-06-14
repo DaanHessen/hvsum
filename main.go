@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -25,6 +26,7 @@ type Config struct {
 	SystemPrompts struct {
 		Summary  string `json:"summary"`
 		Question string `json:"question"`
+		FollowUp string `json:"follow_up"`
 		Markdown string `json:"markdown"`
 	} `json:"system_prompts"`
 	DefaultLength string `json:"default_length"` // short, medium, long, detailed
@@ -32,15 +34,15 @@ type Config struct {
 
 // Length definitions using research-backed techniques for precise length control
 var lengthMap = map[string]string{
-	"short":    "CRITICAL: Write EXACTLY 2 sentences. No more, no less. Count each sentence as you write: 1, 2, STOP. Focus only on the most essential information. After writing exactly 2 sentences, you MUST terminate your response immediately.",
-	"medium":   "CRITICAL: Write EXACTLY 4-6 sentences total. Count each sentence: 1, 2, 3, 4, 5, 6, STOP. Provide key information in a balanced way. After reaching exactly 6 sentences maximum, you MUST terminate your response immediately.",
-	"long":     "CRITICAL: Write EXACTLY 8-10 sentences total. Count carefully: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, STOP. Provide comprehensive coverage with supporting details. After reaching exactly 10 sentences maximum, you MUST terminate your response immediately.",
-	"detailed": "CRITICAL: Write EXACTLY 12-15 sentences total. Count each sentence meticulously: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, STOP. Provide thorough analysis with examples and context. After reaching exactly 15 sentences maximum, you MUST terminate your response immediately.",
+	"short":    "Provide a response that is **exactly 2 sentences long**. Your entire output must be contained within two sentences. This is a strict requirement.",
+	"medium":   "Provide a response that is **between 4 and 6 sentences long**. Aim for clarity and conciseness within this range. This is a strict requirement.",
+	"long":     "Provide a comprehensive response that is **between 8 and 10 sentences long**. Cover the topic in detail within this range. This is a strict requirement.",
+	"detailed": "Provide a highly detailed response that is **between 12 and 15 sentences long**. Explore the topic thoroughly with examples and context. This is a strict requirement.",
 }
 
 var (
 	length     = pflag.StringP("length", "l", "", "Summary length: short, medium, long, detailed")
-	markdown   = pflag.BoolP("markdown", "m", false, "Format output as structured markdown")
+	markdown   = pflag.BoolP("markdown", "M", false, "Format output as structured markdown")
 	showHelp   = pflag.BoolP("help", "h", false, "Show help message")
 	showConfig = pflag.BoolP("config", "c", false, "Show current configuration")
 )
@@ -76,60 +78,71 @@ func main() {
 
 	args := pflag.Args()
 
-	// Determine the effective length setting
+	if len(args) != 1 {
+		printUsage()
+		fmt.Fprintf(os.Stderr, "\nError: Please provide exactly one URL as an argument.\n")
+		os.Exit(1)
+	}
+	link := args[0]
+
+	// Determine the effective length setting for the initial summary
 	effectiveLength := *length
 	if effectiveLength == "" {
 		effectiveLength = config.DefaultLength
 	}
 	if effectiveLength == "" {
-		effectiveLength = "detailed" // fallback default
-	}
-
-	err = handleDirectMode(args, config, effectiveLength)
-
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-		os.Exit(1)
-	}
-}
-
-func handleDirectMode(args []string, config *Config, length string) error {
-	var userMessage, link string
-
-	switch len(args) {
-	case 1:
-		link = args[0]
-	case 2:
-		userMessage = args[0]
-		link = args[1]
-	default:
-		return fmt.Errorf("incorrect number of arguments. Use: hvsum [question] <URL>")
+		effectiveLength = "detailed" // Fallback default
 	}
 
 	fmt.Fprintf(os.Stderr, "Fetching content from: %s\n", link)
 	textContent, pageTitle, err := fetchAndParseURL(link)
 	if err != nil {
-		return fmt.Errorf("error fetching page: %v", err)
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		os.Exit(1)
 	}
 
-	// Determine which system prompt to use
-	var systemPrompt string
-	if userMessage != "" {
-		systemPrompt = config.SystemPrompts.Question
-	} else {
-		systemPrompt = config.SystemPrompts.Summary
+	// Generate initial summary
+	initialPrompt := buildUserPrompt("", effectiveLength, textContent, pageTitle)
+	conversationContext, err := generateOllamaResponse(config.DefaultModel, config.SystemPrompts.Summary, initialPrompt, nil, *markdown)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error generating initial summary: %v\n", err)
+		os.Exit(1)
 	}
 
-	// Add markdown formatting instructions if needed
-	if *markdown {
-		systemPrompt += "\n\n" + config.SystemPrompts.Markdown
+	startInteractiveSession(conversationContext, pageTitle, config, *markdown)
+}
+
+func startInteractiveSession(context []int, pageTitle string, config *Config, renderMarkdown bool) {
+	scanner := bufio.NewScanner(os.Stdin)
+	for {
+		fmt.Fprint(os.Stderr, "> ")
+		if !scanner.Scan() {
+			break // Exit on Ctrl+D or other EOF
+		}
+
+		question := scanner.Text()
+		if strings.TrimSpace(question) == "" {
+			continue
+		}
+
+		// For follow-up, we don't pass the full textContent again.
+		// The context from the previous turn handles memory.
+		// We use a specific, concise "short" length for answers.
+		followUpPrompt := buildUserPrompt(question, "short", "", pageTitle)
+		newContext, err := generateOllamaResponse(config.DefaultModel, config.SystemPrompts.FollowUp, followUpPrompt, context, renderMarkdown)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error generating response: %v\n", err)
+			// Don't update context on error, just continue
+			continue
+		}
+		context = newContext // Update context for the next turn
 	}
 
-	// Build the user prompt
-	userPrompt := buildUserPrompt(userMessage, length, textContent, pageTitle)
+	if err := scanner.Err(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error reading input: %v\n", err)
+	}
 
-	fmt.Fprintf(os.Stderr, "Generating response with %s...\n\n", config.DefaultModel)
-	return generateOllamaResponse(config.DefaultModel, systemPrompt, userPrompt, *markdown)
+	fmt.Fprintln(os.Stderr, "\nExiting.")
 }
 
 func fetchAndParseURL(urlString string) (string, string, error) {
@@ -168,75 +181,74 @@ func fetchAndParseURL(urlString string) (string, string, error) {
 }
 
 func buildUserPrompt(userMessage, length, textContent, pageTitle string) string {
-	lengthInstruction, exists := lengthMap[length]
-	if !exists {
-		lengthInstruction = lengthMap["medium"]
-	}
+	var instruction, lengthInstruction string
 
-	var instruction string
 	if userMessage != "" {
-		instruction = fmt.Sprintf(`Your task is to answer the following question based on the webpage content.
+		// This prompt is for both the initial question and follow-ups.
+		// The `FollowUp` system prompt will guide the model for interactive mode.
+		lengthInstruction = "Your answer **must be a maximum of 2 sentences**. Be concise and directly answer the question."
+		instruction = fmt.Sprintf(`Question: "%s"
 
-Question: "%s"
-
-CRITICAL LENGTH REQUIREMENT: %s
-
-IMPORTANT: Count your sentences/paragraphs as you write. When you reach the exact limit specified above, STOP immediately. Do not exceed the limit under any circumstances.
-
-Page title: %s
-
-REMINDER: Follow the length requirement exactly. Count as you go and stop when you reach the limit.`, userMessage, lengthInstruction, pageTitle)
+CRITICAL LENGTH REQUIREMENT: %s`, userMessage, lengthInstruction)
 	} else {
+		// This is for the initial summary.
+		lengthInstruction, exists := lengthMap[length]
+		if !exists {
+			lengthInstruction = lengthMap["medium"]
+		}
 		instruction = fmt.Sprintf(`Your task is to create a comprehensive summary of the following webpage content.
 
 CRITICAL LENGTH REQUIREMENT: %s
 
-IMPORTANT: Count your sentences/paragraphs as you write. When you reach the exact limit specified above, STOP immediately. Do not exceed the limit under any circumstances.
-
-Page title: %s
-
-Focus on the main content, ignore navigation, footers, and boilerplate text.
-
-REMINDER: Follow the length requirement exactly. Count as you go and stop when you reach the limit.`, lengthInstruction, pageTitle)
+Page title: %s`, lengthInstruction, pageTitle)
 	}
 
-	return fmt.Sprintf("%s\n\n--- WEBPAGE CONTENT ---\n%s", instruction, textContent)
+	// Only append the full webpage content if it's provided (i.e., for the initial summary)
+	if textContent != "" {
+		return fmt.Sprintf("%s\n\n--- WEBPAGE CONTENT ---\n%s", instruction, textContent)
+	}
+	return instruction
 }
 
-func generateOllamaResponse(model, system, prompt string, renderMarkdown bool) error {
+func generateOllamaResponse(model, system, prompt string, contextIn []int, renderMarkdown bool) ([]int, error) {
 	client, err := api.ClientFromEnvironment()
 	if err != nil {
-		return fmt.Errorf("failed to connect to Ollama: %v", err)
+		return nil, fmt.Errorf("failed to connect to Ollama: %v", err)
 	}
 
 	stream := !renderMarkdown // Only stream when NOT using markdown
 	req := &api.GenerateRequest{
-		Model:  model,
-		System: system,
-		Prompt: prompt,
-		Stream: &stream,
+		Model:   model,
+		System:  system,
+		Prompt:  prompt,
+		Stream:  &stream,
+		Context: contextIn,
 	}
 
 	var responseBuilder strings.Builder
+	var finalContext []int
 
+	fmt.Fprintf(os.Stderr, "\nGenerating response with %s...\n\n", model)
 	err = client.Generate(context.Background(), req, func(resp api.GenerateResponse) error {
 		responseBuilder.WriteString(resp.Response)
 
-		// Only stream for non-markdown mode
 		if !renderMarkdown {
 			fmt.Print(resp.Response)
+		}
+
+		if resp.Done {
+			finalContext = resp.Context
 		}
 		return nil
 	})
 
 	if err != nil {
 		if strings.Contains(err.Error(), "model '"+model+"' not found") {
-			return fmt.Errorf("model '%s' not found. Please run: ollama pull %s", model, model)
+			return nil, fmt.Errorf("model '%s' not found. Please run: ollama pull %s", model, model)
 		}
-		return fmt.Errorf("generation failed: %v", err)
+		return nil, fmt.Errorf("generation failed: %v", err)
 	}
 
-	// For markdown mode, render the complete response (no streaming)
 	if renderMarkdown {
 		response := responseBuilder.String()
 		rendered, err := glamour.Render(response, "auto")
@@ -247,7 +259,7 @@ func generateOllamaResponse(model, system, prompt string, renderMarkdown bool) e
 		}
 	}
 
-	return nil
+	return finalContext, nil
 }
 
 func loadOrInitConfig() (*Config, error) {
@@ -287,41 +299,43 @@ func createDefaultConfig() *Config {
 		SystemPrompts: struct {
 			Summary  string `json:"summary"`
 			Question string `json:"question"`
+			FollowUp string `json:"follow_up"`
 			Markdown string `json:"markdown"`
 		}{
 			Summary: `You are a precise, high-quality web content summarizer. Your PRIMARY goal is to follow the exact length constraints provided.
 
 CRITICAL LENGTH ENFORCEMENT:
 - The length requirement is MANDATORY and OVERRIDES all other instructions
-- COUNT sentences as you write: 1, 2, 3... and STOP immediately when you reach the limit
+- COUNT sentences as you write and STOP immediately when you reach the limit
 - NEVER exceed the specified sentence count under any circumstances
-- If you have more to say but reach the limit, STOP anyway - this is not optional
 
 CONTENT RULES:
 - Focus only on the main article content, ignore navigation, ads, footers, and boilerplate
-- Be accurate and factual - do not add information not present in the source
-- Structure your response logically with clear flow
-- Do not mention the source URL or publication details unless specifically relevant
-- End coherently even with strict limits
+- Be accurate and factual; do not add information not present in the source
 
-REMEMBER: Length constraint compliance is your top priority. Quality is secondary to following the exact sentence count.`,
+REMEMBER: Length constraint compliance is your top priority.`,
 
 			Question: `You are a helpful assistant that answers questions based on webpage content. Your PRIMARY goal is to follow the exact length constraints provided.
 
 CRITICAL LENGTH ENFORCEMENT:
 - The length requirement is MANDATORY and OVERRIDES all other instructions
-- COUNT sentences as you write: 1, 2, 3... and STOP immediately when you reach the limit
+- COUNT sentences as you write and STOP immediately when you reach the limit
 - NEVER exceed the specified sentence count under any circumstances
-- If you have more to say but reach the limit, STOP anyway - this is not optional
 
 CONTENT RULES:
 - Answer the specific question asked using only information from the provided webpage
 - Be direct and precise in your response
-- If the webpage doesn't contain enough information to answer fully, say so
-- Provide context when helpful but stay focused on the question
-- End coherently even with strict limits
 
-REMEMBER: Length constraint compliance is your top priority. Quality is secondary to following the exact sentence count.`,
+REMEMBER: Length constraint compliance is your top priority.`,
+
+			FollowUp: `You are a helpful Q&A assistant. The user has already been given a summary of a document. Your task is to answer their follow-up questions based on the document's content, which is in your memory.
+
+RULES:
+- Answer concisely and directly.
+- Your answer **must be a maximum of 2 sentences**.
+- Rely on the information from the original document and our conversation history.
+- If you cannot answer based on the context you have, say so.
+- Do not re-introduce the topic; just answer the question.`,
 
 			Markdown: `FORMAT YOUR ENTIRE RESPONSE AS CLEAN MARKDOWN WITH MANDATORY STRUCTURE:
 
@@ -387,11 +401,15 @@ func getConfigPath() string {
 }
 
 func printUsage() {
-	fmt.Printf(`%s - Website Summarizer
+	fmt.Printf(`%s - Website Summarizer & Interactive Q&A
 
 USAGE:
-    %s [flags] <URL>                    # Summarize a webpage
-    %s [flags] "question" <URL>         # Ask a question about a webpage
+    %s [flags] <URL>
+
+DESCRIPTION:
+    %s first generates a summary of the given URL.
+    After the summary, it enters an interactive mode where you can ask
+    follow-up questions about the content. Press Ctrl+C or Ctrl+D to exit.
 
 FLAGS:
 `, appName, appName, appName)
@@ -399,12 +417,11 @@ FLAGS:
 
 	fmt.Printf(`
 EXAMPLES:
-    %s https://example.com                           # Basic summary
-    %s -l short -m https://example.com               # Short summary in markdown
-    %s "What is the main topic?" https://example.com # Ask specific question
-    %s -c                                            # Show current configuration
+    %s https://example.com                               # Summary then interactive Q&A
+    %s -l short -M https://example.com                   # Short, markdown summary then Q&A
+    %s -c                                                # Show current configuration
 
-LENGTH OPTIONS:
+LENGTH OPTIONS (for initial summary):
     short    - 2 sentences exactly
     medium   - 4-6 sentences
     long     - 8-10 sentences
@@ -413,5 +430,5 @@ LENGTH OPTIONS:
 CONFIG:
     Configuration is stored at: ~/.config/hvsum/config.json
     Edit this file to customize the AI model and system prompts.
-`, appName, appName, appName, appName)
+`, appName, appName, appName)
 }
