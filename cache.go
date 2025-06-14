@@ -14,6 +14,8 @@ type CacheEntry struct {
 	Data      interface{} `json:"data"`
 	Timestamp time.Time   `json:"timestamp"`
 	TTL       int         `json:"ttl_hours"`
+	SessionID string      `json:"session_id,omitempty"`
+	Pending   bool        `json:"pending"`
 }
 
 // CacheManager handles caching operations
@@ -74,7 +76,7 @@ func (cm *CacheManager) Get(key string, target interface{}) bool {
 }
 
 // Set stores data in cache
-func (cm *CacheManager) Set(key string, data interface{}) error {
+func (cm *CacheManager) Set(key string, data interface{}, sessionID string) error {
 	if !cm.config.CacheEnabled {
 		return nil
 	}
@@ -83,6 +85,8 @@ func (cm *CacheManager) Set(key string, data interface{}) error {
 		Data:      data,
 		Timestamp: time.Now(),
 		TTL:       cm.config.CacheTTL,
+		SessionID: sessionID,
+		Pending:   sessionID != "", // Mark as pending if associated with a session
 	}
 
 	entryBytes, err := json.Marshal(entry)
@@ -120,7 +124,7 @@ func (cm *CacheManager) CleanExpired() error {
 				continue
 			}
 
-			if time.Since(cacheEntry.Timestamp).Hours() > float64(cacheEntry.TTL) {
+			if time.Since(cacheEntry.Timestamp).Hours() > float64(cacheEntry.TTL) || (cacheEntry.Pending && time.Since(cacheEntry.Timestamp).Hours() > 1) { // Also clean pending entries older than 1 hour
 				os.Remove(filePath)
 				cleaned++
 			}
@@ -144,5 +148,74 @@ func (cm *CacheManager) Clear() error {
 		}
 	}
 
+	return nil
+}
+
+// CommitSessionCache finalizes all pending cache entries for a session
+func (cm *CacheManager) CommitSessionCache(sessionID string) error {
+	if !cm.config.CacheEnabled || sessionID == "" {
+		return nil
+	}
+
+	entries, err := os.ReadDir(cm.cacheDir)
+	if err != nil {
+		return err
+	}
+
+	committed := 0
+	for _, entry := range entries {
+		if !entry.IsDir() && filepath.Ext(entry.Name()) == ".json" {
+			filePath := filepath.Join(cm.cacheDir, entry.Name())
+			data, err := os.ReadFile(filePath)
+			if err != nil {
+				continue
+			}
+
+			var cacheEntry CacheEntry
+			if json.Unmarshal(data, &cacheEntry) == nil && cacheEntry.SessionID == sessionID && cacheEntry.Pending {
+				cacheEntry.Pending = false // No longer pending
+				cacheEntry.SessionID = ""  // Disassociate from session for generic use
+				updatedData, err := json.Marshal(cacheEntry)
+				if err == nil {
+					os.WriteFile(filePath, updatedData, 0644)
+					committed++
+				}
+			}
+		}
+	}
+
+	DebugLog(cm.config, "Committed %d cache entries for session %s", committed, sessionID)
+	return nil
+}
+
+// ClearSessionCache removes all pending cache entries for a session
+func (cm *CacheManager) ClearSessionCache(sessionID string) error {
+	if !cm.config.CacheEnabled || sessionID == "" {
+		return nil
+	}
+
+	entries, err := os.ReadDir(cm.cacheDir)
+	if err != nil {
+		return err
+	}
+
+	removed := 0
+	for _, entry := range entries {
+		if !entry.IsDir() && filepath.Ext(entry.Name()) == ".json" {
+			filePath := filepath.Join(cm.cacheDir, entry.Name())
+			data, err := os.ReadFile(filePath)
+			if err != nil {
+				continue
+			}
+
+			var cacheEntry CacheEntry
+			if json.Unmarshal(data, &cacheEntry) == nil && cacheEntry.SessionID == sessionID {
+				os.Remove(filePath)
+				removed++
+			}
+		}
+	}
+
+	DebugLog(cm.config, "Cleared %d cache entries for session %s", removed, sessionID)
 	return nil
 }

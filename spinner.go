@@ -6,23 +6,23 @@ import (
 	"time"
 )
 
-// StartSpinner prints a simple rotating spinner until the returned
-// stop channel is closed. It writes to stderr to avoid mixing with streamed content.
+// StartSpinner starts a more robust CLI spinner that properly clears the line.
 func StartSpinner(message string) chan struct{} {
 	stop := make(chan struct{})
 	go func() {
-		frames := []rune{'|', '/', '-', '\\'}
-		idx := 0
-		fmt.Fprintf(stderrWriter(), "%s ", message)
+		spinner := `⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏`
+		i := 0
 		for {
 			select {
 			case <-stop:
-				fmt.Fprintf(stderrWriter(), "\r%s ✓\n", message)
+				// Clear the line and print the final message
+				fmt.Fprintf(os.Stderr, "\r\033[K%s ✓\n", message)
 				return
 			default:
-				fmt.Fprintf(stderrWriter(), "\r%s %c", message, frames[idx%len(frames)])
-				idx++
-				time.Sleep(120 * time.Millisecond)
+				// Use \r (carriage return) to go to the start of the line and \033[K to clear it
+				fmt.Fprintf(os.Stderr, "\r\033[K%s %c ", message, spinner[i])
+				time.Sleep(80 * time.Millisecond)
+				i = (i + 1) % len(spinner)
 			}
 		}
 	}()

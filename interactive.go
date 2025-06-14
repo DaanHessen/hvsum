@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"io"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -16,8 +15,12 @@ import (
 )
 
 // StartInteractiveSession begins an enhanced interactive Q&A session
-func StartInteractiveSession(initialSummary, contextContent string, config *Config, renderMarkdown, enableSearch bool) {
-	DebugLog(config, "Starting enhanced interactive session with search: %v", enableSearch)
+func StartInteractiveSession(session *SessionData, config *Config, renderMarkdown, enableSearch bool) {
+	if session == nil {
+		fmt.Fprintln(os.Stderr, "Cannot start interactive session without session data.")
+		return
+	}
+	DebugLog(config, "Starting enhanced interactive session for: %s", session.ID)
 
 	client, err := api.ClientFromEnvironment()
 	if err != nil {
@@ -30,21 +33,10 @@ func StartInteractiveSession(initialSummary, contextContent string, config *Conf
 	searchManager := NewSearchManager(config)
 	cacheManager := NewCacheManager(config)
 
-	// Clean expired cache and old sessions on startup
-	go func() {
-		cacheManager.CleanExpired()
-		sessionManager.CleanOldSessions(30) // Keep sessions for 30 days
-	}()
+	// Clean expired cache on startup
+	go cacheManager.CleanExpired()
 
-	// Create session if persistence is enabled
-	var currentSession *SessionData
-	if config.SessionPersist {
-		title := extractTitleFromSummary(initialSummary)
-		currentSession, _ = sessionManager.CreateSession(initialSummary, contextContent, title, enableSearch)
-		if currentSession != nil {
-			fmt.Fprintf(os.Stderr, "💾 Session saved: %s\n", currentSession.ID)
-		}
-	}
+	currentSession := session
 
 	// Set up readline with better configuration
 	rl, err := readline.NewEx(&readline.Config{
@@ -65,26 +57,20 @@ func StartInteractiveSession(initialSummary, contextContent string, config *Conf
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
-		fmt.Fprintf(os.Stderr, "\n👋 Session saved. Goodbye!\n")
-		if currentSession != nil {
-			sessionManager.SaveSession(currentSession)
-		}
+		handleSessionExit(currentSession, sessionManager, cacheManager, rl)
 		rl.Close()
 		os.Exit(0)
 	}()
 
-	// Display welcome message
-	displayWelcomeMessage(currentSession, enableSearch)
+	// Display welcome message and session context
+	displaySessionWelcome(currentSession, enableSearch, renderMarkdown)
 
 	// Main interaction loop
 	for {
 		question, err := rl.Readline()
 		if err != nil {
-			if err == readline.ErrInterrupt || err == io.EOF {
-				break
-			}
-			fmt.Fprintf(os.Stderr, "❌ Input error: %v\n", err)
-			continue
+			handleSessionExit(currentSession, sessionManager, cacheManager, rl)
+			break
 		}
 
 		question = strings.TrimSpace(question)
@@ -93,8 +79,9 @@ func StartInteractiveSession(initialSummary, contextContent string, config *Conf
 		}
 
 		// Handle special commands
-		if handled := handleSpecialCommands(question, sessionManager, currentSession, rl); handled {
+		if handled := handleSpecialCommands(question, sessionManager, currentSession, rl, renderMarkdown); handled {
 			if question == "/exit" || question == "/bye" || question == "/quit" {
+				handleSessionExit(currentSession, sessionManager, cacheManager, rl)
 				break
 			}
 			continue
@@ -103,26 +90,24 @@ func StartInteractiveSession(initialSummary, contextContent string, config *Conf
 		DebugLog(config, "Processing question: %s", question)
 
 		// Show thinking indicator
-		fmt.Fprintf(os.Stderr, "🤔 Processing your question")
-		dots := StartThinkingDots()
+		thinkingMsg := "🤔 Processing"
+		stopDots := StartThinkingDots(thinkingMsg)
 
 		// Generate response with caching
 		response, err := generateEnhancedResponse(question, currentSession, config, client, searchManager, cacheManager, enableSearch)
 
-		close(dots)
-		fmt.Fprintf(os.Stderr, "\r                              \r") // Clear thinking indicator
+		close(stopDots)
+		// Ensure the line is fully cleared before printing the response
+		fmt.Fprintf(os.Stderr, "\r\033[K")
 
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "❌ Error: %v\n", err)
 			continue
 		}
 
-		// Add to session if available
-		if currentSession != nil {
-			sessionManager.AddMessage(currentSession, "user", question)
-			sessionManager.AddMessage(currentSession, "assistant", response)
-			sessionManager.SaveSession(currentSession)
-		}
+		// Add to session
+		sessionManager.AddMessage(currentSession, "user", question)
+		sessionManager.AddMessage(currentSession, "assistant", response)
 
 		// Display response
 		fmt.Fprintf(os.Stderr, "\n")
@@ -130,16 +115,189 @@ func StartInteractiveSession(initialSummary, contextContent string, config *Conf
 		fmt.Fprintf(os.Stderr, "\n")
 	}
 
-	// Save session before exit
-	if currentSession != nil {
-		sessionManager.SaveSession(currentSession)
-		fmt.Fprintf(os.Stderr, "💾 Session saved\n")
-	}
-
 	fmt.Fprintf(os.Stderr, "👋 Goodbye!\n")
 }
 
-// generateEnhancedResponse creates a response with caching and search enhancement
+// displaySessionWelcome shows welcome message with session context
+func displaySessionWelcome(session *SessionData, searchEnabled bool, renderMarkdown bool) {
+	fmt.Fprintf(os.Stderr, "🤖 Interactive Session: %s", session.GetTitle())
+	if searchEnabled {
+		fmt.Fprintf(os.Stderr, " (🔍 web search enabled)")
+	}
+	fmt.Fprintf(os.Stderr, "\n")
+
+	// Show initial summary if this is a resumed session with content
+	if session.InitialSummary != "" && hasUserMessages(session) {
+		fmt.Fprintf(os.Stderr, "\n📋 Session Summary:\n")
+		fmt.Fprintf(os.Stderr, "─────────────────\n")
+		RenderToConsole(session.InitialSummary, renderMarkdown)
+		fmt.Fprintf(os.Stderr, "\n")
+
+		// Show recent conversation history
+		userMessages := getUserMessages(session)
+		if len(userMessages) > 0 {
+			fmt.Fprintf(os.Stderr, "💬 Recent Questions:\n")
+			for i, msg := range userMessages {
+				if i >= 3 { // Show only last 3 questions
+					break
+				}
+				fmt.Fprintf(os.Stderr, "  %d. %s\n", i+1, TruncateString(msg.Content, 80))
+			}
+			fmt.Fprintf(os.Stderr, "\n")
+		}
+	}
+
+	fmt.Fprintf(os.Stderr, "💡 Type /help for commands, /history to see full conversation, or /exit to quit\n\n")
+}
+
+// hasUserMessages checks if session has actual user interactions
+func hasUserMessages(session *SessionData) bool {
+	for _, msg := range session.Messages {
+		if msg.Role == "user" {
+			return true
+		}
+	}
+	return false
+}
+
+// getUserMessages returns user messages in reverse chronological order (newest first)
+func getUserMessages(session *SessionData) []api.Message {
+	var userMessages []api.Message
+	for i := len(session.Messages) - 1; i >= 0; i-- {
+		if session.Messages[i].Role == "user" {
+			userMessages = append(userMessages, session.Messages[i])
+		}
+	}
+	return userMessages
+}
+
+// handleSessionExit manages session saving with save/discard/delete options
+func handleSessionExit(session *SessionData, sm *SessionManager, cm *CacheManager, rl *readline.Instance) {
+	if session == nil {
+		return
+	}
+
+	if !sm.config.SessionPersist {
+		cm.ClearSessionCache(session.ID)
+		fmt.Fprintln(os.Stderr, "🗑️ Session not saved (persistence disabled). Cache cleared.")
+		return
+	}
+
+	// Always prompt to save, regardless of content
+	rl.SetPrompt("💾 Save session? [S]ave / [D]iscard / Delete [R]ecord: ")
+	defer rl.SetPrompt("❓ ")
+
+	for {
+		answer, err := rl.Readline()
+		if err != nil {
+			// On error or interrupt, default to discarding
+			cm.ClearSessionCache(session.ID)
+			fmt.Fprintln(os.Stderr, "\n🗑️ Session discarded. Cache cleared.")
+			return
+		}
+
+		answer = strings.ToLower(strings.TrimSpace(answer))
+
+		switch answer {
+		case "s", "save", "":
+			// Prompt for session name
+			rl.SetPrompt("📝 Session name (Enter for auto-generated): ")
+			sessionName, err := rl.Readline()
+			if err != nil {
+				cm.ClearSessionCache(session.ID)
+				fmt.Fprintln(os.Stderr, "\n🗑️ Session discarded. Cache cleared.")
+				return
+			}
+
+			sessionName = strings.TrimSpace(sessionName)
+			if sessionName == "" {
+				sessionName = generateSessionName(session.Title)
+			} else {
+				sessionName = cleanSessionName(sessionName)
+			}
+
+			// Update session and save
+			session.ID = sessionName
+			session.Title = sessionName
+			err = sm.SaveSession(session)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "❌ Error saving session: %v\n", err)
+				cm.ClearSessionCache(session.ID)
+				return
+			}
+
+			cm.CommitSessionCache(session.ID)
+			fmt.Fprintf(os.Stderr, "💾 Session saved as: %s\n", sessionName)
+			return
+
+		case "d", "discard":
+			cm.ClearSessionCache(session.ID)
+			fmt.Fprintln(os.Stderr, "🗑️ Session discarded. Cache cleared.")
+			return
+
+		case "r", "delete":
+			// Delete existing session if it exists
+			if sm.SessionExists(session.ID) {
+				err := sm.DeleteSession(session.ID)
+				if err != nil {
+					fmt.Fprintf(os.Stderr, "❌ Error deleting session: %v\n", err)
+				} else {
+					fmt.Fprintf(os.Stderr, "🗑️ Session '%s' deleted permanently.\n", session.ID)
+				}
+			}
+			cm.ClearSessionCache(session.ID)
+			return
+
+		default:
+			fmt.Fprintln(os.Stderr, "Please choose [S]ave, [D]iscard, or Delete [R]ecord:")
+		}
+	}
+}
+
+// generateSessionName creates a session name from the title
+func generateSessionName(title string) string {
+	if title == "" {
+		return fmt.Sprintf("session_%d", time.Now().Unix())
+	}
+
+	// Take first few meaningful words
+	words := strings.Fields(title)
+	var nameWords []string
+	for i, word := range words {
+		if i >= 3 {
+			break
+		}
+		cleaned := cleanSessionName(word)
+		if cleaned != "" {
+			nameWords = append(nameWords, cleaned)
+		}
+	}
+
+	if len(nameWords) == 0 {
+		return fmt.Sprintf("session_%d", time.Now().Unix())
+	}
+
+	return strings.Join(nameWords, "_")
+}
+
+// cleanSessionName removes invalid characters from session names
+func cleanSessionName(name string) string {
+	// Replace spaces and special chars with underscores
+	name = strings.ReplaceAll(name, " ", "_")
+	name = strings.ReplaceAll(name, "-", "_")
+
+	// Keep only alphanumeric and underscores
+	var result strings.Builder
+	for _, r := range name {
+		if (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9') || r == '_' {
+			result.WriteRune(r)
+		}
+	}
+
+	return strings.ToLower(result.String())
+}
+
+// generateEnhancedResponse creates a response with intelligent search fallback
 func generateEnhancedResponse(question string, session *SessionData, config *Config, client *api.Client, searchManager *SearchManager, cacheManager *CacheManager, enableSearch bool) (string, error) {
 	// Check cache first
 	cacheKey := cacheManager.GetCacheKey(fmt.Sprintf("qa:%s:%s", question, session.InitialSummary[:Min(100, len(session.InitialSummary))]))
@@ -149,37 +307,64 @@ func generateEnhancedResponse(question string, session *SessionData, config *Con
 		return cachedResponse, nil
 	}
 
-	// Prepare messages
-	messages := session.Messages
+	// Build context-rich system prompt
+	systemPrompt := config.SystemPrompts.QnA
 
-	// Enhance with search if enabled and question seems to benefit from it
-	var enhancedContent string
-	if enableSearch && shouldEnhanceWithSearch(question) {
-		fmt.Fprintf(os.Stderr, "\n🔍 Searching for additional context...")
+	// Prepare the document context
+	documentContext := fmt.Sprintf(`DOCUMENT SUMMARY:
+%s
 
-		searchQueries, err := generateSearchQueries(config, session.ContextContent, question)
-		if err == nil && len(searchQueries) > 0 {
-			searchResults := searchManager.PerformParallelSearches(searchQueries, 3)
-			if len(searchResults) > 0 {
-				enhancedContent = FormatSearchResults(searchResults)
-				DebugLog(config, "Enhanced question with %d search results", len(searchResults))
+FULL DOCUMENT CONTEXT:
+%s
+
+---
+
+Based ONLY on the above document content, answer the following question. If the answer is not in the document, respond with exactly: "SEARCH_NEEDED: [brief description of what information is missing]"`, session.InitialSummary, session.ContextContent[:Min(2000, len(session.ContextContent))])
+
+	// Build conversation context for pronoun resolution
+	conversationContext := ""
+	if len(session.Messages) > 0 {
+		// Get last few messages for context
+		recentMessages := session.Messages
+		if len(recentMessages) > 6 {
+			recentMessages = recentMessages[len(recentMessages)-6:]
+		}
+
+		var contextParts []string
+		for _, msg := range recentMessages {
+			if msg.Role == "user" || msg.Role == "assistant" {
+				contextParts = append(contextParts, fmt.Sprintf("%s: %s", strings.Title(msg.Role), msg.Content))
 			}
+		}
+		if len(contextParts) > 0 {
+			conversationContext = fmt.Sprintf(`
+
+RECENT CONVERSATION CONTEXT:
+%s
+
+`, strings.Join(contextParts, "\n"))
 		}
 	}
 
-	// Build final question
-	finalQuestion := question
-	if enhancedContent != "" {
-		finalQuestion += enhancedContent + "\n\nPlease provide a concise answer based on the document summary and additional search context."
+	// First attempt: try with existing context
+	userPrompt := fmt.Sprintf(`%s%s
+
+QUESTION: %s
+
+INSTRUCTIONS: Your task is to answer the user's QUESTION using the provided context.
+
+1. First, evaluate if the "DOCUMENT SUMMARY", "FULL DOCUMENT CONTEXT", and "RECENT CONVERSATION CONTEXT" contain enough information to fully and comprehensively answer the question.
+2. Pay close attention to requests for more detail, elaboration, or specific information. If the user asks for more detail (e.g., "in a couple of paragraphs") and the context only provides a brief summary, you must treat the context as insufficient.
+3. If the context is insufficient to provide a detailed, comprehensive answer that meets the user's request, you MUST respond with ONLY the string "SEARCH_NEEDED: [a concise search query to find the missing information]". Do not provide a partial or summary answer from the existing context in this case.
+4. If the context IS sufficient, provide a complete and comprehensive answer based on the provided information.`, documentContext, conversationContext, question)
+
+	messages := []api.Message{
+		{Role: "system", Content: systemPrompt},
+		{Role: "user", Content: userPrompt},
 	}
 
-	// Add instruction for concise responses
-	finalQuestion += "\n\nIMPORTANT: Keep your response concise and directly answer the question. Maximum 3-4 sentences unless more detail is specifically requested."
-
-	messages = append(messages, api.Message{Role: "user", Content: finalQuestion})
-
-	// Generate response
-	isStreaming := !config.DisablePager // Stream if pager is disabled
+	// Generate initial response
+	isStreaming := !config.DisablePager
 	req := &api.ChatRequest{
 		Model:    config.DefaultModel,
 		Messages: messages,
@@ -197,37 +382,133 @@ func generateEnhancedResponse(question string, session *SessionData, config *Con
 		return "", fmt.Errorf("failed to generate response: %v", err)
 	}
 
-	response := responseBuilder.String()
+	initialResponse := strings.TrimSpace(responseBuilder.String())
 
-	// Cache the response
-	cacheManager.Set(cacheKey, response)
+	// Determine if a search is needed based on the initial response.
+	var needsSearch bool
+	var modelSearchQuery string
 
-	return response, nil
-}
-
-// shouldEnhanceWithSearch determines if a question would benefit from web search
-func shouldEnhanceWithSearch(question string) bool {
-	lowerQ := strings.ToLower(question)
-
-	// Keywords that suggest current/external information would be helpful
-	searchTriggers := []string{
-		"current", "latest", "recent", "today", "now", "update",
-		"what happened", "news", "compare", "vs", "versus",
-		"price", "cost", "how much", "where", "when", "who",
-		"statistics", "data", "numbers", "research", "study",
+	if strings.HasPrefix(initialResponse, "SEARCH_NEEDED:") {
+		needsSearch = true
+		modelSearchQuery = strings.TrimSpace(strings.TrimPrefix(initialResponse, "SEARCH_NEEDED:"))
+		DebugLog(config, "Model explicitly requested search with query: '%s'", modelSearchQuery)
+	} else if enableSearch && (len(initialResponse) < 35 || containsSearchTriggers(initialResponse)) {
+		// The model didn't ask for a search, but the response is too short or contains trigger
+		// phrases indicating it doesn't know the answer.
+		needsSearch = true
+		DebugLog(config, "Initial response is unhelpful (short or has triggers), forcing search.")
 	}
 
-	for _, trigger := range searchTriggers {
-		if strings.Contains(lowerQ, trigger) {
+	if enableSearch && needsSearch {
+		DebugLog(config, "Initial response indicates search needed, performing automatic search")
+
+		// Generate search queries based on the question and missing information
+		// Include recent conversation for pronoun resolution
+		recentContext := ""
+		if len(session.Messages) >= 2 {
+			lastUserMsg := ""
+			lastAssistantMsg := ""
+			for i := len(session.Messages) - 1; i >= 0; i-- {
+				if session.Messages[i].Role == "user" && lastUserMsg == "" {
+					lastUserMsg = session.Messages[i].Content
+				} else if session.Messages[i].Role == "assistant" && lastAssistantMsg == "" {
+					lastAssistantMsg = session.Messages[i].Content
+				}
+				if lastUserMsg != "" && lastAssistantMsg != "" {
+					break
+				}
+			}
+			if lastUserMsg != "" && lastAssistantMsg != "" {
+				recentContext = fmt.Sprintf(" Previous Q&A: Q: %s A: %s", lastUserMsg, lastAssistantMsg[:Min(200, len(lastAssistantMsg))])
+			}
+		}
+
+		searchContext := fmt.Sprintf("%s.%s Question: %s", session.ContextContent[:Min(600, len(session.ContextContent))], recentContext, question)
+		searchQueries, err := generateSearchQueries(config, searchContext, fmt.Sprintf("find information to answer: %s", question), session.ID)
+
+		// Prepend the model's suggested query to the list
+		if modelSearchQuery != "" {
+			searchQueries = append([]string{modelSearchQuery}, searchQueries...)
+		}
+
+		if err == nil && len(searchQueries) > 0 {
+			fmt.Fprintf(os.Stderr, "\n🔍 Searching for additional information...")
+			searchResults := searchManager.PerformParallelSearches(searchQueries, 3, session.ID)
+
+			if len(searchResults) > 0 {
+				DebugLog(config, "Found additional information via search, regenerating response")
+
+				// Regenerate response with search results - use clearer instructions
+				enhancedContext := fmt.Sprintf(`%s%s
+
+ADDITIONAL SEARCH RESULTS:
+%s
+
+Now you have both the document content and search results. Answer the question completely using all available information.`, documentContext, conversationContext, FormatSearchResults(searchResults))
+
+				enhancedPrompt := fmt.Sprintf(`%s
+
+QUESTION: %s
+
+INSTRUCTIONS: Provide a complete and comprehensive answer using the document content and search results. Pay attention to pronouns and references from previous questions. Do NOT respond with "SEARCH_NEEDED" - provide the actual answer.`, enhancedContext, question)
+
+				enhancedMessages := []api.Message{
+					{Role: "system", Content: systemPrompt},
+					{Role: "user", Content: enhancedPrompt},
+				}
+
+				req = &api.ChatRequest{
+					Model:    config.DefaultModel,
+					Messages: enhancedMessages,
+					Stream:   &isStreaming,
+				}
+
+				var enhancedBuilder strings.Builder
+				err = client.Chat(context.Background(), req, func(resp api.ChatResponse) error {
+					content := resp.Message.Content
+					enhancedBuilder.WriteString(content)
+					return nil
+				})
+
+				if err == nil {
+					finalResponse := enhancedBuilder.String()
+					// Cache the enhanced response
+					cacheManager.Set(cacheKey, finalResponse, session.ID)
+					return finalResponse, nil
+				}
+			}
+		}
+
+		// If search failed or no results, return a helpful message
+		fallbackResponse := "I don't have enough information in the document to answer this question completely, and my search for additional information didn't yield relevant results."
+		cacheManager.Set(cacheKey, fallbackResponse, session.ID)
+		return fallbackResponse, nil
+	}
+
+	// Cache and return the initial response
+	cacheManager.Set(cacheKey, initialResponse, session.ID)
+	return initialResponse, nil
+}
+
+// containsSearchTriggers checks if response indicates missing information
+func containsSearchTriggers(response string) bool {
+	lowerResponse := strings.ToLower(response)
+	triggers := []string{
+		"not provided", "not mentioned", "not included", "not contain",
+		"no information", "doesn't mention", "doesn't include",
+		"not found in", "not available", "not specified",
+	}
+
+	for _, trigger := range triggers {
+		if strings.Contains(lowerResponse, trigger) {
 			return true
 		}
 	}
-
 	return false
 }
 
 // handleSpecialCommands processes special interactive commands
-func handleSpecialCommands(command string, sessionManager *SessionManager, currentSession *SessionData, rl *readline.Instance) bool {
+func handleSpecialCommands(command string, sessionManager *SessionManager, currentSession *SessionData, rl *readline.Instance, renderMarkdown bool) bool {
 	switch command {
 	case "/help", "/h":
 		displayHelp()
@@ -248,14 +529,14 @@ func handleSpecialCommands(command string, sessionManager *SessionManager, curre
 
 	case "/clear", "/c":
 		fmt.Print("\033[2J\033[H") // Clear screen
-		displayWelcomeMessage(currentSession, true)
+		displaySessionWelcome(currentSession, currentSession.SearchEnabled, renderMarkdown)
 		return true
 
 	case "/info", "/i":
 		if currentSession != nil {
 			currentSession.PrintSessionInfo()
 		} else {
-			fmt.Fprintf(os.Stderr, "📄 No active session (persistence disabled)\n")
+			fmt.Fprintf(os.Stderr, "📄 No active session\n")
 		}
 		return true
 
@@ -265,19 +546,6 @@ func handleSpecialCommands(command string, sessionManager *SessionManager, curre
 	default:
 		return false
 	}
-}
-
-// displayWelcomeMessage shows the initial welcome message
-func displayWelcomeMessage(session *SessionData, searchEnabled bool) {
-	fmt.Fprintf(os.Stderr, "🤖 Ready to answer questions")
-	if session != nil {
-		fmt.Fprintf(os.Stderr, " about: %s", session.GetTitle())
-	}
-	if searchEnabled {
-		fmt.Fprintf(os.Stderr, " (🔍 web search enabled)")
-	}
-	fmt.Fprintf(os.Stderr, "\n")
-	fmt.Fprintf(os.Stderr, "💡 Type /help for commands or /exit to quit\n\n")
 }
 
 // displayHelp shows available commands
@@ -291,10 +559,9 @@ func displayHelp() {
   /exit, /bye, /quit - Exit interactive mode
 
 💡 Session Management:
-  - Sessions are automatically saved if enabled.
-  - To resume a previous session, exit and run:
-    hvsum --list-sessions
-    hvsum -i <session_id>
+  - Sessions can be saved with custom names when exiting
+  - To resume a session, use: hvsum --session <name>
+  - List all sessions with: hvsum --list-sessions
 
 `)
 }
@@ -318,40 +585,27 @@ func getHistoryFile() string {
 	return filepath.Join(configDir, appName, "history")
 }
 
-// extractTitleFromSummary extracts a title from the summary for session naming
-func extractTitleFromSummary(summary string) string {
-	lines := strings.Split(summary, "\n")
-	for _, line := range lines {
-		line = strings.TrimSpace(line)
-		if line != "" && len(line) < 100 {
-			// Clean up markdown and return first meaningful line
-			title := strings.TrimPrefix(line, "# ")
-			title = strings.TrimPrefix(title, "## ")
-			if len(title) > 60 {
-				title = title[:57] + "..."
-			}
-			return title
-		}
-	}
-	return "Interactive Session"
-}
-
 // StartThinkingDots shows animated thinking indicator
-func StartThinkingDots() chan struct{} {
+func StartThinkingDots(message string) chan struct{} {
 	stop := make(chan struct{})
 
 	go func() {
-		dots := 0
-		ticker := time.NewTicker(500 * time.Millisecond)
+		dots := ""
+		ticker := time.NewTicker(400 * time.Millisecond)
 		defer ticker.Stop()
 
 		for {
 			select {
 			case <-stop:
+				// Final clear of the line
+				fmt.Fprintf(os.Stderr, "\r\033[K")
 				return
 			case <-ticker.C:
-				fmt.Fprintf(os.Stderr, "\r🤔 Processing your question%s   ", strings.Repeat(".", dots%4))
-				dots++
+				if len(dots) >= 3 {
+					dots = ""
+				}
+				dots += "."
+				fmt.Fprintf(os.Stderr, "\r\033[K%s%s", message, dots)
 			}
 		}
 	}()

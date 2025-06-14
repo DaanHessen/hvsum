@@ -124,7 +124,7 @@ func NewSearchManager(config *Config) *SearchManager {
 }
 
 // Search performs a cached search.
-func (sm *SearchManager) Search(query string, limit int) ([]SearchResult, error) {
+func (sm *SearchManager) Search(query string, limit int, sessionID string) ([]SearchResult, error) {
 	cacheKey := sm.cache.GetCacheKey(fmt.Sprintf("search:%s:%d", query, limit))
 	var cachedResults []SearchResult
 	if sm.cache.Get(cacheKey, &cachedResults) {
@@ -141,7 +141,7 @@ func (sm *SearchManager) Search(query string, limit int) ([]SearchResult, error)
 	}
 
 	if len(results) > 0 {
-		sm.cache.Set(cacheKey, results)
+		sm.cache.Set(cacheKey, results, sessionID)
 		DebugLog(sm.config, "%s search successful: %d results", sm.engine.Name(), len(results))
 	}
 
@@ -149,7 +149,7 @@ func (sm *SearchManager) Search(query string, limit int) ([]SearchResult, error)
 }
 
 // PerformParallelSearches performs multiple searches with improved efficiency
-func (sm *SearchManager) PerformParallelSearches(queries []string, limitPerQuery int) []SearchResult {
+func (sm *SearchManager) PerformParallelSearches(queries []string, limitPerQuery int, sessionID string) []SearchResult {
 	DebugLog(sm.config, "Starting parallel searches for %d queries", len(queries))
 
 	var wg sync.WaitGroup
@@ -165,7 +165,7 @@ func (sm *SearchManager) PerformParallelSearches(queries []string, limitPerQuery
 			semaphore <- struct{}{}
 			defer func() { <-semaphore }()
 
-			results, err := sm.Search(q, limitPerQuery)
+			results, err := sm.Search(q, limitPerQuery, sessionID)
 			if err != nil {
 				DebugLog(sm.config, "Parallel search failed for '%s': %v", q, err)
 				return

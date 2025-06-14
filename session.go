@@ -21,7 +21,9 @@ type SessionData struct {
 	Messages       []api.Message `json:"messages"`
 	CreatedAt      time.Time     `json:"created_at"`
 	LastAccessedAt time.Time     `json:"last_accessed_at"`
+	LastModified   time.Time     `json:"last_modified"`
 	SearchEnabled  bool          `json:"search_enabled"`
+	MessageCount   int           `json:"message_count"`
 }
 
 // SessionManager handles session persistence and management
@@ -85,6 +87,8 @@ func (sm *SessionManager) SaveSession(session *SessionData) error {
 	}
 
 	session.LastAccessedAt = time.Now()
+	session.LastModified = time.Now()
+	session.MessageCount = len(session.Messages)
 
 	sessionPath := filepath.Join(sm.sessionsDir, session.ID+".json")
 	data, err := json.MarshalIndent(session, "", "  ")
@@ -92,6 +96,7 @@ func (sm *SessionManager) SaveSession(session *SessionData) error {
 		return err
 	}
 
+	DebugLog(sm.config, "Saved session %s with %d messages", session.ID, session.MessageCount)
 	return os.WriteFile(sessionPath, data, 0644)
 }
 
@@ -116,6 +121,15 @@ func (sm *SessionManager) LoadSession(sessionID string) (*SessionData, error) {
 	sm.SaveSession(&session) // Update access time
 
 	return &session, nil
+}
+
+// SessionExists checks if a session file exists on disk.
+func (sm *SessionManager) SessionExists(sessionID string) bool {
+	sessionPath := filepath.Join(sm.sessionsDir, sessionID+".json")
+	if _, err := os.Stat(sessionPath); err == nil {
+		return true
+	}
+	return false
 }
 
 // ListSessions returns all available sessions
@@ -260,10 +274,25 @@ func (session *SessionData) GetAge() string {
 
 // PrintSessionInfo prints formatted session information
 func (session *SessionData) PrintSessionInfo() {
-	fmt.Printf("📄 %s\n", session.GetTitle())
-	fmt.Printf("   ID: %s | Created: %s | Messages: %d\n",
-		session.ID, session.GetAge(), len(session.Messages)-2) // -2 for system messages
-	if session.SearchEnabled {
-		fmt.Printf("   🔍 Web search enabled\n")
+	fmt.Fprintf(os.Stderr, "📋 Session Information\n")
+	fmt.Fprintf(os.Stderr, "──────────────────────\n")
+	fmt.Fprintf(os.Stderr, "ID: %s\n", session.ID)
+	fmt.Fprintf(os.Stderr, "Title: %s\n", session.GetTitle())
+	fmt.Fprintf(os.Stderr, "Created: %s (%s)\n", session.CreatedAt.Format("2006-01-02 15:04:05"), session.GetAge())
+	fmt.Fprintf(os.Stderr, "Last accessed: %s\n", session.LastAccessedAt.Format("2006-01-02 15:04:05"))
+	if !session.LastModified.IsZero() {
+		fmt.Fprintf(os.Stderr, "Last modified: %s\n", session.LastModified.Format("2006-01-02 15:04:05"))
+	}
+	userMsgCount := len(session.Messages) - 2 // Exclude system messages
+	if userMsgCount < 0 {
+		userMsgCount = 0
+	}
+	fmt.Fprintf(os.Stderr, "Message count: %d\n", userMsgCount)
+	fmt.Fprintf(os.Stderr, "Search enabled: %t\n", session.SearchEnabled)
+	if session.URL != "" {
+		fmt.Fprintf(os.Stderr, "Source URL: %s\n", session.URL)
+	}
+	if session.Query != "" {
+		fmt.Fprintf(os.Stderr, "Search query: %s\n", session.Query)
 	}
 }

@@ -17,43 +17,43 @@ var lengthMap = map[string]string{
 	"detailed": "Thorough summary covering all essential aspects. Be comprehensive but avoid fluff.",
 }
 
-// ProcessURL handles URL-based summarization with caching and search enhancement
-func ProcessURL(urlStr string, config *Config, length string, useMarkdown, enableSearch bool) (string, error) {
+// ProcessURL handles URL-based summarization with the new two-stage approach
+func ProcessURL(urlStr string, config *Config, length string, useMarkdown, enableSearch bool, sessionID string) (string, string, string, error) {
 	fmt.Fprintf(os.Stderr, "🌐 Fetching content from: %s\n", urlStr)
 
 	// Initialize cache manager
 	cacheManager := NewCacheManager(config)
 
-	// Check cache first
+	// Check cache first for final result
 	cacheKey := cacheManager.GetCacheKey(fmt.Sprintf("url:%s:%s:%t:%t", urlStr, length, useMarkdown, enableSearch))
 	var cachedSummary string
 	if cacheManager.Get(cacheKey, &cachedSummary) {
 		DebugLog(config, "Cache hit for URL summary")
-		return cachedSummary, nil
+		return cachedSummary, cachedSummary, "Cached Summary", nil
 	}
 
 	// Extract content from URL
 	content, title, err := ExtractWebContent(urlStr)
 	if err != nil {
-		return "", fmt.Errorf("failed to extract content: %v", err)
+		return "", "", "", fmt.Errorf("failed to extract content: %v", err)
 	}
 
 	DebugLog(config, "Extracted %d characters from URL", len(content))
 	DebugLog(config, "Page title: %s", title)
 
-	// Generate summary with optional search enhancement
-	summary, err := generateSummary(config, length, useMarkdown, enableSearch, content, title, urlStr, false)
+	// Two-stage summarization process
+	finalSummary, err := generateTwoStageSummary(config, length, useMarkdown, enableSearch, content, title, urlStr, sessionID)
 	if err != nil {
-		return "", err
+		return "", "", "", err
 	}
 
-	// Cache the result
-	cacheManager.Set(cacheKey, summary)
-	return summary, nil
+	// Cache the final result
+	cacheManager.Set(cacheKey, finalSummary, sessionID)
+	return finalSummary, content, title, nil
 }
 
-// ProcessSearchQuery handles search-only summarization with caching
-func ProcessSearchQuery(query string, config *Config, length string, useMarkdown bool) (string, error) {
+// ProcessSearchQuery handles search-only summarization with two-stage approach
+func ProcessSearchQuery(query string, config *Config, length string, useMarkdown bool, sessionID string) (string, string, string, error) {
 	fmt.Fprintf(os.Stderr, "🔍 Performing web search for: %s\n", query)
 
 	// Initialize cache manager
@@ -64,121 +64,230 @@ func ProcessSearchQuery(query string, config *Config, length string, useMarkdown
 	var cachedSummary string
 	if cacheManager.Get(cacheKey, &cachedSummary) {
 		DebugLog(config, "Cache hit for search summary")
-		return cachedSummary, nil
+		return cachedSummary, cachedSummary, query, nil
 	}
 
 	// Create search manager and perform searches
 	searchManager := NewSearchManager(config)
 
-	// Generate related search queries for comprehensive coverage
-	relatedQueries, err := generateSearchQueries(config, query, "provide comprehensive information about this topic")
+	// Generate fewer related search queries for better performance
+	relatedQueries, err := generateSearchQueries(config, query, "provide comprehensive information about this topic", sessionID)
 	if err != nil {
 		DebugLog(config, "Failed to generate related queries: %v", err)
-		relatedQueries = []string{query}
-	} else {
-		relatedQueries = append([]string{query}, relatedQueries...)
-		DebugLog(config, "Generated %d total queries for search", len(relatedQueries))
+		relatedQueries = []string{}
 	}
 
-	// Perform parallel searches
+	// Always include the original query and limit total queries to 3 for performance
+	allQueries := []string{query}
+	for _, rq := range relatedQueries {
+		if len(allQueries) >= 3 {
+			break
+		}
+		allQueries = append(allQueries, rq)
+	}
+	DebugLog(config, "Using %d total queries for search", len(allQueries))
+
+	// Perform parallel searches with fewer results per query
 	fmt.Fprintf(os.Stderr, "🚀 Performing parallel web searches...\n")
-	searchResults := searchManager.PerformParallelSearches(relatedQueries, 3)
+	searchResults := searchManager.PerformParallelSearches(allQueries, 2, sessionID)
 
 	if len(searchResults) == 0 {
-		return "", fmt.Errorf("no search results found for query: %s", query)
+		return "", "", "", fmt.Errorf("no search results found for query: %s", query)
 	}
 
 	DebugLog(config, "Found %d total search results", len(searchResults))
 
-	// Generate summary from search results
-	summary, err := generateSearchOnlySummary(config, length, useMarkdown, query, searchResults)
+	// Generate summary from search results using two-stage approach
+	finalSummary, err := generateSearchOnlySummaryTwoStage(config, length, useMarkdown, query, searchResults, sessionID)
 	if err != nil {
-		return "", err
+		return "", "", "", err
 	}
 
 	// Cache the result
-	cacheManager.Set(cacheKey, summary)
-	return summary, nil
+	cacheManager.Set(cacheKey, finalSummary, sessionID)
+	return finalSummary, finalSummary, query, nil
 }
 
-// generateSummary creates a summary with optional search enhancement
-func generateSummary(config *Config, length string, useMarkdown, enableSearch bool, content, title, sourceURL string, isSearchOnly bool) (string, error) {
-	DebugLog(config, "Generating summary with search enabled: %v", enableSearch)
+// generateTwoStageSummary implements the two-stage summarization process
+func generateTwoStageSummary(config *Config, length string, useMarkdown, enableSearch bool, content, title, sourceURL string, sessionID string) (string, error) {
+	DebugLog(config, "Starting two-stage summarization process")
 
+	// Stage 1: Generate detailed summary with all content
+	detailedSummary, err := generateDetailedSummary(config, useMarkdown, enableSearch, content, title, sourceURL, sessionID)
+	if err != nil {
+		return "", fmt.Errorf("stage 1 failed: %v", err)
+	}
+
+	// Stage 2: Apply length constraint if not already detailed
+	if length == "detailed" {
+		return detailedSummary, nil
+	}
+
+	finalSummary, err := applyLengthConstraint(config, useMarkdown, detailedSummary, length, sessionID)
+	if err != nil {
+		return "", fmt.Errorf("stage 2 failed: %v", err)
+	}
+
+	return finalSummary, nil
+}
+
+// generateDetailedSummary creates a comprehensive summary with all available information
+func generateDetailedSummary(config *Config, useMarkdown, enableSearch bool, content, title, sourceURL string, sessionID string) (string, error) {
 	systemPrompt := config.SystemPrompts.Summary
 	if useMarkdown {
 		systemPrompt += "\n\n" + config.SystemPrompts.Markdown
 	}
 
-	var userPrompt string
 	var searchResults []SearchResult
-
-	if enableSearch && !isSearchOnly {
+	if enableSearch {
 		fmt.Fprintf(os.Stderr, "🔍 Enhancing summary with web search...\n")
-
-		// Generate search queries based on content
 		searchManager := NewSearchManager(config)
-		queries, err := generateSearchQueries(config, content[:Min(1000, len(content))], "enhance this content summary")
+		queries, err := generateSearchQueries(config, content[:Min(1000, len(content))], "enhance this content summary", sessionID)
 		if err != nil {
 			DebugLog(config, "Search query generation failed: %v", err)
 		} else {
 			fmt.Fprintf(os.Stderr, "🚀 Performing parallel searches...\n")
-			searchResults = searchManager.PerformParallelSearches(queries, 2)
+			searchResults = searchManager.PerformParallelSearches(queries, 2, sessionID)
 			DebugLog(config, "Enhanced with %d search results", len(searchResults))
 		}
 	}
 
-	userPrompt = buildUserPrompt("", length, content, title)
-	if len(searchResults) > 0 {
-		userPrompt += FormatSearchResults(searchResults)
-		userPrompt += "\n\nUse both the webpage content and the search results to create a comprehensive summary."
-	}
-
-	if sourceURL != "" {
-		userPrompt += fmt.Sprintf("\n\nSource URL: %s", sourceURL)
-	}
-
-	fmt.Fprintf(os.Stderr, "🤖 Generating summary with %s...\n", config.DefaultModel)
-
-	var spinnerStop chan struct{}
-	if useMarkdown {
-		spinnerStop = StartSpinner("Generating summary")
-	}
-
-	summary, err := callOllama(config, systemPrompt, userPrompt)
-	if spinnerStop != nil {
-		close(spinnerStop)
-	}
-	return summary, err
-}
-
-// generateSearchOnlySummary creates a summary based purely on search results
-func generateSearchOnlySummary(config *Config, length string, useMarkdown bool, query string, searchResults []SearchResult) (string, error) {
-	DebugLog(config, "Generating search-only summary for: %s", query)
-
-	systemPrompt := config.SystemPrompts.SearchOnly
-	if useMarkdown {
-		systemPrompt += "\n\n" + config.SystemPrompts.Markdown
-	}
-
-	userPrompt := buildSearchOnlyPrompt(query, length, searchResults)
+	// Build detailed summary prompt
+	userPrompt := buildDetailedPrompt(content, title, sourceURL, searchResults)
 
 	fmt.Fprintf(os.Stderr, "🤖 Generating comprehensive summary with %s...\n", config.DefaultModel)
 
 	var spinnerStop chan struct{}
 	if useMarkdown {
-		spinnerStop = StartSpinner("Generating summary")
+		spinnerStop = StartSpinner("Generating detailed summary")
 	}
 
 	summary, err := callOllama(config, systemPrompt, userPrompt)
 	if spinnerStop != nil {
 		close(spinnerStop)
 	}
+
 	return summary, err
 }
 
+// applyLengthConstraint reduces a detailed summary to the requested length
+func applyLengthConstraint(config *Config, useMarkdown bool, detailedSummary, targetLength string, sessionID string) (string, error) {
+	lengthInstruction, exists := lengthMap[targetLength]
+	if !exists {
+		lengthInstruction = lengthMap["medium"]
+	}
+
+	systemPrompt := fmt.Sprintf(`You are an expert content editor. Your task is to reduce a detailed summary to a specific length while preserving the most important information.
+
+CRITICAL RULES:
+1. Length requirement: %s
+2. Preserve the most essential information
+3. Maintain clarity and coherence
+4. Remove redundant or less important details
+5. Keep the same format and structure style
+
+OUTPUT: Only the reduced summary, no meta-commentary.`, lengthInstruction)
+
+	if useMarkdown {
+		systemPrompt += "\n\nMaintain markdown formatting in your reduced summary."
+	}
+
+	userPrompt := fmt.Sprintf("Reduce this detailed summary to the specified length:\n\n%s", detailedSummary)
+
+	// Use cache for length reductions
+	cacheManager := NewCacheManager(config)
+	cacheKey := cacheManager.GetCacheKey(fmt.Sprintf("reduce:%s:%s", detailedSummary[:Min(200, len(detailedSummary))], targetLength))
+	var cachedReduction string
+	if cacheManager.Get(cacheKey, &cachedReduction) {
+		DebugLog(config, "Cache hit for length reduction")
+		return cachedReduction, nil
+	}
+
+	fmt.Fprintf(os.Stderr, "📝 Applying length constraint (%s)...\n", targetLength)
+
+	summary, err := callOllama(config, systemPrompt, userPrompt)
+	if err != nil {
+		return "", err
+	}
+
+	// Cache the reduction
+	cacheManager.Set(cacheKey, summary, sessionID)
+	return summary, nil
+}
+
+// generateSearchOnlySummaryTwoStage applies two-stage approach to search-only results
+func generateSearchOnlySummaryTwoStage(config *Config, length string, useMarkdown bool, query string, searchResults []SearchResult, sessionID string) (string, error) {
+	// Stage 1: Generate detailed summary from all search results
+	detailedSummary, err := generateDetailedSearchSummary(config, useMarkdown, query, searchResults, sessionID)
+	if err != nil {
+		return "", fmt.Errorf("stage 1 failed: %v", err)
+	}
+
+	// Stage 2: Apply length constraint if needed
+	if length == "detailed" {
+		return detailedSummary, nil
+	}
+
+	finalSummary, err := applyLengthConstraint(config, useMarkdown, detailedSummary, length, sessionID)
+	if err != nil {
+		return "", fmt.Errorf("stage 2 failed: %v", err)
+	}
+
+	return finalSummary, nil
+}
+
+// generateDetailedSearchSummary creates comprehensive summary from search results
+func generateDetailedSearchSummary(config *Config, useMarkdown bool, query string, searchResults []SearchResult, sessionID string) (string, error) {
+	systemPrompt := config.SystemPrompts.SearchOnly
+	if useMarkdown {
+		systemPrompt += "\n\n" + config.SystemPrompts.Markdown
+	}
+
+	userPrompt := fmt.Sprintf(`Create a comprehensive summary about: %s
+
+Based on the following search results, provide a detailed summary covering all relevant aspects found. Synthesize information from multiple sources and organize it logically.
+
+%s
+
+Create a thorough, well-structured summary that covers all important information from these search results.`, query, FormatSearchResults(searchResults))
+
+	fmt.Fprintf(os.Stderr, "🤖 Generating comprehensive summary with %s...\n", config.DefaultModel)
+
+	var spinnerStop chan struct{}
+	if useMarkdown {
+		spinnerStop = StartSpinner("Generating detailed summary")
+	}
+
+	summary, err := callOllama(config, systemPrompt, userPrompt)
+	if spinnerStop != nil {
+		close(spinnerStop)
+	}
+
+	return summary, err
+}
+
+// buildDetailedPrompt creates a comprehensive prompt for detailed summarization
+func buildDetailedPrompt(content, title, sourceURL string, searchResults []SearchResult) string {
+	prompt := fmt.Sprintf(`Create a comprehensive summary of the following content. Be thorough and cover all important aspects, key points, and relevant details.
+
+Title: %s
+Content:
+%s`, title, content)
+
+	if len(searchResults) > 0 {
+		prompt += FormatSearchResults(searchResults)
+		prompt += "\n\nUse both the webpage content and the search results to create a comprehensive summary."
+	}
+
+	if sourceURL != "" {
+		prompt += fmt.Sprintf("\n\nSource URL: %s", sourceURL)
+	}
+
+	return prompt
+}
+
 // generateSearchQueries uses AI to generate relevant search queries with caching
-func generateSearchQueries(config *Config, contextText, purpose string) ([]string, error) {
+func generateSearchQueries(config *Config, contextText, purpose string, sessionID string) ([]string, error) {
 	DebugLog(config, "Generating search queries for: %.100s...", contextText)
 
 	// Check cache first
@@ -190,79 +299,49 @@ func generateSearchQueries(config *Config, contextText, purpose string) ([]strin
 		return cachedQueries, nil
 	}
 
-	prompt := fmt.Sprintf(`Based on the following context and purpose, generate 2-3 specific web search queries that would help gather additional relevant information. Return only the search queries, one per line, without numbering or additional text.
+	// Simplified prompt for faster processing
+	prompt := fmt.Sprintf(`Generate 2 specific search queries based on this context:
 
-Context: %s
+%s
 
 Purpose: %s
 
-Generate search queries:`, contextText, purpose)
+Return only 2 queries, one per line:`, contextText[:Min(500, len(contextText))], purpose)
 
-	response, err := callOllama(config, config.SystemPrompts.SearchQuery, prompt)
+	queries, err := callOllama(config, config.SystemPrompts.SearchQuery, prompt)
 	if err != nil {
 		return nil, err
 	}
 
-	queries := strings.Split(strings.TrimSpace(response), "\n")
-	var cleanQueries []string
-	for _, query := range queries {
-		query = strings.TrimSpace(query)
-		if query != "" && len(query) > 5 { // Filter out very short queries
-			cleanQueries = append(cleanQueries, query)
+	// Parse queries from response
+	lines := strings.Split(strings.TrimSpace(queries), "\n")
+	var parsedQueries []string
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line != "" && !strings.HasPrefix(line, "#") {
+			// Remove common prefixes
+			line = strings.TrimPrefix(line, "- ")
+			line = strings.TrimPrefix(line, "* ")
+			line = strings.TrimPrefix(line, "1. ")
+			line = strings.TrimPrefix(line, "2. ")
+			if len(line) > 3 && len(line) < 200 {
+				parsedQueries = append(parsedQueries, line)
+			}
+		}
+		// Limit to maximum 2 queries for performance
+		if len(parsedQueries) >= 2 {
+			break
 		}
 	}
 
-	// Cache the results
-	cacheManager.Set(cacheKey, cleanQueries)
-
-	DebugLog(config, "Generated %d search queries: %v", len(cleanQueries), cleanQueries)
-	return cleanQueries, nil
-}
-
-// buildUserPrompt creates a prompt for content summarization
-func buildUserPrompt(userMessage, length, textContent, pageTitle string) string {
-	lengthInstruction, exists := lengthMap[length]
-	if !exists {
-		lengthInstruction = lengthMap["medium"]
+	if len(parsedQueries) == 0 {
+		return nil, fmt.Errorf("no valid queries generated")
 	}
 
-	var instruction string
-	if userMessage != "" {
-		instruction = fmt.Sprintf(`Answer this question based on the webpage content: "%s"
-
-Length requirement: %s
-
-Page: %s
-
-Focus on accuracy and relevance.`, userMessage, lengthInstruction, pageTitle)
-	} else {
-		instruction = fmt.Sprintf(`Create a focused summary of this webpage content.
-
-Length requirement: %s
-Page: %s
-
-Focus on key information, insights, and actionable content. Ignore navigation, ads, and boilerplate.`, lengthInstruction, pageTitle)
-	}
-
-	return fmt.Sprintf("%s\n\n--- CONTENT ---\n%s", instruction, textContent)
-}
-
-// buildSearchOnlyPrompt creates a prompt for search-only summarization
-func buildSearchOnlyPrompt(query, length string, results []SearchResult) string {
-	lengthInstruction, exists := lengthMap[length]
-	if !exists {
-		lengthInstruction = lengthMap["medium"]
-	}
-
-	prompt := fmt.Sprintf(`Create a comprehensive summary for the query: "%s"
-
-Length requirement: %s
-
-Synthesize information from the search results below to provide accurate, factual information. Focus on key facts, current information, and relevant insights.
-
-%s`, query, lengthInstruction, FormatSearchResults(results))
-
-	return prompt
+	// Cache the queries
+	cacheManager.Set(cacheKey, parsedQueries, sessionID)
+	DebugLog(config, "Generated %d search queries", len(parsedQueries))
+	return parsedQueries, nil
 }
 
 // callOllama makes a call to the Ollama API with better error handling
@@ -303,7 +382,7 @@ func callOllama(config *Config, systemPrompt, userPrompt string) (string, error)
 }
 
 // GenerateOutline creates an outline from a summary with caching
-func GenerateOutline(summary string, config *Config, useMarkdown bool) (string, error) {
+func GenerateOutline(summary string, config *Config, useMarkdown bool, sessionID string) (string, error) {
 	if summary == "" {
 		return "", fmt.Errorf("cannot generate outline from empty summary")
 	}
@@ -353,6 +432,6 @@ Format as clean markdown:
 	}
 
 	// Cache the result
-	cacheManager.Set(cacheKey, outline)
+	cacheManager.Set(cacheKey, outline, sessionID)
 	return outline, nil
 }

@@ -78,7 +78,7 @@ func (c *Config) Print() {
 func createDefaultConfig() *Config {
 	return &Config{
 		DefaultModel:     "gemma3",
-		DefaultLength:    "medium",
+		DefaultLength:    "detailed",
 		DisablePager:     false,
 		DisableQnA:       false,
 		DebugMode:        false,
@@ -105,14 +105,20 @@ CORE RULES:
 
 FORMAT: Structure as coherent paragraphs. For markdown mode, use proper headings and formatting.`,
 
-			QnA: `You are a helpful Q&A assistant discussing a document summary. Answer questions directly and concisely.
+			QnA: `You are a helpful Q&A assistant discussing a document summary and content. Answer questions directly and accurately using ONLY the information provided.
 
-RULES:
-1. Keep answers to 2-3 sentences maximum unless complex
-2. Use document context first, then general knowledge if needed
-3. If using external knowledge, note: "From general knowledge:"
-4. Stay relevant to the topic
-5. For web search results, integrate them naturally with document content`,
+CRITICAL RULES:
+1. Base answers EXCLUSIVELY on the provided document content and summary
+2. If information is not in the documents, clearly state "This information is not provided in the document"
+3. Do NOT mix information from different sources or people
+4. Do NOT use general knowledge that contradicts the document
+5. Be precise about names, dates, and facts from the source material
+6. If there's ambiguity, acknowledge it rather than guessing
+
+RESPONSE FORMAT:
+- Direct, factual answers based solely on document content
+- If using search results, clearly indicate: "Based on the search results:"
+- If information is missing: "The document does not contain information about..."`,
 
 			Markdown: `FORMAT YOUR RESPONSE AS CLEAN MARKDOWN:
 
