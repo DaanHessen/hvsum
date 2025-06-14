@@ -1,546 +1,0 @@
-Starting hvsum test suite...
-Timestamp: 20250614_214320
-=================================
-
---- Starting Test Case: WW2_Hitler ---
-URL: https://en.wikipedia.org/wiki/World_War_II
-Log file: test_logs/WW2_Hitler_20250614_214320.log
-
-Test Case Completed: WW2_Hitler
-Running test: WW2_Hitler
-🌐 Fetching content from: https://en.wikipedia.org/wiki/World_War_II
-🔍 Enhancing summary with web search...
-🚀 Performing parallel searches...
-🤖 Generating comprehensive summary with gemma3...
-[KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ✓
-
-  Okay, here’s a comprehensive summary of World War II, incorporating information from the        
-  provided Wikipedia article and the additional context gleaned from web searches.                
-                                                                                                  
-  **World War II: A Summary**                                                                     
-                                                                                                  
-  World War II (1939-1945) was a global conflict involving the vast majority of the world’s       
-  countries, forming two opposing military alliances: the Allies and the Axis. It was the         
-  deadliest conflict in human history, marked by unprecedented levels of violence, technological  
-  advancement, and ultimately, the reshaping of the global political landscape.                   
-                                                                                                  
-  **Origins and Key Players:**                                                                    
-                                                                                                  
-  The war’s roots lie in the unresolved issues of World War I, particularly the Treaty of         
-  Versailles, which imposed harsh terms on Germany. This fostered resentment and contributed to   
-  the rise of extremist ideologies, most notably Nazism under Adolf Hitler in Germany.  Other key 
-  players included:                                                                               
-                                                                                                  
-  • **The Axis Powers:** Germany, Italy, and Japan.  Germany, under Hitler, pursued an aggressive 
-  expansionist policy, seeking “Lebensraum” (living space) in Eastern Europe. Italy, under        
-  Mussolini, aligned with Germany, and Japan sought to establish a “Greater East Asia Co-         
-  Prosperity Sphere” in Asia.                                                                     
-  • **The Allies:** Initially, Great Britain and France stood against Germany. Later, the Soviet  
-  Union joined the Allies after being invaded by Germany in 1941. The United States entered the   
-  war in December 1941 following the attack on Pearl Harbor by Japan.                             
-                                                                                                  
-  **Key Events and Phases:**                                                                      
-                                                                                                  
-  • **1939-1941: Early War & Expansion:** The war began with Germany’s invasion of Poland on      
-  September 1, 1939, triggering declarations of war by Britain and France. Germany quickly        
-  conquered much of Western Europe, utilizing “Blitzkrieg” (lightning war) tactics – rapid,       
-  coordinated attacks combining tanks, aircraft, and infantry. Japan expanded aggressively in Asia,
-  invading China and Southeast Asia.                                                              
-  • **1941-1942: Turning Points:** The attack on Pearl Harbor in December 1941 brought the United 
-  States into the war. The Battle of Moscow in December 1941 marked a crucial turning point on the
-  Eastern Front, halting the German advance. The Battle of Midway in June 1942 was a decisive     
-  naval victory for the United States against Japan, shifting the balance of power in the Pacific.
-  • **1942-1945: Allied Victory:** The Battle of Stalingrad (1942-1943) was a brutal and pivotal  
-  battle on the Eastern Front, resulting in a devastating defeat for the German army. The Allies  
-  gradually pushed back the Axis forces across Europe and the Pacific. D-Day (June 6, 1944) marked
-  the beginning of the liberation of Western Europe. The final major offensive in Europe was the  
-  Battle of Berlin, culminating in Hitler’s suicide in May 1945. In the Pacific, the U.S.         
-  continued its advance, culminating in the atomic bombings of Hiroshima and Nagasaki in August   
-  1945, leading to Japan’s surrender.                                                             
-                                                                                                  
-  **Technological Advancements & Tactics:**                                                       
-                                                                                                  
-  World War II saw significant advancements in military technology, including:                    
-                                                                                                  
-  • **Aircraft:** The development of advanced fighter planes (like the P-51 Mustang and the       
-  Mitsubishi Zero) and the widespread use of dive bombers (like the Junkers Ju 87 Stuka).         
-  • **Tanks:** The evolution of armored warfare, with the introduction of more powerful and mobile
-  tanks.                                                                                          
-  • **Radar:** Crucial for detecting enemy aircraft and ships.                                    
-  • **Atomic Weapons:** The development and use of atomic bombs, a revolutionary and devastating  
-  weapon.                                                                                         
-                                                                                                  
-  **Casualties and Impact:**                                                                      
-                                                                                                  
-  World War II resulted in an estimated 70-85 million fatalities, making it the deadliest conflict
-  in human history. The war caused widespread destruction, displacement, and economic hardship. It
-  led to the formation of the United Nations, the rise of the United States and the Soviet Union  
-  as superpowers, and a long period of Cold War tensions.                                         
-                                                                                                  
-  **Sources:**                                                                                    
-                                                                                                  
-  This summary draws heavily from the Wikipedia article on World War II and additional information
-  gleaned from web searches, including:                                                           
-                                                                                                  
-  • Wikipedia: https://en.wikipedia.org/wiki/World_War_II https://en.wikipedia.                   
-  org/wiki/World_War_II                                                                           
-  • DuckDuckGo Search Results (as provided in the prompt)                                         
-                                                                                                  
-  --------                                                                                        
-                                                                                                  
-  Do you want me to delve deeper into a specific aspect of World War II, such as:                 
-                                                                                                  
-  • A particular battle?                                                                          
-  • The role of a specific country?                                                               
-  • The impact of the war on a particular region?                                                 
-  • The technological innovations of the war?                                                     
-
-🤖 Interactive Session: World War II (🔍 web search enabled)
-💡 Type /help for commands, /history to see full conversation, or /exit to quit
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K
-[K
-  According to the document, Hitler’s suicide in May 1945 marked the end of World War II.         
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K[K
-
-  According to the document, Hitler’s suicide in May 1945 marked the end of World War II. The     
-  document notes that after the Allied forces gradually pushed back the Axis forces across Europe 
-  and the Pacific, Hitler committed suicide in his Berlin bunker. It states that his death        
-  culminated in the final offensive in Europe.                                                    
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K
-[K
-  According to the document, Hitler’s suicide in May 1945 marked the end of World War II. The     
-  document notes that after the Allied forces gradually pushed back the Axis forces across Europe 
-  and the Pacific, Hitler committed suicide in his Berlin bunker.                                 
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.
-🔍 Searching for additional information...[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K
-[K
-  According to the document and the additional search results, Eva Braun’s involvement in Hitler’s
-  death was a complex and, at times, desperate situation. The document states that on April 29,   
-  1945, Eva Braun married Hitler in a brief and solemn ceremony within the Führerbunker in Berlin.
-  Furthermore, search results, including a fragment of her diary and accounts from biographer     
-  Nerin Gun, reveal that Braun attempted suicide twice during their early relationship, notably in
-  May 1935, when Hitler failed to make time for her. The search results also cite her diary entry 
-  stating, "The weather is gorgeous, and I, the mistress of Germany's and the world's greatest    
-  man, have to sit at home and look at it through the window," suggesting a feeling of isolation  
-  and despair. The New Yorker article from 1945 describes the atmosphere in the bunker as         
-  “desperate” as the Allies closed in. While the document doesn't explicitly state that Braun was 
-  *influenced* to end her life, the combination of her previous suicide attempts, the documented  
-  isolation, and the increasingly dire circumstances within the bunker strongly suggests that her 
-  decision to die with Hitler was a voluntary one, born out of a profound sense of hopelessness   
-  and a desire to remain with the man she loved during his final moments.                         
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...
-🔍 Searching for additional information...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K[K
-
-  Cyanide poisoning refers to the toxicity resulting from exposure to substances containing a     
-  carbon-nitrogen (CN) bond. According to search results, these substances can include hydrogen   
-  cyanide (a gas), cyanide salts like potassium cyanide, and even natural sources such as lima    
-  beans and almond pits, which release cyanide. The primary mechanism of toxicity involves cyanide
-  binding to the ferric (Fe3+) ion of cytochrome oxidase. This effectively blocks the enzyme’s    
-  ability to utilize oxygen, leading to a condition known as ‘histotoxic hypoxia’ and the buildup 
-  of lactic acid – a process called lactic acidosis.  As noted in the search results from LITFL,  
-  cyanide’s impact is amplified by the fact that it directly inhibits oxygen utilization within   
-  cells. The medicalnewstoday article details how cyanide is found in various sources, including  
-  cigarette smoke, and industrial chemicals, highlighting its potential for widespread exposure.  
-  The website also emphasizes the urgency of immediate medical treatment when cyanide poisoning is
-  suspected due to its rapid and potentially fatal effects.                                       
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...
-🔍 Searching for additional information...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K
-[K
-  The gas chambers utilized Zyklon B as their primary means of lethal poisoning. Zyklon B, the    
-  trade name of a cyanide-based pesticide, was initially developed and manufactured by the German 
-  company Degesch (Deutsche Gesellschaft für Schädlingsbekämpfung). As detailed in the search     
-  results, Zyklon B was a crystalline or diatomaceous earth-based substance that, when exposed to 
-  air, converted into lethal gas – hydrogen cyanide (HCN). This conversion was key to the         
-  operation of the gas chambers.                                                                  
-                                                                                                  
-  The operation of the gas chambers relied on the dispersal of Zyklon B pellets or dust within the
-  enclosed spaces. The pellets, when exposed to air, released HCN, a rapidly acting poison. The   
-  search results highlight that this HCN interfered with an organism's ability to use oxygen,     
-  leading to histotoxic hypoxia – a condition where cells can no longer effectively utilize       
-  oxygen, resulting in rapid cellular death.  Multiple sources, including the Wikipedia entry and 
-  the Holocaust Encyclopedia, confirm that the chambers were designed to contain the victims and  
-  allow the HCN to build to lethal concentrations.  As noted in the CODOH library, the design of  
-  these chambers, including the circulation devices used by Degesch, served as a pattern for the  
-  19 planned gas chambers at Auschwitz.  The Britannica article further confirms that the deadly  
-  effects stemmed from the poison's interference with oxygen utilization within cells, emphasizing
-  the speed and severity of the poisoning.                                                        
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.
-🔍 Searching for additional information...[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K
-[K
-  According to the available information, fueling Hitler’s hatred towards Jews was a complex issue
-  stemming from several intertwined factors. Initially, antisemitism was promoted by the Nazi     
-  Party, utilizing existing racial and social prejudices, as highlighted in the Holocaust         
-  Encyclopedia entry (Source 1). They leveraged economic depression and anxieties to portray Jews 
-  as scapegoats for Germany’s problems, employing racist imagery and historical narratives to gain
-  legitimacy. The Wikipedia entry on the Hitler family (Source 6) details that Hitler's father,   
-  Alois Hitler, was an illegitimate child and bore his mother's maiden name, Schicklgruber, for   
-  the entirety of his life. A "blackmail letter" threatened to expose this fact, adding to the    
-  family's perceived shame and contributing to the anxieties surrounding their lineage. Further   
-  investigation into the family history revealed that Alois's paternity was never officially      
-  documented, creating a cloud of uncertainty about their origins.  The Geneastar entry (Source 6)
-  emphasizes that this lack of documented paternity, coupled with the family's struggles, fueled  
-  anxieties and resentment.                                                                       
-                                                                                                  
-  Furthermore, the antisemitism wasn't solely a product of the Nazi party.  The Wikipedia entry   
-  notes that Hitler himself experienced personal anxieties and insecurities, potentially          
-  exacerbated by these family challenges. While the document doesn't definitively state that      
-  Hitler was a Jew, it reveals a deeply troubled family history – one marked by illegitimacy,     
-  shame, and a lack of clear lineage. The fear and uncertainty surrounding his family’s roots     
-  likely played a significant role in shaping his worldview and contributing to his extremist     
-  ideologies.  The research into the Hitler family’s genealogy, as presented by the Geneastar     
-  entry, highlights that this family history was a central factor in shaping Hitler's beliefs and 
-  actions.                                                                                        
-
-
-
-💾 Session saved as: ww2_hitler
-👋 Goodbye!
-
---- Test Case Finished: WW2_Hitler ---
-
-
-
-
-
---- Starting Test Case: Apollo_11 ---
-URL: https://en.wikipedia.org/wiki/Apollo_11
-Log file: test_logs/Apollo_11_20250614_214320.log
-
-Test Case Completed: Apollo_11
-Running test: Apollo_11
-🌐 Fetching content from: https://en.wikipedia.org/wiki/Apollo_11
-🔍 Enhancing summary with web search...
-🚀 Performing parallel searches...
-🤖 Generating comprehensive summary with gemma3...
-[KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â 
-  Okay, here’s a comprehensive summary of Apollo 11, incorporating the Wikipedia article and the  
-  additional context gleaned from web searches:                                                   
-                                                                                                  
-  **Apollo 11: A Historic Lunar Landing**                                                         
-                                                                                                  
-  Apollo 11 was NASA’s first crewed mission to land on the Moon, a pivotal moment in human history
-  and a defining achievement of the Space Race. Launched on July 16, 1969, from Cape Kennedy (now 
-  Cape Canaveral), Florida, the mission carried Commander Neil Armstrong, Command Module Pilot    
-  Michael Collins, and Lunar Module Pilot Edwin "Buzz" Aldrin.                                    
-                                                                                                  
-  **Mission Highlights & Timeline:**                                                              
-                                                                                                  
-  • **Launch & Earth Orbit:** The Saturn V rocket successfully launched, placing the spacecraft   
-  into a 114 by 116-mile Earth orbit.                                                             
-  • **Trans Lunar Injection (TLI):** On July 19, the spacecraft executed a critical maneuver – TLI
-  – to break free from Earth’s gravity and begin its journey to the Moon.                         
-  • **Lunar Orbit Insertion (LOI):** July 20, the spacecraft entered lunar orbit.                 
-  • **Lunar Module Descent:** Armstrong and Aldrin entered the Lunar Module (LM) – nicknamed      
-  “Eagle” – and descended to the lunar surface. The descent was fraught with challenges, including
-  alarms indicating a dangerously steep slope, and ultimately, the crew had to manually override  
-  the landing system.                                                                             
-  • **First Steps & Exploration:** At 4:17 PM EDT on July 20, 1969, Neil Armstrong took “one small
-  step for a man, one giant leap for mankind,” becoming the first human to walk on the Moon.      
-  Aldrin followed shortly after. The astronauts spent approximately 2.5 hours outside the LM,     
-  collecting samples, conducting experiments, planting the American flag, and taking photographs. 
-  • **Return to Orbit & Rendezvous:** After their surface activities, the astronauts returned to  
-  the Command Module “Columbia,” piloted by Michael Collins, which had remained in lunar orbit.   
-  The three astronauts then rendezvoused and prepared for the journey back to Earth.              
-  • **Splashdown:** On July 24, 1969, the Command Module splashed down safely in the Pacific Ocean,
-  where they were recovered by the USS Hornet.                                                    
-                                                                                                  
-  **Key Figures & Technology:**                                                                   
-                                                                                                  
-  • **Neil Armstrong & Buzz Aldrin:** The courageous astronauts who made history.                 
-  • **Michael Collins:** The pilot of the Command Module, responsible for maintaining orbit and   
-  awaiting the return.                                                                            
-  • **Saturn V Rocket:** The massive, multi-stage rocket that propelled the spacecraft to the Moon.
-  • **Lunar Module (Eagle):** The specialized vehicle designed for landing and ascent from the    
-  lunar surface.                                                                                  
-  • **Command Module (Columbia):** The primary spacecraft for the return journey.                 
-                                                                                                  
-  **Significance & Legacy:**                                                                      
-                                                                                                  
-  Apollo 11 was a monumental achievement that demonstrated the power of human ingenuity,          
-  engineering, and determination. It captivated a global audience, inspired generations, and      
-  cemented America’s position as a leader in space exploration. The mission’s data and samples    
-  continue to be studied today, furthering our understanding of the Moon and the solar system.    
-  The images and footage from the mission remain iconic and are frequently referenced as a symbol 
-  of human achievement.                                                                           
-                                                                                                  
-  Do you want me to focus on a specific aspect of Apollo 11 (e.g., the technical challenges, the  
-  cultural impact, a particular astronaut, or a specific event)?                                  
-
-🤖 Interactive Session: Apollo 11 (🔍 web search enabled)
-💡 Type /help for commands, /history to see full conversation, or /exit to quit
-
-[KGenerating detailed summary ✓
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K
-[K
-  The primary objective of the Apollo 11 mission was to land on the Moon.                         
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K
-[K
-  The astronauts on board were Neil A. Armstrong, Michael Collins, and Edwin E. Aldrin Jr.        
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K
-[K
-  “One small step for a man, one giant leap for mankind,”                                         
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K
-[K
-  The descent was fraught with challenges, including alarms indicating a dangerously steep slope, 
-  and ultimately, the crew had to manually override the landing system.                           
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K
-[K
-  The descent was fraught with challenges, including alarms indicating a dangerously steep slope, 
-  and ultimately, the crew had to manually override the landing system.                           
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...
-🔍 Searching for additional information...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K
-[K
-  Based on the available information, the total cost of the Apollo program, adjusted for inflation
-  to 2024 dollars, was approximately $28 billion.                                                 
-                                                                                                  
-  Here’s a breakdown of the figures:                                                              
-                                                                                                  
-  • **Original 1969 Costs:** The Saturn I and IB rockets cost $1.3 billion in 1960s dollars, or   
-  $13 billion when adjusted for inflation to 2024.                                                
-  • **Total Adjusted Cost (2024):**  A more comprehensive analysis, incorporating the full Apollo 
-  program (including Gemini and robotic lunar programs), estimates the total cost at $28 billion  
-  when adjusted to 2024 dollars. This figure represents a significant investment, highlighting the
-  immense technological and engineering undertaking involved in reaching the moon.                
-                                                                                                  
-  It's important to note that different sources utilize varying methodologies for calculating     
-  inflation-adjusted costs, resulting in slightly differing totals. However, $28 billion          
-  represents                                                                                      
-  a generally accepted estimate based on the available data.                                      
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K
-[K
-  After their surface activities, the astronauts returned to the Command Module “Columbia,”       
-  piloted by Michael Collins, which had remained in lunar orbit. The three astronauts then        
-  rendezvoused and prepared for the journey back to Earth.                                        
-
-
-
-💾 Session saved as: apollo_11
-👋 Goodbye!
-
---- Test Case Finished: Apollo_11 ---
-
-
-
-
-
---- Starting Test Case: CRISPR ---
-URL: https://en.wikipedia.org/wiki/CRISPR
-Log file: test_logs/CRISPR_20250614_214320.log
-
-Test Case Completed: CRISPR
-Running test: CRISPR
-🌐 Fetching content from: https://en.wikipedia.org/wiki/CRISPR
-🔍 Enhancing summary with web search...
-🚀 Performing parallel searches...
-🤖 Generating comprehensive summary with gemma3...
-[KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  
-  Okay, here’s a comprehensive summary of CRISPR technology, incorporating information from the   
-  provided sources (Wikipedia, research articles, and related web content), aiming for clarity and
-  a detailed overview:                                                                            
-                                                                                                  
-  **CRISPR-Cas: A Revolutionary Gene Editing Technology**                                         
-                                                                                                  
-  CRISPR (Clustered Regularly Interspaced Short Palindromic Repeats) is a naturally occurring     
-  defense mechanism found in bacteria and archaea, now harnessed as a powerful gene editing tool. 
-  It’s fundamentally based on the way these microorganisms defend themselves against viruses and  
-  plasmids.                                                                                       
-                                                                                                  
-  **The Core Mechanism:**                                                                         
-                                                                                                  
-  1. **Acquisition of Viral DNA:** When a virus (or plasmid) attacks a bacterium, the bacterium   
-  doesn’t immediately destroy it. Instead, it captures small fragments of the viral DNA and       
-  integrates them into its own genome within specific regions called CRISPR loci. These loci      
-  contain the short, repeated sequences (the “repeats”) and interspersed “spacer” sequences – the 
-  fragments of the invading DNA.                                                                  
-  2. **RNA Processing & Guide RNA:** The CRISPR system then processes these spacer sequences into 
-  short RNA molecules called guide RNAs (gRNAs). These gRNAs are crucial for targeting.           
-  3. **Target Recognition & DNA Cleavage:** The gRNA, guided by its sequence complementarity,     
-  binds to a complementary DNA sequence in the target DNA.  This binding is facilitated by the Cas
-  proteins, particularly Cas9. Cas9 acts like molecular scissors, cutting the DNA at the targeted 
-  location.                                                                                       
-  4. **Cas Proteins (Cas9 & Others):** The Cas9 protein is the most well-known component, but     
-  other Cas proteins (like Cas6e, Cas7, CasA, CasB, CasC, and CasD) play vital roles in the system,
-  including DNA unwinding, RNA processing, and target recognition. The Cascade system is a multi- 
-  protein complex that enhances the precision and efficiency of CRISPR-Cas9.                      
-                                                                                                  
-  **Key Components & Their Roles:**                                                               
-                                                                                                  
-  • **CRISPR Loci:** The genomic location where CRISPR sequences are stored.                      
-  • **Repeats:** Short, identical DNA sequences.                                                  
-  • **Spacer Sequences:**  Fragments of DNA from previous invaders.                               
-  • **gRNA (Guide RNA):** A short RNA molecule that directs Cas9 to the target DNA.               
-  • **Cas9:** An enzyme that cuts DNA at the target site.                                         
-  • **Cas Proteins (Cascade):** A complex of proteins that enhance the precision and efficiency of
-  CRISPR-Cas9.                                                                                    
-                                                                                                  
-  **Applications:**                                                                               
-                                                                                                  
-  • **Gene Editing:** CRISPR allows scientists to precisely edit genes, correcting mutations,     
-  introducing new traits, or disabling genes.                                                     
-  • **Research:** It’s a powerful tool for studying gene function and biological pathways.        
-  • **Therapeutics:**  CRISPR holds immense potential for treating genetic diseases, cancer, and  
-  infectious diseases.                                                                            
-  • **Agriculture:**  It can be used to improve crop yields, enhance nutritional value, and       
-  increase resistance to pests and diseases.                                                      
-                                                                                                  
-  **Evolutionary Context & Historical Significance:**                                             
-                                                                                                  
-  The CRISPR system is a remarkably ancient defense mechanism.  The discovery of its potential as 
-  a gene editing tool in the late 2000s, particularly through the work of Jennifer Doudna and     
-  Emmanuelle Charpentier, revolutionized biology and earned them the Nobel Prize in Chemistry in  
-  2020.  The system’s origins in bacterial immunity provide a fundamental understanding of its    
-  operation.                                                                                      
-                                                                                                  
-  **Important Note:** The Cascade system is a more recent discovery that has significantly        
-  improved the precision and efficiency of CRISPR-Cas9. It’s a complex multi-protein system that  
-  enhances the ability of Cas9 to target and cut DNA with greater accuracy.                       
-                                                                                                  
-  --------                                                                                        
-                                                                                                  
-  **Do you want me to:**                                                                          
-                                                                                                  
-  • Expand on a specific aspect of CRISPR (e.g., the Cascade system, different Cas proteins,      
-  ethical considerations)?                                                                        
-  • Provide more detail on a particular application (e.g., CRISPR in cancer therapy)?             
-  • Generate a table comparing different CRISPR systems?                                          
-
-🤖 Interactive Session: CRISPR (🔍 web search enabled)
-💡 Type /help for commands, /history to see full conversation, or /exit to quit
-
-[KGenerating detailed summary ✓
-[K🤔 Processing.[K🤔 Processing..[K
-[K
-  CRISPR stands for clustered regularly interspaced short palindromic repeats.                    
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K
-[K
-  CRISPR-Cas9 works for gene editing as follows: CRISPR-Cas9 uses CRISPR sequences as guides to   
-  recognize and open up specific strands of DNA that are complementary to the CRISPR sequence.    
-  Cas9 enzymes together with CRISPR sequences form the basis of a technology that can be used to  
-  edit genes within living organisms.                                                             
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K
-[K
-  Emmanuelle Charpentier and Jennifer Doudna won the Nobel Prize for this discovery in 2020.      
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.
-🔍 Searching for additional information...[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K
-[K
-  Yes, there are ethical concerns surrounding CRISPR technology. The search results and the       
-  provided document detail several key concerns. Firstly, there are concerns about the power and  
-  technical limitations of CRISPR technology, including possibilities of limited on-target editing
-  efficiency and unexpected genomic mutation and mosaicism following its use. Secondly, numerous  
-  countries have discouraged or banned research on germline editing due to these ethical and      
-  safety concerns. Finally, the document notes that discussions about the safety and ethical      
-  issues began soon after the first publications showing the system’s use in human cells,         
-  highlighting an ongoing effort to address these considerations.                                 
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..
-🔍 Searching for additional information...[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K
-[K
-  A “gene drive” is a mechanism that uses CRISPR technology to spread a modified gene rapidly     
-  through a population, even if that gene is harmful. It consists of three key components: the    
-  gene that you want to spread, the Cas9 enzyme that can cut DNA, and CRISPR, a programmable DNA  
-  sequence that identifies where the enzyme should cut.                                           
-                                                                                                  
-  Here's how it relates to CRISPR: CRISPR acts as a GPS, directing the Cas9 enzyme to specific    
-  locations in the genome. When Cas9 cuts the DNA, the CRISPR sequence then replicates itself,    
-  effectively driving the modified gene through a population – much faster and more reliably than 
-  traditional gene editing methods. Because CRISPR identifies the location to cut, the gene drive 
-  mechanism will spread through an entire population, even if the gene is harmful.                
-                                                                                                  
-  The search results confirm this explanation, further detailing the three components of a gene   
-  drive and how CRISPR's targeting ability enables the rapid and widespread dissemination of a    
-  modified gene. It highlights that CRISPR is the key element that allows the gene drive to       
-  function effectively.                                                                           
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.
-🔍 Searching for additional information...[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K
-[K
-  Yes, CRISPR has been used in human trials. According to the search results, the first-in-human  
-  clinical trial using CRISPR/Cas9 technology was carried out in 2016 to treat non-small cell lung
-  cancer (NSCLC). Preliminary results from this trial indicated that CRISPR/Cas9-mediated gene    
-  disruption in CAR-T cells was relatively safe with no detectable off-target effects. More       
-  recently, in late 2023, the first-ever approval of CRISPR-based medicine, Casgevy, was achieved.
-  Casgevy is a cure for sickle cell disease (SCD) and transfusion-dependent beta thalassemia (TDT).
-  As of March 2023, more than 200 people have been treated with experimental CRISPR-based         
-  therapies                                                                                       
-  in clinical trials, including treatments for lung cancer and blood disorders.  Notably, initial 
-  trials using CRISPR-edited T cells for lung cancer showed that the edited T cells did not       
-  persist                                                                                         
-  long term in most patients.  These results demonstrate that CRISPR technology is progressing    
-  towards clinical application, although challenges related to long-term persistence of edited    
-  cells remain.                                                                                   
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K
-[K
-  The document outlines several potential future applications of CRISPR technology. Firstly, it   
-  states that CRISPR is being used in research, suggesting further advancements in this area are  
-  likely. Secondly, it notes that CRISPR holds immense potential for treating genetic diseases,   
-  cancer, and infectious diseases – indicating continued development of therapeutic applications. 
-  Finally, the document mentions that CRISPR can be used to improve crop yields, enhance          
-  nutritional value, and increase resistance to pests and diseases, suggesting applications in    
-  agriculture.                                                                                    
-
-
-
-💾 Session saved as: crispr
-👋 Goodbye!
-
---- Test Case Finished: CRISPR ---
-
-
-
-
-
-=================================
-Test suite finished.

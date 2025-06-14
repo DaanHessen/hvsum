@@ -1,0 +1,1785 @@
+=== COMPREHENSIVE HVSUM TEST SUITE ===
+Started: Sat Jun 14 10:34:30 PM CEST 2025
+Testing ALL functionality, flags, accuracy, and edge cases
+=========================================
+
+TEST 1: Version Check
+Command: ./hvsum --version
+---
+hvsum version 0.2.0-beta
+Exit code: 0
+=========================================
+
+TEST 2: Help Display
+Command: ./hvsum --help
+---
+Usage: hvsum [flags] <URL or search query>
+
+A powerful CLI tool to summarize web pages and search queries.
+
+Examples:
+  hvsum https://example.com                     # Summarize URL only
+  hvsum -s https://example.com                 # Summarize URL + web search
+  hvsum -m -l short https://wikipedia.org/...  # Markdown, short summary
+  hvsum -s 'latest AI research'                # Search query with enhancement
+  hvsum --session mysession                    # Resume saved session
+  hvsum --list-sessions                        # List saved sessions
+  hvsum --no-cache https://example.com         # Disable caching
+
+Flags:
+      --clean-cache      Clean all cached data
+      --clean-sessions   Clean all saved sessions
+      --config string    Path to a custom config file
+  -c, --copy             Copy the summary to the clipboard
+      --debug            Enable debug logging
+  -h, --help             Show help message
+  -l, --length string    Set summary length (short, medium, long, detailed) (default "detailed")
+      --list-sessions    List recent interactive sessions
+  -m, --markdown         Render output as markdown
+      --no-cache         Disable caching for this session
+      --no-pager         Disable pager for output
+      --no-qna           Disable interactive Q&A session
+  -o, --outline          Generate a structured outline from the summary
+  -s, --search           Enhance summary with web search
+      --session string   Resume a saved session by name
+  -v, --version          Show application version
+  -w, --write string     Save the summary to a file (.md or .txt)
+Exit code: 0
+=========================================
+
+TEST 3: No Arguments (Should show usage)
+Command: ./hvsum
+---
+Usage: hvsum [flags] <URL or search query>
+
+A powerful CLI tool to summarize web pages and search queries.
+
+Examples:
+  hvsum https://example.com                     # Summarize URL only
+  hvsum -s https://example.com                 # Summarize URL + web search
+  hvsum -m -l short https://wikipedia.org/...  # Markdown, short summary
+  hvsum -s 'latest AI research'                # Search query with enhancement
+  hvsum --session mysession                    # Resume saved session
+  hvsum --list-sessions                        # List saved sessions
+  hvsum --no-cache https://example.com         # Disable caching
+
+Flags:
+      --clean-cache      Clean all cached data
+      --clean-sessions   Clean all saved sessions
+      --config string    Path to a custom config file
+  -c, --copy             Copy the summary to the clipboard
+      --debug            Enable debug logging
+  -h, --help             Show help message
+  -l, --length string    Set summary length (short, medium, long, detailed) (default "detailed")
+      --list-sessions    List recent interactive sessions
+  -m, --markdown         Render output as markdown
+      --no-cache         Disable caching for this session
+      --no-pager         Disable pager for output
+      --no-qna           Disable interactive Q&A session
+  -o, --outline          Generate a structured outline from the summary
+  -s, --search           Enhance summary with web search
+      --session string   Resume a saved session by name
+  -v, --version          Show application version
+  -w, --write string     Save the summary to a file (.md or .txt)
+Exit code: 0
+=========================================
+
+TEST 4: Short Summary
+Command: ./hvsum -l short --no-qna https://example.com
+---
+🌐 Fetching content from: https://example.com
+`example.com` is a publicly available domain exclusively for illustrative examples, testing, and documentation. It’s a readily accessible resource for developers, writers, and educators, requiring no prior coordination.  Crucially, it’s not intended for production use and should always be clearly identified as an example.  Its availability depends on ICANN’s reserved domain policies, offering a temporary solution for showcasing concepts.Exit code: 0
+=========================================
+
+TEST 5: Medium Summary
+Command: ./hvsum -l medium --no-qna https://httpbin.org/html
+---
+🌐 Fetching content from: https://httpbin.org/html
+The blacksmith, a key figure in Herman Melville’s *Moby-Dick*, embodies suffering and loss through a tragic backstory. Initially a skilled and stoic artisan, his life was irrevocably altered by a brutal burglary orchestrated by the “Bottle Conjuror,” resulting in the theft of his family and a debilitating injury. This event marked a devastating “drama” culminating in ruin, forever silencing the comforting rhythm of his hammer. The blacksmith’s story serves as a poignant metaphor for the unpredictable forces capable of disrupting even the most stable lives, mirroring the novel’s broader themes of loss and human fragility. His experience foreshadows the central conflicts of *Moby-Dick*, particularly the destructive potential of obsession and the confrontation with the sublime. Ultimately, the blacksmith’s fate underscores the novel’s preoccupation with mortality and the consequences of unchecked ambition, reflecting the characters’ struggles against overwhelming forces.Exit code: 0
+=========================================
+
+TEST 6: Long Summary
+Command: ./hvsum -l long --no-qna https://httpbin.org/json
+---
+🌐 Fetching content from: https://httpbin.org/json
+“Sample Slide Show” is a presentation created by “Yours Truly” and published on [date of publication], designed to introduce WonderWidgets and their value. The initial slide, “Wake up to WonderWidgets!”, immediately establishes the product’s core message. The presentation’s structure centers around two key areas: outlining the advantages of WonderWidgets and identifying their target customer base. This initial framework suggests a focused approach, aiming to quickly engage the audience with the product’s value proposition. The slide show’s design prioritizes clarity and conciseness, likely intended for a digital presentation format. 
+
+The “Overview” slide serves as a foundational element, dividing the presentation into these two critical components. This strategic segmentation allows for a targeted exploration of WonderWidgets’ benefits and the demographics of its intended buyers. The slide show’s source, httpbin.org/json, confirms it’s a JSON representation, indicating its use within a digital presentation platform. This format suggests a modern, data-driven approach to sales or marketing materials. 
+
+Currently, the presentation consists of only two slides, but it establishes a strong foundation for future expansion. Subsequent slides would likely delve deeper into specific features, benefits, and customer profiles. The initial structure demonstrates a deliberate strategy to capture attention and provide essential information. 
+
+Ultimately, “Sample Slide Show” represents a preliminary introduction to WonderWidgets, setting the stage for a more comprehensive sales or marketing campaign. The JSON format underscores its suitability for integration within various digital presentation tools.Exit code: 0
+=========================================
+
+TEST 7: Detailed Summary
+Command: ./hvsum -l detailed --no-qna https://httpbin.org/robots.txt
+---
+🌐 Fetching content from: https://httpbin.org/robots.txt
+🤖 Generating comprehensive summary with gemma3...
+## Robots.txt Summary
+
+This `robots.txt` file, located at `https://httpbin.org/robots.txt`, is a standard file used by website owners to instruct search engine crawlers (bots) about which parts of their site should be indexed and which should be left untouched. The file’s primary purpose is to manage search engine crawling, preventing unnecessary data collection and optimizing search engine performance. Specifically, this file contains a single directive: `Disallow: /deny`.
+
+This directive tells search engine crawlers *not* to access any pages within the root directory of the website. The `Disallow` keyword specifies the URL pattern to block, in this case, the entire root directory ("/"). The `/deny` part is likely a deliberate inclusion, perhaps for testing or demonstration purposes, highlighting the ability to block specific paths. 
+
+It’s important to note that while `robots.txt` provides a level of control, it’s not a security measure. It’s a request, and determined crawlers can often bypass it.  Furthermore, the file itself is publicly accessible, so it’s crucial to carefully consider what you’re allowing or denying. 
+
+The source URL, `https://httpbin.org/robots.txt`, is a service specifically designed for testing and demonstrating robots.txt files.  `httpbin.org` is a website that allows you to see the contents of requests made to it, making it ideal for verifying that robots.txt directives are being correctly interpreted.  This particular file is a simple example, but it illustrates the fundamental principles of using robots.txt to manage crawler access.  Properly configured robots.txt files are essential for website owners to control how their content is discovered and indexed by search engines, ultimately impacting their online visibility.  It’s a foundational element of SEO best practices.Exit code: 0
+=========================================
+
+TEST 8: Search Only - Simple Query
+Command: ./hvsum -s --no-qna 'Python programming'
+---
+🔍 Performing web search for: Python programming
+🚀 Performing parallel web searches...
+🤖 Generating comprehensive summary with gemma3...
+Here’s a comprehensive summary of Python programming, synthesized from the provided search results:
+
+**Python Programming: A Summary**
+
+Python is a highly versatile and increasingly popular programming language, characterized by its ease of learning and broad applicability. Created by Guido van Rossum and first released in 1991, it’s a general-purpose language used across a wide range of applications, including data science, machine learning, web development, and scripting.
+
+**Key Features and Characteristics:**
+
+*   **Ease of Learning:** Python is renowned for its readable syntax, which closely resembles plain English, making it a good choice for beginners.
+*   **Multi-Paradigm Support:** Python supports multiple programming paradigms, including object-oriented, imperative, and functional programming, offering flexibility in development.
+*   **Large and Active Community:** Python boasts a large and active community, providing extensive support, resources, and a wealth of third-party libraries.
+*   **Extensive Libraries and Frameworks:** A significant factor in Python’s success is its vast collection of libraries and frameworks, which extend its capabilities dramatically.
+
+**Core Libraries for Data Science (as highlighted in several sources):**
+
+*   **NumPy:**  A fundamental library for numerical computing. It provides support for large, multi-dimensional arrays and matrices, along with a vast collection of mathematical functions optimized for speed. It’s a cornerstone of data science in Python.
+*   **DataCamp & GeeksforGeeks** emphasize NumPy's role in scientific computation and linear algebra.
+
+**General Programming Concepts & Resources:**
+
+*   **Tutorial Gateway & Guru99** offer Python tutorials for beginners, covering installation, basic concepts, and advanced topics. These resources provide examples and notes to aid in understanding.
+*   **Python.org** serves as the official website, offering the latest version of the language, documentation, job listings, community events, and success stories.
+
+**Overall, Python’s combination of ease of use, powerful libraries, and a strong community has solidified its position as one of the most popular and influential programming languages in the world.**
+
+---
+
+**Note:** This summary is based *solely* on the provided search results. It does not include information beyond what was available in those sources.Exit code: 0
+=========================================
+
+TEST 9: Search Only - Technical Query
+Command: ./hvsum -s --no-qna 'machine learning algorithms'
+---
+🔍 Performing web search for: machine learning algorithms
+🚀 Performing parallel web searches...
+🤖 Generating comprehensive summary with gemma3...
+Here’s a comprehensive summary of machine learning algorithms, synthesized from the provided search results:
+
+**Machine Learning Algorithms: A Summary**
+
+Machine learning algorithms are the core of automated systems that learn from data.  They fall into several broad categories, each with distinct approaches and applications.
+
+**1. Types of Algorithms:**
+
+*   **Supervised Learning:** This is the most common type, where algorithms learn from labeled data (data with known outcomes).
+    *   **Linear Regression:** Used for predicting continuous values (e.g., house prices) based on a linear relationship.
+    *   **Logistic Regression:** Used for classification problems, predicting the probability of a categorical outcome (e.g., spam detection).
+*   **Unsupervised Learning:** Algorithms learn from unlabeled data, discovering patterns and structures.
+    *   **Clustering:** Groups similar data points together (e.g., customer segmentation).
+*   **Semi-Supervised Learning:** Combines labeled and unlabeled data for learning.
+*   **Reinforcement Learning:**  An agent learns to make decisions by interacting with an environment and receiving rewards or penalties. (Not explicitly detailed in the snippets, but a key category).
+
+**2. Key Characteristics & Comparison:**
+
+*   **Parameters:**  Algorithms have various parameters that influence their behavior.  Comparing these parameters is crucial for selecting the best model. The Neptune article highlights this, emphasizing the need to analyze these characteristics.
+*   **Model Evaluation:**  It’s essential to evaluate models using appropriate metrics (not detailed in snippets, but a key part of the process).
+
+**3. Specific Algorithms (Examples):**
+
+*   **Random Forest:** A popular ensemble learning method that combines multiple decision trees.
+*   **Linear Regression:**  Predicting continuous values.
+*   **Logistic Regression:**  Classification problems.
+*   **Clustering:** Grouping data points.
+
+**4.  Learning from Data:**
+
+*   Algorithms learn by adjusting their internal parameters based on the data they are fed. The goal is to minimize errors and improve predictive accuracy.
+
+**5.  Resource for Comparison:**
+
+*   The Neptune article ([https://neptune.ai/blog/how-to-compare-machine-learning-models-and-algorithms](https://neptune.ai/blog/how-to-compare-machine-learning-models-and-algorithms)) provides a valuable resource for understanding how to analyze and compare different machine learning models based on their parameters.
+
+**Note:** The snippets primarily focus on the availability of resources (books, articles, and tools) for learning about machine learning algorithms. They don’t delve deeply into the technical details of each algorithm.  The provided search results highlight the importance of understanding model parameters and evaluation metrics for effective model selection.Exit code: 0
+=========================================
+
+TEST 10: Search Only - Recent Topic
+Command: ./hvsum -s --no-qna 'artificial intelligence 2024'
+---
+🔍 Performing web search for: artificial intelligence 2024
+🚀 Performing parallel web searches...
+🤖 Generating comprehensive summary with gemma3...
+## Artificial Intelligence in 2024: Key Trends and Forecasts (Based on Search Results)
+
+Based on recent analysis from AI Magazine, MIT Technology Review, Forbes, and Wikipedia, Artificial Intelligence is experiencing significant advancements and facing key challenges in 2024. Several prominent trends are shaping the landscape, with forecasts suggesting substantial progress over the next few years.
+
+**Key Trends Identified:**
+
+1. **Agentic AI:** A significant focus is on the development of “agentic AI,” systems capable of independent action and problem-solving. This is being driven by research teams like RAIL at the University of California, Berkeley, who are exploring similar technologies. The goal is to create AI that can proactively address tasks and challenges without constant human intervention.
+
+2. **Impact of ChatGPT & Widespread Integration:** The release of ChatGPT by OpenAI in the preceding year has fundamentally shifted the perception and application of AI.  AI is now being seamlessly integrated into daily life, demonstrating the potential for widespread adoption across various industries.
+
+3. **Open Source AI & Practical Applications:** OpenNN, developed by Artelnics, exemplifies the growing importance of open-source AI. This technology is finding practical applications in areas like customer intelligence and industry-specific analytics, showcasing the value of accessible AI solutions.
+
+4. **Data Scarcity as a Constraint:** Despite advancements, a critical challenge remains: a lack of data. Research teams are grappling with the need for more data to train and refine AI models, particularly as ambitious milestones are being set.
+
+
+**Forecasts & Milestones (2024-2028):**
+
+According to a 2024 survey of AI researchers, there’s a notable probability of AI systems achieving specific milestones within the next four years. These include:
+
+*   **Autonomous Site Construction:** AI systems could autonomously build a complete payment processing site.
+*   **Musical Creation:** AI could generate a song that is indistinguishable from a new song created by a popular musician.
+*   **Large Language Model Fine-Tuning:** AI could autonomously download and fine-tune a large language model.
+
+These forecasts highlight the ambitious goals being set for AI development, though they are contingent on overcoming the data limitations currently impacting the field.
+
+---
+
+**Note:** This summary is based solely on the provided search results. It does not include information beyond the scope of these sources.Exit code: 0
+=========================================
+
+TEST 11: URL with Search Enhancement
+Command: ./hvsum -s --no-qna https://httpbin.org/html
+---
+🌐 Fetching content from: https://httpbin.org/html
+🔍 Enhancing summary with web search...
+🚀 Performing parallel searches...
+🤖 Generating comprehensive summary with gemma3...
+Here’s a comprehensive summary of Herman Melville’s *Moby-Dick*, drawing on the provided context:
+
+The narrative opens with a detailed portrait of Perth, an aging blacksmith, a crucial figure aboard the whaling ship *Pequod*. Perth is relentlessly employed by Captain Ahab to repair weapons and equipment, demonstrating the ship’s constant state of maintenance and the captain’s obsessive focus on the hunt. Perth’s backstory reveals a tragic domestic life: his wife, a loving and supportive partner, and three children, were victims of a burglary orchestrated by a “Bottle Conjuror,” a deceptive figure who robbed them of everything. This event, compounded by Perth’s own untimely death, represents a profound loss of security and happiness.
+
+The blacksmith’s story is interwoven with the ship’s preparations for its perilous voyage. Perth’s tireless work, symbolized by the rhythmic hammering of his forge, underscores the physical demands and the relentless nature of the whaling industry.  Captain Ahab’s specific injury to his “groin” is hinted at, suggesting a potential source of his obsessive drive.  The scene highlights the ship’s constant state of repair and the crew’s reliance on skilled artisans like Perth. 
+
+Herman Melville’s *Moby-Dick* uses Perth’s story to establish the themes of loss, fate, and the destructive power of obsession, all central to Ahab’s relentless pursuit of the white whale. The blacksmith’s fate serves as a microcosm of the larger tragedy unfolding on the *Pequod*, foreshadowing the devastating consequences of Ahab’s single-minded quest.  The narrative emphasizes the human cost of ambition and the unpredictable forces that shape human destiny.  Perth’s story is a poignant reminder of the fragility of life and the potential for ruin, mirroring the grand, catastrophic events to come.Exit code: 0
+=========================================
+
+TEST 12: Markdown Output
+Command: ./hvsum -m --no-qna https://httpbin.org/json
+---
+🌐 Fetching content from: https://httpbin.org/json
+🤖 Generating comprehensive summary with gemma3...
+[KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â 
+  # Sample Slide Show Summary                                                                     
+                                                                                                  
+  ## Key Points                                                                                   
+                                                                                                  
+  • This slide show, titled "Sample Slide Show," was created by "Yours Truly" and published on    
+  “date of publication.”                                                                          
+  • The presentation’s primary focus is introducing WonderWidgets, highlighting their benefits and
+  identifying their target customer base.                                                         
+  • The initial slide, "Wake up to WonderWidgets!", serves as an introductory hook, immediately   
+  drawing attention to the product.                                                               
+  • The “Overview” slide details the core content of the presentation, outlining the two key areas
+  explored: reasons why WonderWidgets are desirable and the demographic of potential buyers.      
+  • The presentation appears to be a preliminary overview, likely intended to generate interest in
+  WonderWidgets.                                                                                  
+                                                                                                  
+  ## Overview of Content                                                                          
+                                                                                                  
+  The slide show is structured around a concise introduction to WonderWidgets. The first slide,   
+  "Wake up to WonderWidgets!", immediately establishes the product's name and aims to capture the 
+  audience's attention. The subsequent "Overview" slide provides a roadmap for the presentation,  
+  breaking down the content into two distinct sections.  The first section, implicitly covered in 
+  the "Overview" slide, addresses the reasons why WonderWidgets are considered desirable – this is
+  not explicitly stated in the provided slide content, but is implied as a key focus. The second  
+  section, also not detailed in the provided slides, concentrates on identifying the customer     
+  segment that would purchase WonderWidgets.  The slide show’s simplicity suggests a foundational 
+  presentation, likely used for initial introductions or internal briefings. The lack of specific 
+  details about WonderWidgets’ features or benefits indicates that this is a preliminary overview,
+  designed to pique interest and set the stage for a more detailed discussion.  The use of "Yours 
+  Truly" as the author suggests a personal or informal presentation style.                        
+
+Exit code: 0
+=========================================
+
+TEST 13: Markdown + Search
+Command: ./hvsum -m -s --no-qna 'Docker containers'
+---
+🔍 Performing web search for: Docker containers
+🚀 Performing parallel web searches...
+🤖 Generating comprehensive summary with gemma3...
+[KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  
+  # Docker Containers: A Comprehensive Overview                                                   
+                                                                                                  
+  ## Key Points                                                                                   
+                                                                                                  
+  • **What are Docker Containers?** Docker containers are standard units of software that package 
+  an application and *all* of its dependencies – including code, runtime, system tools, system    
+  libraries, and settings – into a single, self-contained executable. This allows applications to 
+  run consistently across different computing environments, eliminating compatibility issues. > “A
+  container is a standard unit of software that packages up code and all its dependencies so the  
+  application runs quickly and reliably from one computing environment to another.”               
+  • **Docker Architecture & Components:** The core of Docker is built around the concept of       
+  container images. Docker Swarm is a key component, facilitating the orchestration and management
+  of these containers, particularly for scaling and deployment.                                   
+  • **Docker Hub:** Docker Hub (https://hub.docker.com/) is a public registry where users can find
+  and share pre-built Docker images. It hosts a vast library of images, including popular tools   
+  like Grafana, Gradle, and Bash, simplifying the process of deploying applications.              
+                                                                                                  
+  ## Docker Container Functionality & Benefits                                                    
+                                                                                                  
+  Docker containers provide several key benefits:                                                 
+                                                                                                  
+  • **Consistency:**  Containers ensure applications run the same way regardless of the underlying
+  infrastructure. This is achieved by packaging all dependencies within the container image.      
+  • **Isolation:** Containers isolate applications from each other and the host system, enhancing 
+  security and preventing conflicts.                                                              
+  • **Portability:** Containers are highly portable and can be easily moved between different     
+  environments (development, testing, production).                                                
+  • **Efficiency:** Containers are lightweight and consume fewer resources than traditional       
+  virtual machines, leading to improved performance and resource utilization.                     
+                                                                                                  
+  ## Docker Container Security                                                                    
+                                                                                                  
+  • **Best Practices:**  Several security best practices are crucial when using Docker containers:
+      • **Avoid Root Permissions:** Running containers with root privileges increases the risk of 
+      security vulnerabilities.  Minimize privileges to the container's processes.                
+      • **Image Security:** Regularly scan your Docker images for vulnerabilities.                
+      • **Container Isolation:** Leverage container isolation features to limit the impact of     
+      potential breaches.                                                                         
+      • **Update Regularly:** Keep your Docker Engine and container images up-to-date with the    
+      latest security patches. > “Docker's isolation model can enhance the security of your       
+      containerized workloads.”                                                                   
+                                                                                                  
+                                                                                                  
+  --------                                                                                        
+                                                                                                  
+  **Note:** *This summary is based solely on the provided search results. It does not include     
+  information beyond the scope of those sources.*                                                 
+
+Exit code: 0
+=========================================
+
+TEST 14: Outline Generation
+Command: ./hvsum -o --no-qna https://httpbin.org/html
+---
+🌐 Fetching content from: https://httpbin.org/html
+🤖 Generating comprehensive summary with gemma3...
+Here’s a hierarchical outline of the provided text about Perth:
+
+**I. Perth’s Life and Craftsmanship**
+   * A. Skilled Artisan & Crew Member: Perth’s role on the ship, focusing on his repair work and diligent nature.
+   * B. A Life of Comfort & Family: Description of his domestic life – home, wife, and children, emphasizing the positive impact of his craft.
+   * C. The Rhythm of the Forge: Significance of the hammering as a symbol of stability and comfort.
+
+**II. The Tragic Event: The Bottle Conjuror**
+   * A. The Robbery & Loss of Family: Detailed account of the burglar’s actions and the devastating consequences for Perth and his family.
+   * B. The “Bottle Conjuror” – A Cunning Villain: Introduction of the antagonist and his role in Perth’s demise.
+   * C. Amputation as a Result: Explanation of the physical trauma inflicted upon Perth.
+
+**III. Irony and Thematic Significance**
+   * A.  The Paradox of His Skill:  Highlighting the irony that Perth’s valuable craft ultimately led to his tragic fate.
+   * B.  A Poignant Illustration of Misfortune:  Perth’s story as a representation of unpredictable fate and vulnerability.
+   * C. Foreshadowing *Moby-Dick’s* Themes:  Perth’s story as a precursor to the novel’s central themes of loss and obsession. 
+
+
+Do you want me to elaborate on any particular section, or perhaps create a different type of outline (e.g., a mind map)?Exit code: 0
+=========================================
+
+TEST 15: Markdown + Outline
+Command: ./hvsum -m -o --no-qna https://httpbin.org/json
+---
+🌐 Fetching content from: https://httpbin.org/json
+[KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline ¹ [KGenerating outline â [KGenerating outline   [KGenerating outline ¸ [KGenerating outline â [KGenerating outline   [KGenerating outline ¼ [KGenerating outline â [KGenerating outline   [KGenerating outline ´ [KGenerating outline â [KGenerating outline   [KGenerating outline ¦ [KGenerating outline â [KGenerating outline   [KGenerating outline § [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline ¹ [KGenerating outline â [KGenerating outline   [KGenerating outline ¸ [KGenerating outline â [KGenerating outline   [KGenerating outline ¼ [KGenerating outline â [KGenerating outline   [KGenerating outline ´ [KGenerating outline â [KGenerating outline   [KGenerating outline ¦ [KGenerating outline â [KGenerating outline   [KGenerating outline § [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline ¹ [KGenerating outline â [KGenerating outline   [KGenerating outline ¸ [KGenerating outline â [KGenerating outline   [KGenerating outline ¼ [KGenerating outline â [KGenerating outline   [KGenerating outline ´ [KGenerating outline â [KGenerating outline   [KGenerating outline ¦ [KGenerating outline â [KGenerating outline   [KGenerating outline § [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   
+  ## Sample Slide Show: Outline                                                                   
+                                                                                                  
+  ### I. Presentation Overview                                                                    
+                                                                                                  
+  • **Author & Date:** The slide show was created by “Yours Truly” and published on “date of      
+  publication.”                                                                                   
+  • **Primary Focus:** Introducing WonderWidgets, emphasizing benefits and target customer base.  
+  • **Initial Hook:** The first slide, "Wake up to WonderWidgets!", serves as an introductory     
+  element.                                                                                        
+                                                                                                  
+  ### II. Slide Structure & Content                                                               
+                                                                                                  
+  • **Roadmap:** The “Overview” slide provides a structured outline of the presentation’s two key 
+  areas.                                                                                          
+  • **Section 1: Desirability:**  The first section focuses on *why* WonderWidgets are desirable  
+  (implied, not explicitly stated).                                                               
+  • **Section 2: Target Customer:** The second section concentrates on identifying the demographic
+  of potential buyers (also implied).                                                             
+                                                                                                  
+  ### III. Purpose & Style                                                                        
+                                                                                                  
+  • **Preliminary Overview:** The slide show’s simplicity suggests a foundational presentation for
+  initial introductions or internal briefings.                                                    
+  • **Informal Style:** The use of “Yours Truly” indicates a personal and informal presentation   
+  style, likely intended to generate interest.                                                    
+                                                                                                  
+  --------                                                                                        
+                                                                                                  
+  Do you want me to adjust this outline or create one based on different content?                 
+
+Exit code: 0
+=========================================
+
+TEST 16: Save to Text File
+Command: ./hvsum --no-qna -w '/tmp/tmp.WBJDjvZHwQ/test.txt' https://httpbin.org/html
+---
+🌐 Fetching content from: https://httpbin.org/html
+This excerpt details the life and tragic fate of Perth, the blacksmith aboard the ship in Herman Melville’s *Moby-Dick*. Perth, a skilled artisan, was perpetually employed by the ship’s crew, repairing and crafting their tools and equipment, demonstrating a quiet and diligent work ethic. His peculiar, slightly staggering gait initially sparked curiosity among the sailors, leading to the revelation of his deeply sorrowful past. Perth’s story unfolds as a tale of devastating loss: at nearly sixty, he suffered a horrific fate – the amputation of both feet – due to a deliberate act by a cunning burglar known as the “Bottle Conjuror.” This burglar, having infiltrated his home, robbed his family and ultimately caused his demise. 
+
+Perth’s life was marked by a seemingly idyllic existence: a comfortable home, a loving wife, and three children, all of whom were positively impacted by his craft. The rhythmic hammering of his forge, heard throughout the house, even in his children’s nursery, represented a source of comfort and stability. However, this tranquility was shattered by a violent robbery and the subsequent death of his family, a loss that profoundly shaped his life. 
+
+The narrative emphasizes the irony of Perth’s skilled labor, which ultimately served as a backdrop to his tragic end. His story serves as a poignant illustration of misfortune and the unpredictable nature of fate, highlighting the devastating consequences of a single, malicious act. It’s a stark reminder of vulnerability and the fragility of happiness, foreshadowing the central themes of loss and obsession within *Moby-Dick*.Summary saved to /tmp/tmp.WBJDjvZHwQ/test.txt
+Exit code: 0
+=========================================
+
+TEST 17: Save to Markdown File
+Command: ./hvsum -m --no-qna -w '/tmp/tmp.WBJDjvZHwQ/test.md' https://httpbin.org/json
+---
+🌐 Fetching content from: https://httpbin.org/json
+
+  # Sample Slide Show Summary                                                                     
+                                                                                                  
+  ## Key Points                                                                                   
+                                                                                                  
+  • This slide show, titled "Sample Slide Show," was created by "Yours Truly" and published on    
+  “date of publication.”                                                                          
+  • The presentation’s primary focus is introducing WonderWidgets, highlighting their benefits and
+  identifying their target customer base.                                                         
+  • The initial slide, "Wake up to WonderWidgets!", serves as an introductory hook, immediately   
+  drawing attention to the product.                                                               
+  • The “Overview” slide details the core content of the presentation, outlining the two key areas
+  explored: reasons why WonderWidgets are desirable and the demographic of potential buyers.      
+  • The presentation appears to be a preliminary overview, likely intended to generate interest in
+  WonderWidgets.                                                                                  
+                                                                                                  
+  ## Overview of Content                                                                          
+                                                                                                  
+  The slide show is structured around a concise introduction to WonderWidgets. The first slide,   
+  "Wake up to WonderWidgets!", immediately establishes the product's name and aims to capture the 
+  audience's attention. The subsequent "Overview" slide provides a roadmap for the presentation,  
+  breaking down the content into two distinct sections.  The first section, implicitly covered in 
+  the "Overview" slide, addresses the reasons why WonderWidgets are considered desirable – this is
+  not explicitly stated in the provided slide content, but is implied as a key focus. The second  
+  section, also not detailed in the provided slides, concentrates on identifying the customer     
+  segment that would purchase WonderWidgets.  The slide show’s simplicity suggests a foundational 
+  presentation, likely used for initial introductions or internal briefings. The lack of specific 
+  details about WonderWidgets’ features or benefits indicates that this is a preliminary overview,
+  designed to pique interest and set the stage for a more detailed discussion.  The use of "Yours 
+  Truly" as the author suggests a personal or informal presentation style.                        
+
+Summary saved to /tmp/tmp.WBJDjvZHwQ/test.md
+Exit code: 0
+=========================================
+
+TEST 18: Check if files were created
+Command: ls -la /tmp/tmp.WBJDjvZHwQ/
+---
+total 8
+drwx------  2 daanh daanh   80 Jun 14 22:36 .
+drwxrwxrwt 73 root  root  1620 Jun 14 22:36 ..
+-rw-r--r--  1 daanh daanh 1886 Jun 14 22:36 test.md
+-rw-r--r--  1 daanh daanh 1637 Jun 14 22:36 test.txt
+Exit code: 0
+=========================================
+
+TEST 19: Clean Cache
+Command: ./hvsum --clean-cache
+---
+✅ Cache cleared successfully
+Exit code: 0
+=========================================
+
+TEST 20: No Cache Flag
+Command: ./hvsum --no-cache --no-qna https://httpbin.org/html
+---
+🌐 Fetching content from: https://httpbin.org/html
+🤖 Generating comprehensive summary with gemma3...
+This excerpt details the life and tragic fate of a blacksmith, a key figure aboard Herman Melville’s *Moby-Dick*. The blacksmith, a skilled artisan, was constantly employed by the ship’s crew for repairs and crafting tools, demonstrating the ship’s practical needs and the diverse skills of its personnel. His stoic and tireless work ethic – characterized by silence, slow movements, and a dedication to his craft – became a notable aspect of the voyage. However, his story is ultimately one of profound misfortune. 
+
+The blacksmith’s life was marked by a devastating burglary, orchestrated by a supernatural entity known as the “Bottle Conjuror.” This event, occurring under the cover of darkness, resulted in the theft of everything from his home and family.  His wife, a loving and supportive figure, continued to hear the comforting sounds of his hammer, unaware of the impending tragedy. 
+
+The burglary led to the loss of his feet, a consequence that ultimately signified the end of his life.  Prior to this event, he had enjoyed a fulfilling life as a respected craftsman, a devoted husband, and a father to three children.  His story serves as a poignant and unsettling introduction to the novel, foreshadowing themes of loss, obsession, and the destructive power of fate.  The blacksmith’s fate, a sudden and senseless tragedy, underscores the novel’s exploration of human vulnerability and the unpredictable nature of existence.Exit code: 0
+=========================================
+
+TEST 21: All Flags Combined
+Command: ./hvsum -m -s -l long -o --no-cache --no-qna 'JavaScript frameworks'
+---
+🔍 Performing web search for: JavaScript frameworks
+🚀 Performing parallel web searches...
+🤖 Generating comprehensive summary with gemma3...
+[KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  📝 Applying length constraint (long)...
+[KGenerating detailed summary ✓
+[KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline ¹ [KGenerating outline â [KGenerating outline   [KGenerating outline ¸ [KGenerating outline â [KGenerating outline   [KGenerating outline ¼ [KGenerating outline â [KGenerating outline   [KGenerating outline ´ [KGenerating outline â [KGenerating outline   [KGenerating outline ¦ [KGenerating outline â [KGenerating outline   [KGenerating outline § [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline ¹ [KGenerating outline â [KGenerating outline   [KGenerating outline ¸ [KGenerating outline â [KGenerating outline   [KGenerating outline ¼ [KGenerating outline â [KGenerating outline   [KGenerating outline ´ [KGenerating outline â [KGenerating outline   [KGenerating outline ¦ [KGenerating outline â [KGenerating outline   [KGenerating outline § [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline ¹ [KGenerating outline â [KGenerating outline   [KGenerating outline ¸ [KGenerating outline â [KGenerating outline   [KGenerating outline ¼ [KGenerating outline â [KGenerating outline   [KGenerating outline ´ [KGenerating outline â [KGenerating outline   [KGenerating outline ¦ [KGenerating outline â [KGenerating outline   [KGenerating outline § [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline  [KGenerating outline â [KGenerating outline   [KGenerating outline ¹ [KGenerating outline â [KGenerating outline   [KGenerating outline ¸ [KGenerating outline â [KGenerating outline   [KGenerating outline ¼ [KGenerating outline â [KGenerating outline   [KGenerating outline ´ 
+  ## JavaScript Framework Landscape (2024-2025)                                                   
+                                                                                                  
+  ### I. Overview of Popular Frameworks                                                           
+                                                                                                  
+  • React: Dominant in product-based startups, utilizing a component-based architecture and       
+  virtual DOM.                                                                                    
+  • Angular: Widely used in IT service companies for large, complex applications.                 
+  • Vue.js: Growing in popularity due to ease of learning and adoption across various project     
+  sizes.                                                                                          
+  • Svelte: A newer framework focusing on optimized bundle sizes and performance through compile- 
+  time optimization.                                                                              
+                                                                                                  
+  ### II. Framework Characteristics & Use Cases                                                   
+                                                                                                  
+  • React: Component-based architecture, virtual DOM for efficient updates – ideal for dynamic UIs.
+  • Angular: Full-fledged framework suitable for large, complex applications requiring robust     
+  structure.                                                                                      
+  • Vue.js: Easy learning curve, adaptable to a wide range of projects (small to large).          
+  • Svelte: Compiles code to optimized JavaScript, resulting in smaller bundle sizes and          
+  potentially faster performance.                                                                 
+                                                                                                  
+  ### III. Key Considerations for Framework Selection                                             
+                                                                                                  
+  • Community Support: Popular frameworks benefit from large, active communities offering         
+  extensive resources and support.                                                                
+  • Ongoing Evolution: Continuous updates and improvements reflect the dynamic nature of web      
+  development.                                                                                    
+  • Strategic Decision: Framework choice impacts development speed, maintainability, and overall  
+  application success.                                                                            
+                                                                                                  
+  --------                                                                                        
+                                                                                                  
+  Do you want me to modify this outline in any way, such as adding more detail to a specific      
+  section or adjusting the level of granularity?                                                  
+
+Exit code: 0
+=========================================
+
+TEST 22: Save + Markdown + Search
+Command: ./hvsum -m -s --no-qna -w '/tmp/tmp.WBJDjvZHwQ/combo.md' 'React vs Vue'
+---
+🔍 Performing web search for: React vs Vue
+🚀 Performing parallel web searches...
+🤖 Generating comprehensive summary with gemma3...
+[KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § 
+  # React vs. Vue: A 2025 Comparison                                                              
+                                                                                                  
+  ## Key Points                                                                                   
+                                                                                                  
+  • **Popularity & Community Support:** As of 2025, React maintains a significantly larger        
+  developer base than Vue. According to Stack Overflow’s 2023 Developer Survey, 29,137 developers 
+  use React, compared to 11,761 using Vue. This disparity has remained relatively consistent since
+  2022, where React held 42.62% of the market and Vue 18.82%. This translates to a larger         
+  community, more readily available libraries, and greater support options for developers. >      
+  “React is more popular than Vue.”                                                               
+  • **Learning Curve:** Vue is generally considered to have a lower learning curve than React.  It
+  can be mastered in a few hours to under a week, particularly for developers with a foundational 
+  understanding of ES6 functions and basic JavaScript. React’s learning curve is steeper,         
+  requiring more time to become proficient.                                                       
+  • **Flexibility & Approach to UI Development:** Both frameworks approach building user          
+  interfaces differently. React utilizes a component-based architecture with a focus on building  
+  reusable UI components. Vue, while also component-based, often provides a more approachable and 
+  intuitive experience for developers, particularly those new to front-end frameworks.            
+                                                                                                  
+  ## Vue vs. React: A Detailed Comparison                                                         
+                                                                                                  
+  Based on the provided search results, here’s a more detailed breakdown of the key differences   
+  and similarities between React and Vue:                                                         
+                                                                                                  
+  **1. Developer Numbers & Community:** React currently boasts a substantially larger developer   
+  community than Vue. This is reflected in the 2023 Stack Overflow survey, where React’s user base
+  is almost double that of Vue. This larger community translates to more readily available        
+  resources, tutorials, and third-party libraries.                                                
+                                                                                                  
+  **2. Learning Curve & Ease of Adoption:** A critical factor in choosing between the two         
+  frameworks is the learning curve. Vue is designed to be easier to learn, typically taking a few 
+  hours to under a week to master, assuming a basic understanding of ES6 functions and JavaScript.
+  React’s learning curve is more demanding, requiring a greater investment of time and effort to  
+  become proficient.                                                                              
+                                                                                                  
+  **3. Framework Approach & Documentation:** Both frameworks utilize a component-based            
+  architecture                                                                                    
+  for building user interfaces. However, Vue’s documentation is often praised for its clarity and 
+  ease of understanding.  The framework’s design philosophy emphasizes a more intuitive and       
+  approachable experience for developers. React’s documentation, while comprehensive, can         
+  sometimes be perceived as more complex.                                                         
+                                                                                                  
+  **4.  Recent Trends (2025):**  While React remains dominant in terms of overall developer       
+  numbers, Vue is steadily gaining traction and is increasingly seen as a viable alternative,     
+  particularly for projects where rapid development and a simpler learning curve are priorities. >
+  “Vue overtakes React JavaScript framework easily.”                                              
+                                                                                                  
+  --------                                                                                        
+                                                                                                  
+  **Note:** *This summary is based solely on the provided search results. It does not include     
+  information beyond what was available in those sources.*                                        
+
+Summary saved to /tmp/tmp.WBJDjvZHwQ/combo.md
+Exit code: 0
+=========================================
+
+TEST 23: List Sessions
+Command: ./hvsum --list-sessions
+---
+📜 Saved Sessions:
+  abcdefg - abcdefg (4h ago)
+  apollo_11 - apollo_11 (51m ago)
+  crispr - crispr (50m ago)
+  session_1749909914 - **Malaysia Airlines Flight 370: A Decade of Mystery and O... (6h ago)
+  session_1749910155 - **Malaysia Airlines Flight 370: A Decade of Mystery and O... (6h ago)
+  session_1749911578 - Cached Summary (6h ago)
+  session_1749911617 - malysia flight 370 (6h ago)
+  session_1749911646 - malysia flight 370 (6h ago)
+  session_1749911684 - malysia flight 370 (6h ago)
+  session_1749914368 - Malaysia Airlines Flight 370 (5h ago)
+  session_1749914465 - the series manifest on netflix (5h ago)
+  session_1749915691 - Tweede Wereldoorlog (4h ago)
+  session_1749915817 - Tweede Wereldoorlog (4h ago)
+  ww2_hitler - ww2_hitler (53m ago)
+Exit code: 0
+=========================================
+
+TEST 24: Invalid URL
+Command: ./hvsum --no-qna https://this-definitely-does-not-exist-12345.invalid
+---
+🌐 Fetching content from: https://this-definitely-does-not-exist-12345.invalid
+Error: failed to extract content: failed to fetch URL: Get "https://this-definitely-does-not-exist-12345.invalid": dial tcp: lookup this-definitely-does-not-exist-12345.invalid: no such host
+Exit code: 1
+=========================================
+
+TEST 25: Invalid Length Parameter
+Command: ./hvsum -l invalid --no-qna https://httpbin.org/html
+---
+🌐 Fetching content from: https://httpbin.org/html
+🤖 Generating comprehensive summary with gemma3...
+📝 Applying length constraint (invalid)...
+Perth, the skilled blacksmith aboard the whaling ship *Moby-Dick*, maintained a quiet, methodical presence, diligently repairing equipment and weapons throughout the voyage. Haunted by a tragic past, Perth’s unusual gait revealed he had suffered a devastating loss: his home was robbed by the con artist, “The Bottle Conjuror,” resulting in his wife’s death. This sudden misfortune, occurring at sixty years old, triggered profound and irreversible grief, fundamentally altering his life. Perth’s skilled labor, intended as a source of comfort and livelihood, ironically became intertwined with his despair. His story exemplifies the fragility of happiness and the unpredictable nature of fate. Ultimately, Perth’s experience serves as a cautionary tale about the potential for ordinary lives to be shattered by unexpected tragedy and deception.Exit code: 0
+=========================================
+Starting Interactive Q&A Tests...
+
+TEST 26: Basic Interactive Q&A
+Command: echo -e 'What is this page about?\nWhat are the main features?\n/exit\nn\n' | ./hvsum https://httpbin.org/html
+---
+🌐 Fetching content from: https://httpbin.org/html
+🤖 Generating comprehensive summary with gemma3...
+This excerpt details the life and tragic fate of Perth, the blacksmith aboard the whaling ship in Herman Melville’s *Moby-Dick*. Perth, a skilled artisan, was perpetually employed by the ship’s crew, repairing and crafting their tools and equipment, demonstrating a quiet and diligent work ethic. His peculiar, slightly staggering gait initially sparked curiosity among the sailors, leading to the revelation of his deeply sorrowful past. Perth’s story unfolds as a tale of devastating loss: at nearly sixty, he suffered a horrific accident – the amputation of both feet – caused by a burglar, known as the “Bottle Conjuror,” who had infiltrated his home. 
+
+This burglary, fueled by a cunningly disguised entrance, resulted in the complete robbery of his possessions and the destruction of his family life. The incident occurred during a dark winter’s night, and the loss of his limbs was a direct consequence of this criminal act. Prior to this tragedy, Perth had enjoyed a fulfilling life as a respected craftsman, a devoted husband, and a father to three children, regularly attending church. 
+
+The narrative emphasizes the cruel irony of his demise, highlighting the timing of his suffering and the profound grief it caused his widow and children. Perth’s story serves as a poignant illustration of misfortune and the unpredictable nature of fate, adding a layer of melancholy to the broader themes of the novel, particularly concerning human vulnerability and the destructive power of chaos. His life, marked by both skill and sorrow, ultimately underscores the fragility of happiness and the potential for sudden, irreversible loss.🤖 Interactive Session: Web Page Summary
+💡 Type /help for commands, /history to see full conversation, or /exit to quit
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K
+This page details the life and tragic fate of Perth, the blacksmith aboard the whaling ship in
+Herman Melville’s *Moby-Dick*. It recounts his skilled craftsmanship, his peculiar gait, the burglary
+that led to the amputation of both his feet, and the sorrowful circumstances of his life.[K
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K
+[KThe main features of this page are: Perth’s skilled craftsmanship as a blacksmith, his peculiar gait
+and the revelation of his sorrowful past, the burglary that resulted in the amputation of both his
+feet, and the tragic circumstances of his life, including his previous happy life as a craftsman,
+husband, and father.
+
+Please choose [S]ave, [D]iscard, or Delete [R]ecord:
+
+🗑️ Session discarded. Cache cleared.
+👋 Goodbye!
+Exit code: 0
+=========================================
+
+TEST 27: Search-Enhanced Q&A
+Command: echo -e 'What are the latest developments in this field?\nWhat are the practical applications?\n/exit\nn\n' | ./hvsum -s https://httpbin.org/html
+---
+🌐 Fetching content from: https://httpbin.org/html
+🔍 Enhancing summary with web search...
+🚀 Performing parallel searches...
+🤖 Generating comprehensive summary with gemma3...
+This excerpt from Herman Melville’s *Moby-Dick* centers around the enigmatic figure of Perth, an aging blacksmith, and his unsettling presence aboard the *Pequod*. Perth’s daily routine – tirelessly hammering on harpoon heads and boat furniture – is presented with a stark, almost ritualistic solemnity, marked by a peculiar gait and a history shrouded in tragedy. He’s a man consumed by his craft, seemingly oblivious to the larger, more ominous events unfolding around him. 
+
+The narrative reveals that Perth’s life was once filled with domestic happiness: a loving wife, three children, and regular church attendance, all facilitated by his blacksmithing – even the ringing of his hammer served as a lullaby for his infants. However, this idyllic existence was brutally shattered by a home invasion perpetrated by a “Bottle Conjuror,” a burglar who robbed the family and, crucially, led the blacksmith to his death. This event is presented as a catalyst for a profound and inexplicable tragedy.
+
+Adding to the unsettling atmosphere, Perth’s work is directly linked to Ahab’s obsessive pursuit of Moby Dick. Ahab, aware of Perth’s utility, utilizes him extensively, modifying his boat and employing his skills to prepare for the hunt. The chapter emphasizes Ahab’s secretive preparations, highlighting his singular focus on confronting the whale.  Furthermore, the narrative introduces Fedallah, a mysterious and potentially dangerous figure who has quietly integrated himself into Ahab’s crew, suggesting a web of intrigue and hidden agendas.  Perth’s relentless work, coupled with these other developments, contributes to a growing sense of impending doom and underscores the novel’s exploration of obsession, fate, and the destructive nature of human ambition. The chapter’s focus on Perth’s seemingly pointless labor serves as a microcosm of the larger, chaotic forces at play in the story.🤖 Interactive Session: Web Page Summary (🔍 web search enabled)
+💡 Type /help for commands, /history to see full conversation, or /exit to quit
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..
+🔍 Searching for additional information...[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K
+[KBased on the document content and search results, the latest developments concerning Perth and his
+role are as follows:
+
+Perth’s continued, almost ritualistic work on the *Pequod*, particularly modifying weapons and boat
+furniture under Ahab’s direction, is central to the unfolding events. Ahab utilizes Perth’s skills
+to prepare for the hunt, highlighting the captain’s singular focus on confronting Moby Dick.
+Furthermore, the arrival and integration of Fedallah into Ahab’s crew adds a layer of intrigue and
+potential danger to the situation.  The document emphasizes the connection between Perth’s work and
+the overall sense of impending doom.
+
+Search results provide additional context. Ahab's injury—splitting his leg during an accident—led to
+the creation of a leg from a sperm whale's jawbone, further necessitating Perth’s skills.  Ahab’s
+particular care of this leg, stemming from the injury’s painful association with Moby Dick,
+underscores the escalating obsession and the potential for catastrophic consequences. The addition
+of Fedallah to the crew introduces a new element of secrecy and possible conflict, complicating the
+already precarious situation. These developments contribute to the narrative’s exploration of themes
+such as obsession, fate, and the destructive nature of human ambition.
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K
+[KPerth’s practical applications involve modifying weapons and boat furniture for the *Pequod*'s crew,
+specifically altering harpoons, pike-heads, boat-spades, lances, and shaping them under Ahab’s
+direction. He is also involved in creating a leg from a sperm whale’s jawbone for Ahab after the
+captain’s injury.
+
+Please choose [S]ave, [D]iscard, or Delete [R]ecord:
+
+🗑️ Session discarded. Cache cleared.
+👋 Goodbye!
+Exit code: 0
+=========================================
+
+TEST 28: Search Trigger Test
+Command: echo -e 'What is machine learning?\nWhat are the current market trends for ML in 2024?\nWho are the major companies investing in this?\n/exit\nn\n' | ./hvsum -s https://en.wikipedia.org/wiki/Machine_learning
+---
+🌐 Fetching content from: https://en.wikipedia.org/wiki/Machine_learning
+🔍 Enhancing summary with web search...
+🚀 Performing parallel searches...
+🤖 Generating comprehensive summary with gemma3...
+Okay, here’s a comprehensive summary incorporating information from the provided Wikipedia article and the additional context gleaned from the web searches, focusing on the key aspects of machine learning and deep learning:
+
+**Machine Learning: A Broad Overview**
+
+Machine learning is a subfield of artificial intelligence (AI) that focuses on enabling computer systems to learn from data without being explicitly programmed. The core idea is to build algorithms that can identify patterns, make predictions, and improve their performance over time based on the data they are exposed to.  It’s essentially about creating systems that can *learn* from experience.
+
+**Key Components & Techniques:**
+
+* **Algorithms:** Machine learning relies on various algorithms, including:
+    * **Supervised Learning:** Algorithms are trained on labeled data (data with known outcomes) to learn a mapping between inputs and outputs. Examples include linear regression, logistic regression, and support vector machines.
+    * **Unsupervised Learning:** Algorithms are trained on unlabeled data to discover hidden patterns and structures. Techniques include clustering (grouping similar data points) and dimensionality reduction.
+    * **Reinforcement Learning:**  An agent learns to make decisions within an environment to maximize a reward. This is often used in robotics and game playing.
+
+**Deep Learning: A Specialized Subset**
+
+Deep learning is a *subset* of machine learning that utilizes artificial neural networks with multiple layers (hence “deep”). These networks are inspired by the structure and function of the human brain.
+
+* **Artificial Neural Networks:** These networks consist of interconnected nodes (neurons) organized in layers. Each connection has a weight associated with it, which is adjusted during the learning process.
+* **Multiple Layers:** The key difference from traditional machine learning is the depth of the network.  Each layer extracts increasingly complex features from the data.
+* **Feature Extraction:** Deep learning networks automatically learn relevant features from raw data, eliminating the need for manual feature engineering (a significant advantage).
+* **Applications:** Deep learning excels in areas like:
+    * **Image Recognition:** Identifying objects and patterns in images.
+    * **Natural Language Processing (NLP):** Understanding and generating human language.
+    * **Speech Recognition:** Converting spoken words into text.
+
+**Differences Summarized:**
+
+| Feature           | Machine Learning | Deep Learning      |
+|--------------------|--------------------|---------------------|
+| **Network Depth** | Typically shallow   | Deep (multiple layers)|
+| **Feature Extraction**| Often manual      | Automatic           |
+| **Data Requirements**| Can work with smaller datasets | Generally requires large datasets |
+| **Computational Cost**| Lower               | Higher               |
+| **Complexity**      | Generally simpler   | More complex         |
+
+
+**Additional Context from Web Searches:**
+
+*   **Deep Learning vs. Traditional ML:**  The web searches reinforce the idea that deep learning is a more sophisticated approach, particularly when dealing with complex, unstructured data like images and text.  It’s a shift from manually defining features to letting the network learn them automatically.
+*   **Applications:** The web searches highlight the prominent applications of deep learning, particularly in image recognition and natural language processing, which are now driving many advancements in AI.
+
+---
+
+Would you like me to elaborate on a specific aspect of this summary, such as a particular machine learning algorithm or the architecture of a neural network?🤖 Interactive Session: Machine learning (🔍 web search enabled)
+💡 Type /help for commands, /history to see full conversation, or /exit to quit
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K
+[KMachine learning is a subfield of artificial intelligence (AI) that focuses on enabling computer
+systems to learn from data without being explicitly programmed. The core idea is to build algorithms
+that can identify patterns, make predictions, and improve their performance over time based on the
+data they are exposed to. It’s essentially about creating systems that can *learn* from experience.
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..
+🔍 Searching for additional information...[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K
+[KBased on the provided document content and search results, here’s a summary of the current market
+trends for ML in 2024:
+
+Several key trends demonstrate the future directions and potential applications of machine learning.
+According to the document, several key trends will have drastically changed the industry by 2024.
+Specifically, the search results highlight the following:
+
+*   **20 Machine Learning Trends You Must Know in 2024:** The search results identify 20 key trends,
+indicating a rapidly evolving landscape. The document states that these trends demonstrate the
+future directions and potential applications of machine learning.
+*   **Focus on AI and Automation:** The search results emphasize that a core focus is on artificial
+intelligence (AI) and automation, reflecting the broader transformation driven by ML.
+*   **Trend Tracking and Analysis:** The search results point to the importance of continuously
+monitoring and analyzing these trends to stay ahead in the industry. The document indicates that
+these trends are expected to dramatically change the industry by 2024.
+
+In short, the market is characterized by significant innovation and rapid change, with a strong
+emphasis on AI, automation, and a continuous pursuit of new machine learning trends.
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..
+🔍 Searching for additional information...[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K
+[KBased on the provided document content and search results, several major companies are investing in
+machine learning.
+
+The search results highlight the following companies:
+
+*   **Nvidia:** The document mentions Nvidia as a key player, indicating a significant investment in
+machine learning technologies.
+*   **Tesla:** The search results specifically note Tesla's substantial investments in developing
+full self-driving capabilities, which heavily relies on machine learning.
+*   **Accenture:** The search results identify Accenture as a company leveraging machine learning
+for various applications.
+*   **SAS:** The document mentions SAS as a pioneer in analytics software, offering advanced machine
+learning capabilities through its SAS Viya platform.
+*   **Other Companies (Implied):** The search results emphasize the broader trend of investment,
+suggesting that companies like those listed in the search results – Nvidia, Tesla, Accenture, and
+SAS – are among the major players.
+
+Please choose [S]ave, [D]iscard, or Delete [R]ecord:
+
+🗑️ Session discarded. Cache cleared.
+👋 Goodbye!
+Exit code: 0
+=========================================
+
+TEST 29: Context Follow-up Test
+Command: echo -e 'What are the main components?\nHow do these components interact?\nWhat happens if one fails?\n/exit\nn\n' | ./hvsum https://en.wikipedia.org/wiki/Microservices
+---
+🌐 Fetching content from: https://en.wikipedia.org/wiki/Microservices
+🤖 Generating comprehensive summary with gemma3...
+Okay, here's a consolidated and organized version of the information from the provided text, aiming for clarity and a useful overview of microservices concepts.  I've grouped it into key areas and tried to highlight important distinctions and potential pitfalls.
+
+**I. What are Microservices?**
+
+*   **Definition:** Microservices are an architectural style where an application is structured as a collection of small, autonomous services, modeled around a business domain. Each service performs a single function and communicates with other services through lightweight mechanisms, often an HTTP resource API.
+*   **Key Characteristics:**
+    *   **Small & Focused:** Each service has a limited scope and responsibility.
+    *   **Autonomous:** Services can be developed, deployed, and scaled independently.
+    *   **Decentralized:**  No central database or shared technology stack.
+    *   **Business Domain Driven:** Organized around business capabilities, not technical layers.
+
+**II. Architectural Patterns & Considerations**
+
+*   **Saga Pattern:** A sequence of local transactions, where each transaction updates data within a single service. Compensating transactions are used to undo changes if a failure occurs.
+*   **Eventual Consistency:**  Microservices often embrace eventual consistency, acknowledging that data may not be immediately consistent across all services.
+*   **API Gateways:**  A single entry point for external clients, routing requests to the appropriate microservices.
+*   **Service Mesh:**  An infrastructure layer that handles service-to-service communication, observability, and security.
+
+**III. Potential Anti-Patterns & Challenges**
+
+*   **Distributed Complexity:** Microservices introduce inherent complexity due to network latency, message passing, and the need for robust error handling.
+*   **Data Consistency Issues:** Maintaining data consistency across multiple services can be difficult and requires careful design.
+*   **Operational Overhead:** Managing a large number of small services can increase operational complexity.
+*   **"Microservice Madness":**  Over-decomposition can lead to excessive communication and reduced efficiency.  It's crucial to find the right balance.
+*   **Lack of Monitoring & Observability:** Without proper monitoring, it's difficult to diagnose and resolve issues.
+
+**IV. Key Technologies & Approaches**
+
+*   **API Gateways:**  Kong, Apigee, Tyk
+*   **Service Meshes:** Istio, Linkerd
+*   **Containerization:** Docker, Kubernetes (for deployment and orchestration)
+*   **Message Queues:** Kafka, RabbitMQ (for asynchronous communication)
+*   **Event Streaming Platforms:** Kafka (for real-time data processing)
+
+**V. Important Distinctions & Concepts**
+
+*   **Bounded Contexts:**  Microservices are often aligned with bounded contexts – well-defined areas of responsibility within a business domain.
+*   **Domain-Driven Design (DDD):**  DDD is frequently used in conjunction with microservices to ensure that services are aligned with business needs.
+*   **Loose Coupling:**  Services should be loosely coupled to minimize dependencies and increase flexibility.
+*   **High Cohesion:**  Each service should have a high degree of internal cohesion – all elements within the service should be related to a single purpose.
+
+**VI. Resources & Further Reading**
+
+*   **Sam Newman's "Building Microservices"**: A highly recommended starting point.
+*   **Mark Fowler's Microservices Website:** [https://microservices.io/](https://microservices.io/)
+*   **Mark Fowler's Anti-Patterns:** [https://microservices.io/anti-patterns/](https://microservices.io/anti-patterns/)
+
+---
+
+**Note:** This consolidated version aims to provide a more structured and digestible overview.  The original text contained a lot of overlapping information, and I've tried to present it in a way that highlights the key concepts and potential challenges.  It's important to remember that microservices are a complex architectural style, and careful planning and execution are essential for success.
+
+Do you want me to elaborate on any specific aspect of this information, such as a particular pattern (like Saga), a technology, or a potential challenge?🤖 Interactive Session: Microservices
+💡 Type /help for commands, /history to see full conversation, or /exit to quit
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K
+The main components of microservices, according to the document, include:
+
+*   **API Gateways:** (Kong, Apigee, Tyk) – A single entry point for external clients, routing
+requests.
+*   **Service Meshes:** (Istio, Linkerd) – An infrastructure layer for service-to-service
+communication, observability, and security.
+*   **Containerization:** Docker, Kubernetes (for deployment and orchestration).
+*   **Message Queues:** Kafka, RabbitMQ (for asynchronous communication).
+*   **Event Streaming Platforms:** Kafka (for real-time data processing).
+
+SEARCH_NEEDED: [specific examples of technologies used in API Gateways or Service Meshes]
+
+[K[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K
+The document describes the following interactions between the components:
+
+*   **API Gateways:** Route external client requests to the appropriate microservices.
+*   **Service Meshes:** Handle service-to-service communication, observability, and security.
+*   **Containerization (Docker, Kubernetes):** Used for deployment and orchestration of the
+microservices.
+*   **Message Queues (Kafka, RabbitMQ):** Facilitate asynchronous communication between services.
+*   **Event Streaming Platforms (Kafka):** Enable real-time data processing.
+
+SEARCH_NEEDED: [detailed explanation of the communication flow between the components, including
+protocols and mechanisms]
+
+[K[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K
+[KThe document describes a sequence of local transactions, where each transaction updates data within
+a single service. Compensating transactions are used to undo changes if a failure occurs. This is
+described as the Saga pattern. Additionally, the document highlights the importance of robust error
+handling due to the inherent complexity of distributed systems.
+
+Please choose [S]ave, [D]iscard, or Delete [R]ecord:
+
+🗑️ Session discarded. Cache cleared.
+👋 Goodbye!
+Exit code: 0
+=========================================
+
+TEST 30: Academic Content Accuracy
+Command: echo -e 'What are the key research findings?\nWhat methodology was used?\nWhat are the limitations of this research?\n/exit\nn\n' | ./hvsum -s https://en.wikipedia.org/wiki/CRISPR
+---
+🌐 Fetching content from: https://en.wikipedia.org/wiki/CRISPR
+🔍 Enhancing summary with web search...
+🚀 Performing parallel searches...
+🤖 Generating comprehensive summary with gemma3...
+Okay, here’s a comprehensive summary of CRISPR technology, incorporating information from the Wikipedia article and the search results, aiming for clarity and detail:
+
+**CRISPR-Cas: A Revolutionary Gene Editing Technology**
+
+CRISPR (Clustered Regularly Interspaced Short Palindromic Repeats) is a naturally occurring defense mechanism found in bacteria and archaea, now harnessed as a powerful gene editing tool. It’s fundamentally based on the way these microorganisms defend themselves against viruses and plasmids.
+
+**The Natural System:**
+
+* **Origins:** CRISPR exists in the genomes of many bacteria and archaea. It’s a system of DNA sequences that evolved to protect against invading genetic elements.
+* **Acquisition of Genetic Information:** When a virus or plasmid attacks a bacterium, the bacterium incorporates a small piece of the invader’s DNA into its own genome within a CRISPR locus.
+* **Guide RNA Formation:**  The CRISPR locus contains repeating sequences (the “repeats”) interspersed with unique DNA sequences called “spacers.” These spacers are derived from past viral or plasmid infections.
+* **RNA Processing:** The CRISPR locus is transcribed into a long RNA molecule. This RNA is then processed into shorter RNA molecules called “guide RNAs” (gRNAs).
+* **Target Recognition & Cleavage:**  A guide RNA directs a Cas protein (typically Cas9) to a specific DNA sequence in the target genome. The Cas9 protein then cuts the DNA at that precise location.
+
+**The Engineered CRISPR-Cas9 System:**
+
+Scientists have adapted this natural system for gene editing in a wide range of organisms, including humans. The most common version utilizes:
+
+* **Cas9 Protein:** This enzyme acts as the “molecular scissors,” cutting DNA at a targeted location.
+* **Guide RNA (gRNA):**  A synthetic RNA molecule that combines a CRISPR RNA (crRNA) with a trans-activating crRNA (tracrRNA). The crRNA is designed to match the DNA sequence you want to edit, directing Cas9 to the correct location.
+
+**How it Works in Gene Editing:**
+
+1.  **Design:** Researchers design a gRNA that matches the DNA sequence they want to modify.
+2.  **Delivery:** The gRNA and Cas9 protein are introduced into the cell.
+3.  **Targeting:** The gRNA guides Cas9 to the target DNA sequence.
+4.  **Cleavage:** Cas9 cuts the DNA.
+5.  **Repair:** The cell’s natural DNA repair mechanisms kick in. There are two main pathways:
+    *   **Non-Homologous End Joining (NHEJ):** This pathway is error-prone and often disrupts the gene, effectively “knocking it out.”
+    *   **Homology-Directed Repair (HDR):** If a DNA template with the desired sequence is provided, the cell can use it to repair the break, allowing for precise gene insertion or replacement.
+
+**Significance & Applications:**
+
+CRISPR-Cas technology has revolutionized genetic research and has numerous potential applications, including:
+
+*   **Gene Therapy:** Correcting genetic defects.
+*   **Drug Discovery:**  Creating cell models for studying diseases.
+*   **Agriculture:**  Improving crop yields and resistance to pests.
+*   **Basic Research:**  Studying gene function.
+
+**Important Note:** CRISPR technology is a powerful tool, and ethical considerations surrounding its use are actively being discussed and debated.
+
+---
+
+**Key takeaways from the combined information:**
+
+*   CRISPR is a naturally evolved defense system.
+*   It’s now a versatile gene editing tool.
+*   It relies on a guide RNA to direct a Cas protein for DNA cutting.
+*   The cell’s repair mechanisms determine the outcome of the editing process.
+
+Do you want me to delve deeper into a specific aspect of CRISPR (e.g., the different types of CRISPR systems, the ethical considerations, or a particular application)?🤖 Interactive Session: CRISPR (🔍 web search enabled)
+💡 Type /help for commands, /history to see full conversation, or /exit to quit
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K
+Based on the document content, the key research findings are:
+
+*   CRISPR is a naturally evolved defense system found in the genomes of bacteria and archaea.
+*   It’s a system used to detect and destroy DNA from bacteriophages (viruses that infect bacteria).
+*   CRISPR-Cas9 technology, utilizing Cas9 protein and guide RNA, allows for gene editing within
+living organisms.
+*   This technology has applications in basic biological research, biotechnological product
+development, and disease treatment.
+*   The development of CRISPR-Cas9 technology was recognized with the Nobel Prize in Chemistry in
+2020.
+
+[K[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K
+[KBased on the document content, the methodology used is:
+
+CRISPR-Cas9 technology, utilizing Cas9 protein and guide RNA, allows for gene editing within living
+organisms. The guide RNA directs the Cas9 protein to a specific DNA sequence, enabling the cutting
+of the DNA. The cell’s repair mechanisms then determine the outcome of the editing process – either
+through Non-Homologous End Joining (NHEJ) or Homology-Directed Repair (HDR), depending on whether a
+DNA template is provided.
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..
+🔍 Searching for additional information...[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K
+[KBased on the document content and search results, the limitations of CRISPR-Cas9 research include:
+
+The CRISPR-Cas9 system, while powerful, has several limitations. Primarily, the repair mechanisms –
+Non-Homologous End Joining (NHEJ) and Homology-Directed Repair (HDR) – are error-prone. NHEJ, in
+particular, introduces random insertions and deletions, potentially disrupting genes. The success of
+HDR depends on a provided DNA template, and its effectiveness is not guaranteed.
+
+Furthermore, the search results highlight that the CRISPR/Cas system is still subject to ongoing
+research and development, and it's a relatively new technology. Recent studies mention the need to
+optimize expression duration and cell type for CRISPR-Cas systems. 
+
+Finally, the document notes that the Cas9 protein, in complex with the guide RNA, targets the
+respective gene and creates DSBs near the PAM region. DNA damage repair proceeds either through the
+NHEJ pathway or HDR. In the NHEJ pathway, random insertions and deletions (indels) are introduced at
+the cut side and ligated resulting in error-prone repair.
+
+Please choose [S]ave, [D]iscard, or Delete [R]ecord:
+
+🗑️ Session discarded. Cache cleared.
+👋 Goodbye!
+Exit code: 0
+=========================================
+
+TEST 31: Controversial Topic Handling
+Command: echo -e 'What are the main arguments for and against?\nWhat does recent research say about this?\nAre there any unbiased studies?\n/exit\nn\n' | ./hvsum -s https://en.wikipedia.org/wiki/Climate_change
+---
+🌐 Fetching content from: https://en.wikipedia.org/wiki/Climate_change
+🔍 Enhancing summary with web search...
+🚀 Performing parallel searches...
+🤖 Generating comprehensive summary with gemma3...
+Okay, here’s a comprehensive summary of climate change based on the provided Wikipedia article and the additional information gleaned from web searches (DuckDuckGo results).
+
+**Climate Change: A Summary**
+
+Climate change, also known as global warming, refers to long-term shifts in temperatures and weather patterns. The overwhelming scientific consensus is that these changes are primarily caused by human activities, particularly the burning of fossil fuels (coal, oil, and natural gas).
+
+**Key Findings & Evidence:**
+
+* **Record-Breaking Temperatures:** 2024 is confirmed as the warmest year on record, surpassing the previous record set in 2023. The average surface air temperature is 2.30 degrees Fahrenheit (1.28 degrees Celsius) above the 20th-century baseline (1951-1980). The ten warmest years have all occurred since the start of the 21st century.
+* **Human Causation:** The primary driver of climate change is the increase in atmospheric carbon dioxide (CO2) and other greenhouse gases due to human activities. These gases trap heat in the Earth’s atmosphere.  Scientists have known since the mid-1800s that CO2 plays a crucial role in the greenhouse effect.
+* **Natural Variations are Insufficient:** Natural changes in the Sun and Earth’s climate patterns alone cannot explain the rapid warming observed in recent decades.
+* **Greenhouse Gas Increase:** The burning of fossil fuels releases massive amounts of CO2, along with other greenhouse gases like methane and nitrous oxide, into the atmosphere.
+* **Observed Changes:**  The evidence for climate change is extensive and includes:
+    * Rising global average temperatures
+    * Melting glaciers and ice sheets
+    * Rising sea levels
+    * More frequent and intense extreme weather events (heatwaves, droughts, floods, storms)
+    * Shifts in plant and animal distributions
+
+**The Science Behind It:**
+
+* **The Greenhouse Effect:**  The Earth’s atmosphere naturally traps some of the sun’s heat, which is essential for life. However, human activities have amplified this effect by increasing the concentration of greenhouse gases.
+* **Carbon Dioxide’s Role:** CO2 is the most significant greenhouse gas contributing to climate change, largely due to its abundance and long lifespan in the atmosphere.
+
+**Consequences & Impacts:**
+
+The consequences of climate change are far-reaching and include:
+
+* **Sea Level Rise:** Melting ice contributes to rising sea levels, threatening coastal communities and ecosystems.
+* **Extreme Weather:** Increased frequency and intensity of extreme weather events pose significant risks to human lives and infrastructure.
+* **Ecosystem Disruption:** Changes in temperature and precipitation patterns disrupt ecosystems, impacting plant and animal life.
+
+**Overall Conclusion:**
+
+The evidence overwhelmingly demonstrates that climate change is happening, it is primarily caused by human activities, and it poses a serious threat to the planet and its inhabitants.  Continued action to reduce greenhouse gas emissions is crucial to mitigate the worst impacts of climate change.
+
+---
+
+**Note:** This summary incorporates the information from the original Wikipedia article and the additional context provided by the DuckDuckGo web searches.  It aims to present a comprehensive overview of the key aspects of climate change based on the available data.🤖 Interactive Session: Climate change (🔍 web search enabled)
+💡 Type /help for commands, /history to see full conversation, or /exit to quit
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...
+🔍 Searching for additional information...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K
+[KBased on the document content, here’s a breakdown of the arguments presented:
+
+**Arguments Supporting the View That Climate Change is Happening (Human-Caused):**
+
+*   **Rising Global Temperatures:** The average surface air temperature has increased by
+approximately 1.5°C since the Industrial Revolution.
+*   **Human Activity as a Driver:** The primary driver is human activity, specifically fossil fuel
+burning since the Industrial Revolution, along with deforestation, and some agricultural and
+industrial practices. These activities release greenhouse gases like carbon dioxide, methane, and
+nitrous oxide.
+*   **Scientific Consensus:** While not explicitly stated, the document implies a broad scientific
+agreement, referencing the assertion that “virtually all scientists agree that global warming is
+happening.”
+*   **Observed Changes:**  Numerous observed changes support this view, including melting glaciers
+and ice sheets, rising sea levels, more frequent and intense extreme weather events (heatwaves,
+droughts, floods, storms), and shifts in plant and animal distributions.
+*   **Carbon Dioxide Levels:** Carbon dioxide concentrations have increased by approximately 50%
+since the pre-industrial era.
+
+**Arguments Against the View That Climate Change is Primarily Human-Caused (as presented in the
+provided sources):**
+
+*   **Natural Cycles:** Some argue that climate change is driven by natural cycles, such as ocean-
+atmosphere oscillations or solar variations. The Heartland Institute, according to one search
+result, suggested that global warming since 1860 is the result of these natural cycles.
+*   **Skepticism about Scientific Consensus:** One search result indicates that some individuals,
+like those at the Heartland Institute, question the widespread scientific consensus on human-caused
+global warming.
+*   **Alternative Explanations:** Some argue against the dominant view, suggesting that climate
+change is primarily driven by natural factors rather than human activities.
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...
+🔍 Searching for additional information...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K
+[KBased on the document content and the provided search results, recent research overwhelmingly
+supports the view that human activities are the primary driver of current climate change. Here’s a
+breakdown:
+
+**Strong Evidence for Human-Caused Warming:**
+
+*   **Quantified Human Impact:** Research estimates that humans have caused 1.49°C of warming
+compared to a pre-1700 baseline. This is based on a linear relationship between atmospheric CO2 and
+temperature.
+*   **Scientific Consensus:** Multiple sources, including NASA and Wikipedia, highlight a robust
+scientific consensus on this issue. NASA’s research portfolio and Wikipedia’s analysis of peer-
+reviewed studies confirm that the current warming trend is undeniably linked to human activity since
+the mid-1800s. This consensus is backed by data showing a 99.29% correlation between temperature
+datasets.
+*   **IPCC Findings:** The latest IPCC report (AR6 Synthesis Report) reinforces this conclusion,
+drawing on the findings of 234 scientists on the physical science of climate change.
+*   **Quantified Increase in CO2:** Carbon dioxide concentrations have increased by approximately
+50% since the pre-industrial era, directly contributing to the warming effect.
+
+**Addressing Alternative Perspectives (as presented in the sources):**
+
+*   While some groups, such as the Heartland Institute, have argued that natural cycles explain
+climate change, the document and the search results consistently demonstrate that this view is not
+supported by the overall scientific evidence. The data clearly indicates a human-caused trend.
+
+In essence, recent research provides compelling and extensive evidence that human activities,
+particularly the burning of fossil fuels and the release of greenhouse gases, are the dominant cause
+of the observed global warming trend.
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...
+🔍 Searching for additional information...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K
+[KBased on the document content and the provided search results, there are indeed studies that
+demonstrate a robust, unbiased scientific consensus on climate change, though the interpretation of
+that consensus has been a subject of debate.
+
+Here’s a breakdown:
+
+**Evidence of an Unbiased Scientific Consensus:**
+
+*   **IPCC Reports:** The Intergovernmental Panel on Climate Change (IPCC), established by the World
+Meteorological Organization and the United Nations Environmental Programme, represents a cornerstone
+of unbiased scientific assessment. Its reports, based on thousands of peer-reviewed studies,
+consistently demonstrate a strong consensus—currently exceeding 98%—that humans are the primary
+cause of current climate change.
+*   **NASA’s Analysis:** NASA’s scientific research, as highlighted in its “Scientific Consensus”
+page, reinforces this view. NASA’s analysis of temperature datasets and climate models consistently
+indicates a human-caused warming trend.
+*   **Peer-Reviewed Studies:** The vast majority of scientific research published in peer-reviewed
+journals supports the conclusion that human activities—particularly the burning of fossil fuels and
+the release of greenhouse gases—are driving climate change.
+*   **Multiple Organizations:** The consensus is not limited to a single institution but is
+supported by numerous scientific organizations, including the American Association for the
+Advancement of Science (AAAS) and the American Chemical Society (ACS).
+
+**Acknowledging Alternative Perspectives (and their limitations):**
+
+While the overwhelming evidence supports a human-caused climate change, a small minority of groups,
+such as the Heartland Institute, have presented arguments questioning the extent of this consensus.
+However, these arguments are not supported by the overall body of scientific evidence and are
+largely based on selective interpretation of data. The search results highlighting the scientific
+consensus by organizations like Wikipedia further demonstrate the prevalence of the view that nearly
+all scientists agree on this topic.
+
+In essence, while dissenting voices exist, the scientific community overwhelmingly agrees that
+climate change is happening and is primarily driven by human activities.
+
+Please choose [S]ave, [D]iscard, or Delete [R]ecord:
+
+🗑️ Session discarded. Cache cleared.
+👋 Goodbye!
+Exit code: 0
+=========================================
+
+TEST 32: Technical Deep Dive
+Command: echo -e 'How does this technology work internally?\nWhat are the performance implications?\nWhat are the security considerations?\n/exit\nn\n' | ./hvsum -s https://en.wikipedia.org/wiki/Blockchain
+---
+🌐 Fetching content from: https://en.wikipedia.org/wiki/Blockchain
+🔍 Enhancing summary with web search...
+🚀 Performing parallel searches...
+🤖 Generating comprehensive summary with gemma3...
+Okay, here's a breakdown of the provided text, categorized for clarity and with some notes on its structure and potential uses:
+
+**1. Core Definition & Explanation of Blockchain:**
+
+*   **Basic Definition:** The text establishes blockchain as a distributed, immutable ledger technology. This is the foundational concept.
+*   **Key Features:** It highlights the core characteristics:
+    *   **Distributed:** Data is replicated across multiple nodes in a network.
+    *   **Immutable:** Once a block is added to the chain, it cannot be altered.
+    *   **Ledger:** A record of transactions.
+
+**2.  Detailed Breakdown of Components & Processes:**
+
+*   **Block Structure:** The text implicitly describes the structure of a block:  data (transactions), a timestamp, and a cryptographic hash of the previous block.
+*   **Hashing:**  It explains the role of hashing in creating the chain and ensuring integrity.
+*   **Consensus Mechanisms:** (Implied) The text alludes to the need for consensus mechanisms (like Proof-of-Work or Proof-of-Stake) to validate transactions and add new blocks.
+
+**3.  External Resources & Further Reading:**
+
+*   **List of External Resources:** The text provides a valuable list of resources for further learning:
+    *   Wikiversity
+    *   Wikipedia
+    *   Various reports and articles from organizations like Cravath, Swaine & Moore LLP.
+
+**4.  Categorization & Organization:**
+
+*   The text is well-organized, moving from a general definition to a more detailed explanation of the technology.
+
+**5.  Potential Uses of this Text:**
+
+*   **Educational Material:** This text could be used as a starting point for teaching about blockchain to beginners.
+*   **Quick Reference:** It provides a concise overview of the key concepts.
+*   **Basis for Deeper Learning:** The list of external resources allows users to delve deeper into specific aspects of blockchain.
+
+**Overall Assessment:**
+
+This is a solid, introductory explanation of blockchain. It's well-structured and provides a good foundation for understanding the technology. The inclusion of external resources is a significant strength, allowing users to expand their knowledge.
+
+Do you want me to:
+
+*   Summarize a specific section of the text?
+*   Answer a particular question about blockchain based on this text?
+*   Generate a simplified explanation of blockchain for a specific audience (e.g., children, business professionals)?🤖 Interactive Session: Blockchain (🔍 web search enabled)
+💡 Type /help for commands, /history to see full conversation, or /exit to quit
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K
+The blockchain works internally by containing a cryptographic hash of the previous block, a
+timestamp, and transaction data. Each block is linked together, forming a chain, and transactions
+are resistant to alteration because changing one block would require altering all subsequent blocks
+and obtaining network consensus. It is managed by a peer-to-peer (P2P) computer network using
+consensus algorithms.
+
+[K[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.
+🔍 Searching for additional information...[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K
+[KThe document and search results indicate that the size of a block, which determines the number of
+transactions it can contain, has performance implications. Initially, the bitcoin blockchain size
+was 614 MB in 2012, and it has grown tremendously to 250K MB. A block in a blockchain is made up of
+a collection of transactions, and the number of transactions that can be in a block depends on its
+size. The document states that changing one block would require altering all subsequent blocks and
+obtaining network consensus. The search results confirm that block size impacts scalability and that
+a larger block size can lead to slower transaction times and increased network congestion.
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K
+[KThe blockchain transactions are resistant to alteration because, once recorded, the data in any
+given block cannot be changed retroactively without altering all subsequent blocks and obtaining
+network consensus. Blockchains may be considered secure by design and exemplify a distributed
+computing system with high Byzantine fault tolerance.
+
+Please choose [S]ave, [D]iscard, or Delete [R]ecord:
+
+🗑️ Session discarded. Cache cleared.
+👋 Goodbye!
+Exit code: 0
+=========================================
+
+TEST 33: Historical Accuracy Test
+Command: echo -e 'What were the main causes?\nWhat were the consequences?\nHow do modern historians view this?\n/exit\nn\n' | ./hvsum -s https://en.wikipedia.org/wiki/World_War_II
+---
+🌐 Fetching content from: https://en.wikipedia.org/wiki/World_War_II
+🔍 Enhancing summary with web search...
+🚀 Performing parallel searches...
+🤖 Generating comprehensive summary with gemma3...
+Okay, here’s a comprehensive summary of World War II, incorporating information from the provided Wikipedia entries and the broader context gleaned from the search results.
+
+**World War II: A Summary**
+
+World War II (1939-1945) was a global conflict involving a vast majority of the world’s nations, ultimately reshaping the geopolitical landscape. It was characterized by unprecedented levels of destruction, technological advancement, and human suffering.
+
+**Origins and Key Players:**
+
+The war’s roots lie in the unresolved issues of World War I, particularly the Treaty of Versailles and the rise of aggressive nationalism, most notably in Germany under Adolf Hitler and the Nazi Party. Hitler’s expansionist ambitions, fueled by racial ideology and the desire for “Lebensraum” (living space), directly led to the invasion of Poland on September 1, 1939, triggering declarations of war by Britain and France.
+
+The major combatants were broadly divided into two sides:
+
+*   **The Axis Powers:** Germany, Italy, and Japan.  Germany, under Hitler, was the primary driving force, employing a strategy of blitzkrieg (“lightning war”) – rapid, coordinated attacks using tanks, aircraft, and infantry.
+*   **The Allied Powers:** Initially Britain and France, later joined by the Soviet Union (after being invaded by Germany in June 1941), and the United States (after the attack on Pearl Harbor in December 1941).
+
+**Key Theaters and Battles:**
+
+The war unfolded across multiple continents and oceans, with several pivotal battles:
+
+*   **Eastern Front:** The brutal conflict between Germany and the Soviet Union was a defining feature of the war. The Battle of Stalingrad (1942-1943) stands as a crucial turning point, marking the beginning of the Soviet Union’s eventual victory and the collapse of the German offensive in the East.  The Eastern Front saw staggering casualties – over 880,000 Romanian casualties alone between November 1942 and December 1942.
+*   **Western Front:**  The Battle of Britain (1940) saw the Royal Air Force successfully defend the United Kingdom against the Luftwaffe’s bombing campaign, preventing a German invasion.
+*   **North Africa:**  A protracted struggle for control of North Africa, involving British, American, and Axis forces.
+*   **Pacific Theater:**  Japan’s surprise attack on Pearl Harbor (December 7, 1941) brought the United States into the war. The Pacific Theater saw intense naval and aerial battles, including Midway (1942), which marked a turning point in the war against Japan.
+
+**Technological Advancements & Tactics:**
+
+World War II witnessed significant technological advancements, including:
+
+*   **Aircraft:** The development of advanced fighter planes (like the Spitfire and Mustang) and bombers.
+*   **Tanks:** The widespread use of armored vehicles, particularly the Panzer tanks in Germany.
+*   **Radar:** Crucial for detecting enemy aircraft.
+*   **Codebreaking:** The breaking of the German Enigma code by the Allies, providing vital intelligence.
+
+**Turning Points & End of the War:**
+
+*   **Stalingrad:** As mentioned, this was a critical turning point on the Eastern Front.
+*   **Midway:** A decisive naval victory for the United States in the Pacific.
+*   **D-Day (June 6, 1944):** The Allied invasion of Normandy, France, opening a second front against Germany.
+*   **The Fall of Berlin (April-May 1945):**  Led to Hitler’s suicide and Germany’s unconditional surrender on May 8, 1945.
+*   **Atomic Bombings of Hiroshima and Nagasaki (August 1945):**  Led to Japan’s surrender on September 2, 1945, officially ending World War II.
+
+**Casualties & Impact:**
+
+World War II was the deadliest conflict in human history, resulting in an estimated 70-85 million fatalities. The war caused widespread destruction, displacement, and economic hardship. It led to the formation of the United Nations, the rise of the United States and the Soviet Union as superpowers, and a significant shift in the global balance of power.
+
+---
+
+**Note:** This summary is based on the provided information and broader historical knowledge.  The Wikipedia entries and search results provide a solid foundation, but further research would undoubtedly reveal even greater detail and nuance.🤖 Interactive Session: World War II (🔍 web search enabled)
+💡 Type /help for commands, /history to see full conversation, or /exit to quit
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K
+The main causes of World War II, according to the document, included unresolved tensions in the
+aftermath of World War I and the rise of fascism in Europe and militarism in Japan.
+
+[K[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K
+World War II was the deadliest conflict in human history, resulting in an estimated 70-85 million
+fatalities. The war caused widespread destruction, displacement, and economic hardship. It led to
+the formation of the United Nations, the rise of the United States and the Soviet Union as
+superpowers, and a significant shift in the global balance of power. After the Allied victory,
+Germany, Austria, Japan, and Korea were occupied, and German and Japanese leaders were tried for war
+crimes.
+
+[K[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K[K
+The document states: “This summary is based on the provided information and broader historical
+knowledge. The Wikipedia entries and search results provide a solid foundation, but further research
+would undoubtedly reveal even greater detail and nuance.” It does not provide a modern historian’s
+view of World War II.
+
+SEARCH_NEEDED: [modern historian’s view of World War II]
+
+Please choose [S]ave, [D]iscard, or Delete [R]ecord:
+
+🗑️ Session discarded. Cache cleared.
+👋 Goodbye!
+Exit code: 0
+=========================================
+
+TEST 34: Factual Accuracy - Science
+Command: echo -e 'What is the speed of light in vacuum?\nWhat is the chemical formula for water?\nWhat is the largest planet in our solar system?\n/exit\nn\n' | ./hvsum -s https://en.wikipedia.org/wiki/Physics
+---
+🌐 Fetching content from: https://en.wikipedia.org/wiki/Physics
+🔍 Enhancing summary with web search...
+🚀 Performing parallel searches...
+🤖 Generating comprehensive summary with gemma3...
+Okay, here’s a comprehensive summary incorporating the provided text and web search results, aiming for a clear and informative overview of the Big Bang and its implications:
+
+**The Big Bang: An Overview**
+
+The Big Bang theory is the prevailing cosmological model for the universe. It describes the universe’s origin and evolution from an extremely hot, dense state approximately 13.7 billion years ago.  It’s not an “explosion” *in* space, but rather the expansion *of* space itself.
+
+**Key Evidence & Timeline:**
+
+1. **Initial State:** The universe began in a state of unimaginable density and temperature.
+
+2. **Expansion:**  Space itself began to expand, a process that continues today. This expansion is evidenced by Hubble’s Law, which states that galaxies are moving away from us, and the speed at which they are moving is proportional to their distance.
+
+3. **Cosmic Microwave Background Radiation (CMB):**  Discovered in 1964, the CMB is the afterglow of the Big Bang – faint radiation permeating the universe. Its discovery provided crucial confirmation of the theory.
+
+4. **Formation of Elements:** In the early universe, conditions were too hot for complex elements to form.  As the universe cooled, nuclear fusion occurred, creating the lightest elements – primarily hydrogen and helium – which make up about 98% of the universe’s mass.
+
+5. **Formation of Stars and Galaxies:** Over time, gravity caused these elements to clump together, eventually forming the first stars and galaxies. Our own Solar System, including the Sun and Earth, formed approximately 4.5 to 5 billion years ago, from the remnants of earlier stars.
+
+6. **Ongoing Expansion & Recycling:** The universe continues to expand, and elements created within stars are eventually dispersed back into space through stellar death (supernovae), to be incorporated into new stars and planets. This represents a continuous cycle of creation and destruction.
+
+**Supporting Evidence & Measurements:**
+
+* **Hubble’s Law:**  The observed redshift of distant galaxies provides direct evidence of the universe’s expansion.
+* **Age of the Universe:**  Measurements of the CMB and the expansion rate allow scientists to estimate the age of the universe to be approximately 13.7 billion years.
+* **Element Abundances:** The observed ratios of hydrogen and helium in the universe closely match predictions made by the Big Bang model.
+
+
+**Important Note:** The Big Bang theory doesn’t explain *what* caused the initial expansion, but rather describes the *evolution* of the universe *after* that initial event. It’s a remarkably successful model, supported by a vast body of evidence.
+
+---
+
+Do you want me to:
+
+*   Expand on a specific aspect of the Big Bang (e.g., the CMB, element formation, or Hubble’s Law)?
+*   Provide a more detailed explanation of a particular concept?
+*   Generate a different type of summary (e.g., a timeline)?🤖 Interactive Session: Physics (🔍 web search enabled)
+💡 Type /help for commands, /history to see full conversation, or /exit to quit
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...
+🔍 Searching for additional information...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K
+According to the document and search results, the speed of light in vacuum is 299,792,458 meters per
+second. This is an exact value established by international agreement and is a fundamental constant
+of nature.
+
+[K[K🤔 Processing.[K🤔 Processing..
+🔍 Searching for additional information...[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K
+The chemical formula for water is H₂O. This is stated directly within the document’s summary.
+Additional search results confirm this formula as the representation of the compound composed of
+hydrogen and oxygen.
+
+[K[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...
+🔍 Searching for additional information...[K
+[KI don't have enough information in the document to answer this question completely, and my search
+for additional information didn't yield relevant results.
+
+Please choose [S]ave, [D]iscard, or Delete [R]ecord:
+
+🗑️ Session discarded. Cache cleared.
+👋 Goodbye!
+Exit code: 0
+=========================================
+
+TEST 35: Source Citation Test
+Command: echo -e 'Can you provide specific sources for these claims?\nWhat evidence supports this information?\nAre there any conflicting viewpoints?\n/exit\nn\n' | ./hvsum -s https://en.wikipedia.org/wiki/Artificial_intelligence
+---
+🌐 Fetching content from: https://en.wikipedia.org/wiki/Artificial_intelligence
+🔍 Enhancing summary with web search...
+🚀 Performing parallel searches...
+🤖 Generating comprehensive summary with gemma3...
+Okay, here's a breakdown of the provided text, categorized for clarity and highlighting key themes and information. This is organized to make it easier to understand the scope and content of the extensive text.
+
+**I. Core Concept: Artificial Intelligence (AI)**
+
+*   **Definition:** The text fundamentally deals with the concept of Artificial Intelligence – the creation of machines capable of performing tasks that typically require human intelligence.
+*   **Evolution of Understanding:** The text traces the development of AI, from early theoretical concepts to modern deep learning and large language models.
+
+**II. Technical Aspects & Methodologies**
+
+*   **Deep Learning:**  A central focus is on deep learning – neural networks with multiple layers, enabling AI to learn complex patterns from data.
+*   **Transformers:**  The text highlights the significance of the "Attention is all you need" paper, introducing the transformer architecture, a key innovation in deep learning.
+*   **Large Language Models (LLMs):** The text discusses the rise of LLMs like ChatGPT, which are trained on massive datasets to generate human-like text.
+*   **Training Methods:** The text touches on how these models are trained – primarily through predicting the next sequence of characters.
+*   **AlphaFold:**  The inclusion of Jumper et al.'s AlphaFold research demonstrates AI's impact on scientific discovery, particularly in protein structure prediction.
+
+**III.  Challenges & Limitations**
+
+*   **Lack of True Understanding:** A recurring theme is the fact that current AI systems, despite their impressive capabilities, don't truly *understand* the information they process. They are pattern-matching machines, not conscious thinkers.
+*   **Reliance on Data:** The text emphasizes that AI's performance is entirely dependent on the quality and quantity of the data it's trained on.
+*   **"Black Box" Problem:** The internal workings of deep learning models are often opaque, making it difficult to understand *why* they make certain decisions.
+*   **Anthropomorphism:** The tendency to attribute human-like qualities and understanding to AI systems is a significant issue, leading to misinterpretations of their capabilities.
+*   **The "Horny Robot Baby Voice" Problem:**  A humorous but insightful observation about the human tendency to project emotions and desires onto AI, exemplified by the infamous "horny robot baby voice" chatbot.
+
+**IV.  Social & Philosophical Implications**
+
+*   **Labor Theory of AI:** The inclusion of Ben Tarnoff's review of "The Eye of the Master" highlights the broader social and economic implications of AI, particularly concerning labor and automation.
+*   **Trust & Ethics:** The text implicitly raises concerns about the ethical implications of AI, including bias in algorithms, the potential for misuse, and the need for responsible development and deployment.
+*   **European Approach to Excellence and Trust:** The inclusion of the European Commission's white paper underscores the growing global focus on establishing ethical guidelines and regulatory frameworks for AI.
+
+**V.  Specific Research & Projects**
+
+*   **AlphaFold (Jumper et al.):**  Revolutionary protein structure prediction.
+*   **Transformers (Vaswani et al.):** The foundational architecture for modern LLMs.
+
+**VI.  Overall Tone & Perspective**
+
+*   **Cautious Optimism:** The text presents a balanced view, acknowledging the remarkable progress in AI while simultaneously highlighting its limitations and potential risks.
+*   **Critical Examination:** It encourages a critical approach to AI, urging readers to avoid overhyped expectations and to consider the broader social and ethical consequences.
+
+---
+
+**Key Takeaway:** The provided text is a comprehensive overview of Artificial Intelligence, covering its technical foundations, current state, and the significant challenges and opportunities it presents. It’s a valuable resource for anyone seeking a deeper understanding of this rapidly evolving field.
+
+Would you like me to:
+
+*   Expand on a specific section?
+*   Summarize a particular aspect in more detail?
+*   Generate a list of questions based on the text?🤖 Interactive Session: Artificial intelligence (🔍 web search enabled)
+💡 Type /help for commands, /history to see full conversation, or /exit to quit
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...
+🔍 Searching for additional information...[K[K
+I don't have enough information in the document to answer this question completely, and my search
+for additional information didn't yield relevant results.
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...
+🔍 Searching for additional information...[K
+I don't have enough information in the document to answer this question completely, and my search
+for additional information didn't yield relevant results.
+
+[K[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...
+🔍 Searching for additional information...[K
+I don't have enough information in the document to answer this question completely, and my search
+for additional information didn't yield relevant results.
+
+[KPlease choose [S]ave, [D]iscard, or Delete [R]ecord:
+
+🗑️ Session discarded. Cache cleared.
+👋 Goodbye!
+Exit code: 0
+=========================================
+
+TEST 36: Session Save Test
+Command: echo -e 'What is quantum computing?\n/exit\ns\ntest_session_20250614_223430\n' | ./hvsum -s https://en.wikipedia.org/wiki/Quantum_computing
+---
+🌐 Fetching content from: https://en.wikipedia.org/wiki/Quantum_computing
+🔍 Enhancing summary with web search...
+🚀 Performing parallel searches...
+🤖 Generating comprehensive summary with gemma3...
+Okay, here's a consolidated list of the sources you provided, categorized for clarity and with some minor formatting adjustments for readability. This is a comprehensive overview of the resources you've listed:
+
+**I. Academic Texts & Books:**
+
+*   **Abbott, Derek; Doering, Charles R.; Caves, Carlton M.; Lidar, Daniel M.; Brandt, Howard E.; et al.** (2003). "Dreams versus Reality: Plenary Debate Session on Quantum Computing". *Quantum Information Processing*. 2 (6): 449–472. arXiv:quant-ph/0310130. Bibcode:2003QuIP....2..449A. doi:10.1023/B:QINP.0000042203.24782.9a. hdl:2027.42/45526.
+*   **Berthiaume, Andre** (1998). "Quantum Computation". *Solution Manual for Quantum Mechanics*. pp. 233–234. doi:10.1142/9789814541893_0016. ISBN 978-981-4541-88-6.
+*   **DiVincenzo, David P.** (1995). "Quantum Computation". *Science*. 270 (5234): 255–261. Bibcode:1995Sci...270..255D. CiteSeerX 10.1.1.242.2165. doi:10.1126/science.270.5234.255.
+*   **DiVincenzo, David P.** (2000). "The Physical Implementation of Quantum Computation". *Fortschritte der Physik*. 48 (9–11): 771–783. arXiv:quant-ph/0002077. Bibcode:2000ForPh....48..771D. doi:10.1002/1521-3978(200009)48:9/11<771::AID-PROP771>3.0.CO;2-E.
+*   **Kaye, Phillip; Laflamme, Raymond; Mosca, Michele** (2007). *An Introduction to Quantum Computing*. OUP Oxford. ISBN 978-0-19-857000-4. OCLC 85896383.
+*   **Jaeger, Gregg** (2007). *Quantum Information: An Overview*. doi:10.1007/978-0-387-36944-0. ISBN 978-0-387-36944-0. OCLC 186509710.
+*   **Jeutner, Valentin** (2021). "The Quantum Imperative: Addressing the Legal Dimension of Quantum Computers". *Morals & Machines*. 1 (1): 52–59. doi:10.5771/2747-5174-2021-1-52. S2CID: 236664155.
+*   **Krantz, P.; Kjaergaard, M.; Yan, F.; Orlando, T. P.; Gustavsson, S.; Oliver, W. D.** (2019). "A Quantum Engineer's Guide to Superconducting Qubits". *Applied Physics Reviews*. 6 (2): 021318. arXiv:1904.06560. Bibcode:2019ApPRv....6b1318K. doi:10.1063/1.5089550. ISSN 1931-9401. S2CID: 119104251.
+*   **Lectures** *Quantum computing for the determined – 22 video lectures by Michael Nielsen*
+*   **Lomonaco, Sam.** *Four Lectures on Quantum Computing given at Oxford University in July 2006*
+*   **Mitchell, Ian** (1998). "Computing Power into the 21st Century: Moore's Law and Beyond".
+*   **Simon, Daniel R.** (1994). "On the Power of Quantum Computation". Institute of Electrical and Electronics Engineers Computer Society Press.
+*   **Susskind, Leonard; Friedman, Art** (2014). *Quantum Mechanics: The Theoretical Minimum*. New York: Basic Books. ISBN 978-0-465-08061-8.
+*   **Wichert, Andreas** (2020). *Principles of Quantum Artificial Intelligence: Quantum Problem Solving and Machine Learning (2nd ed.)*. doi:10.1142/11938. ISBN 978-981-12-2431-7. S2CID: 225498497.
+*   **Wong, Thomas** (2022). *Introduction to Classical and Quantum Computing (PDF)*. Rooted Grove. ISBN 979-8-9855931-0-5. OCLC 1308951401. Archived from the original (PDF) on 29 January 2022. Retrieved 6 February 2022.
+*   **Zeng, Bei; Chen, Xie; Zhou, Duan-Lu; Wen, Xiao-Gang** (2019). *Quantum Information Meets Quantum Matter*. arXiv:1508.02595. doi:10.1007/978-1-4939-9084-9. ISBN 978-1-4939-9084-9. OCLC 1091358969. S2CID: 118528258.
+
+**II. Articles, Reports, and Online Resources:**
+
+*   **Abbot, Derek; Doering, Charles R.; Caves, Carlton M.; Lidar, Daniel M.; Brandt, Howard E.; et al.** (2003). "Dreams versus Reality: Plenary Debate Session on Quantum Computing". *Quantum Information Processing*. 2 (6): 449–472. arXiv:quant-ph/0310130. Bibcode:2003QuIP....2..449A. doi:10.1023/B:QINP.0000042203.24782.9a. hdl:2027.42/45526.
+*   **Lectures** *Quantum computing for the determined – 22 video lectures by Michael Nielsen*
+*   **Video Lectures by David Deutsch**
+*   **Lomonaco, Sam.** *Four Lectures on Quantum Computing given at Oxford University in July 2006*
+
+**III.  General Information & Overviews:**
+
+*   **Wikipedia:**  (Link to the Wikipedia page on Quantum Computing - included for completeness) [https://en.wikipedia.org/wiki/Quantum_computing](https://en.wikipedia.org/wiki/Quantum_computing)
+
+---
+
+**Notes:**
+
+*   I've included the full citation information for each source.
+*   I've categorized the sources to help you quickly find the most relevant information.
+
+Would you like me to elaborate on any of these sources, or perhaps focus on a specific type of resource (e.g., books, articles, videos)?🤖 Interactive Session: Quantum computing (🔍 web search enabled)
+💡 Type /help for commands, /history to see full conversation, or /exit to quit
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K
+The basic unit of information in quantum computing, the qubit (or “quantum bit”), serves the same
+function as the bit in classical computing. However, unlike a classical bit, which can be in one of
+two states (a binary), a qubit can exist in a superposition of its two “basis” states, a state that
+is in an abstract sense “between” the two basis states. When measuring a qubit, the result is a
+probabilistic output of a classical bit. If a quantum computer manipulates the qubit in a particular
+way, wave interference effects can amplify the desired measurement results.
+
+[K💾 Session saved as: test_session_20250614_223430
+👋 Goodbye!
+Exit code: 0
+=========================================
+
+TEST 37: Session Resume Test
+Command: echo -e 'Tell me more about quantum algorithms\n/exit\nn\n' | ./hvsum --session test_session_20250614_223430
+---
+📂 Resuming session: test_session_20250614_223430
+🤖 Interactive Session: test_session_20250614_223430 (🔍 web search enabled)
+
+📋 Session Summary:
+─────────────────
+Okay, here's a consolidated list of the sources you provided, categorized for clarity and with some
+minor formatting adjustments for readability. This is a comprehensive overview of the resources
+you've listed:
+
+**I. Academic Texts & Books:**
+
+*   **Abbott, Derek; Doering, Charles R.; Caves, Carlton M.; Lidar, Daniel M.; Brandt, Howard E.; et
+al.** (2003). "Dreams versus Reality: Plenary Debate Session on Quantum Computing". *Quantum
+Information Processing*. 2 (6): 449–472. arXiv:quant-ph/0310130. Bibcode:2003QuIP....2..449A.
+doi:10.1023/B:QINP.0000042203.24782.9a. hdl:2027.42/45526.
+*   **Berthiaume, Andre** (1998). "Quantum Computation". *Solution Manual for Quantum Mechanics*.
+pp. 233–234. doi:10.1142/9789814541893_0016. ISBN 978-981-4541-88-6.
+*   **DiVincenzo, David P.** (1995). "Quantum Computation". *Science*. 270 (5234): 255–261.
+Bibcode:1995Sci...270..255D. CiteSeerX 10.1.1.242.2165. doi:10.1126/science.270.5234.255.
+*   **DiVincenzo, David P.** (2000). "The Physical Implementation of Quantum Computation".
+*Fortschritte der Physik*. 48 (9–11): 771–783. arXiv:quant-ph/0002077. Bibcode:2000ForPh....48..771D.
+doi:10.1002/1521-3978(200009)48:9/11<771::AID-PROP771>3.0.CO;2-E.
+*   **Kaye, Phillip; Laflamme, Raymond; Mosca, Michele** (2007). *An Introduction to Quantum
+Computing*. OUP Oxford. ISBN 978-0-19-857000-4. OCLC 85896383.
+*   **Jaeger, Gregg** (2007). *Quantum Information: An Overview*. doi:10.1007/978-0-387-36944-0. ISBN
+978-0-387-36944-0. OCLC 186509710.
+*   **Jeutner, Valentin** (2021). "The Quantum Imperative: Addressing the Legal Dimension of Quantum
+Computers". *Morals & Machines*. 1 (1): 52–59. doi:10.5771/2747-5174-2021-1-52. S2CID: 236664155.
+*   **Krantz, P.; Kjaergaard, M.; Yan, F.; Orlando, T. P.; Gustavsson, S.; Oliver, W. D.** (2019).
+"A Quantum Engineer's Guide to Superconducting Qubits". *Applied Physics Reviews*. 6 (2): 021318.
+arXiv:1904.06560. Bibcode:2019ApPRv....6b1318K. doi:10.1063/1.5089550. ISSN 1931-9401. S2CID:
+119104251.
+*   **Lectures** *Quantum computing for the determined – 22 video lectures by Michael Nielsen*
+*   **Lomonaco, Sam.** *Four Lectures on Quantum Computing given at Oxford University in July 2006*
+*   **Mitchell, Ian** (1998). "Computing Power into the 21st Century: Moore's Law and Beyond".
+*   **Simon, Daniel R.** (1994). "On the Power of Quantum Computation". Institute of Electrical and
+Electronics Engineers Computer Society Press.
+*   **Susskind, Leonard; Friedman, Art** (2014). *Quantum Mechanics: The Theoretical Minimum*. New
+York: Basic Books. ISBN 978-0-465-08061-8.
+*   **Wichert, Andreas** (2020). *Principles of Quantum Artificial Intelligence: Quantum Problem
+Solving and Machine Learning (2nd ed.)*. doi:10.1142/11938. ISBN 978-981-12-2431-7. S2CID: 225498497.
+*   **Wong, Thomas** (2022). *Introduction to Classical and Quantum Computing (PDF)*. Rooted Grove.
+ISBN 979-8-9855931-0-5. OCLC 1308951401. Archived from the original (PDF) on 29 January 2022. Retrieved
+6 February 2022.
+*   **Zeng, Bei; Chen, Xie; Zhou, Duan-Lu; Wen, Xiao-Gang** (2019). *Quantum Information Meets Quantum
+Matter*. arXiv:1508.02595. doi:10.1007/978-1-4939-9084-9. ISBN 978-1-4939-9084-9. OCLC 1091358969. S2CID:
+118528258.
+
+**II. Articles, Reports, and Online Resources:**
+
+*   **Abbot, Derek; Doering, Charles R.; Caves, Carlton M.; Lidar, Daniel M.; Brandt, Howard E.; et
+al.** (2003). "Dreams versus Reality: Plenary Debate Session on Quantum Computing". *Quantum
+Information Processing*. 2 (6): 449–472. arXiv:quant-ph/0310130. Bibcode:2003QuIP....2..449A.
+doi:10.1023/B:QINP.0000042203.24782.9a. hdl:2027.42/45526.
+*   **Lectures** *Quantum computing for the determined – 22 video lectures by Michael Nielsen*
+*   **Video Lectures by David Deutsch**
+*   **Lomonaco, Sam.** *Four Lectures on Quantum Computing given at Oxford University in July 2006*
+
+**III.  General Information & Overviews:**
+
+*   **Wikipedia:**  (Link to the Wikipedia page on Quantum Computing - included for completeness)
+[https://en.wikipedia.org/wiki/Quantum_computing](https://en.wikipedia.org/wiki/Quantum_computing)
+
+---
+
+**Notes:**
+
+*   I've included the full citation information for each source.
+*   I've categorized the sources to help you quickly find the most relevant information.
+
+Would you like me to elaborate on any of these sources, or perhaps focus on a specific type of
+resource (e.g., books, articles, videos)?
+
+💬 Recent Questions:
+  1. What is quantum computing?
+
+💡 Type /help for commands, /history to see full conversation, or /exit to quit
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K
+The design of quantum algorithms involves creating procedures that allow a quantum computer to
+perform calculations efficiently and quickly. If a quantum computer manipulates the qubit in a
+particular way, wave interference effects can amplify the desired measurement results.
+
+[KPlease choose [S]ave, [D]iscard, or Delete [R]ecord:
+
+🗑️ Session discarded. Cache cleared.
+👋 Goodbye!
+Exit code: 0
+=========================================
+
+TEST 38: Large Content Test
+Command: ./hvsum --no-qna https://en.wikipedia.org/wiki/List_of_countries_by_population
+---
+🌐 Fetching content from: https://en.wikipedia.org/wiki/List_of_countries_by_population
+🤖 Generating comprehensive summary with gemma3...
+Okay, this is a massive and incredibly detailed list of population data! It's a fantastic resource. Here's a breakdown of what this list represents and some key observations:
+
+**What This List Is:**
+
+*   **Comprehensive:** It attempts to provide population figures for nearly every recognized independent country and numerous dependent territories and special administrative regions.
+*   **Dynamic:** Population data is constantly changing, so this list represents a snapshot in time (as of the last update, which is likely 2024 based on the inclusion of recent figures).
+*   **Multiple Sources:** The data is compiled from various sources, including national statistical agencies, the United Nations, and other international organizations.
+*   **Detailed:** It includes not just total population figures but also breakdowns by age, sex, and sometimes other demographic characteristics.
+
+**Key Observations & Patterns:**
+
+*   **Vast Range:** There's an enormous range in population sizes, from tiny island nations like Tuvalu (around 11,000) to populous countries like India and China (over 1.4 billion).
+*   **Africa's Growth:** Many African nations have experienced rapid population growth in recent decades.
+*   **Asia's Dominance:** Asia holds the largest overall population due to the sheer size of countries like India and China.
+*   **Small Island Nations Vulnerability:** The list highlights the challenges faced by small island nations, often with limited resources and significant vulnerability to environmental and economic changes.
+*   **Dependent Territories:** The inclusion of dependent territories (e.g., Gibraltar, Bermuda, Puerto Rico) demonstrates the complexities of population statistics and governance.
+*   **Data Accuracy:** It's important to remember that population data can vary in accuracy depending on the quality of census data and the methods used for collection.
+
+**Important Considerations When Using This List:**
+
+*   **Date of Data:** Always check the date of the data to understand its relevance.
+*   **Source Reliability:** Be aware of the source of the data and its potential biases.
+*   **Methodology:** Understand the methodology used to collect the data (e.g., census vs. estimates).
+*   **Updates:** Population figures are constantly changing, so it's essential to consult the most recent data available.
+
+**How to Use This List Effectively:**
+
+*   **Comparative Analysis:** Use it to compare population sizes, growth rates, and demographic characteristics of different countries.
+*   **Research:** It's a valuable starting point for research on population trends, demographics, and related issues.
+*   **Data Visualization:**  This data can be used to create maps, charts, and graphs to visually represent population patterns.
+
+**To help me provide you with even more targeted information, could you tell me:**
+
+*   What specifically are you interested in learning about regarding this list? (e.g., specific countries, population growth trends, demographic characteristics, etc.)Exit code: 0
+=========================================
+
+TEST 39: Multiple Quick Tests
+Command: ./hvsum --no-qna https://httpbin.org/html && ./hvsum --no-qna https://httpbin.org/json && ./hvsum --no-qna https://httpbin.org/robots.txt
+---
+🌐 Fetching content from: https://httpbin.org/html
+This excerpt details the life and tragic fate of Perth, the blacksmith aboard the whaling ship in Herman Melville’s *Moby-Dick*. Perth, a skilled artisan, was perpetually employed by the ship’s crew, repairing and crafting their tools and equipment, demonstrating a quiet and diligent work ethic. His peculiar, slightly staggering gait initially sparked curiosity among the sailors, leading to the revelation of his deeply sorrowful past. Perth’s story unfolds as a tale of devastating loss: at nearly sixty, he suffered a horrific accident – the amputation of both feet – caused by a burglar, known as the “Bottle Conjuror,” who had infiltrated his home. 
+
+This burglary, fueled by a cunningly disguised entrance, resulted in the complete robbery of his possessions and the destruction of his family life. The incident occurred during a dark winter’s night, and the loss of his limbs was a direct consequence of this criminal act. Prior to this tragedy, Perth had enjoyed a fulfilling life as a respected craftsman, a devoted husband, and a father to three children, regularly attending church. 
+
+The narrative emphasizes the cruel irony of his demise, highlighting the timing of his suffering and the profound grief it caused his widow and children. Perth’s story serves as a poignant illustration of misfortune and the unpredictable nature of fate, adding a layer of melancholy to the broader themes of the novel, particularly concerning human vulnerability and the destructive power of chaos. His life, marked by both skill and sorrow, ultimately underscores the fragility of happiness and the potential for sudden, irreversible loss.🌐 Fetching content from: https://httpbin.org/json
+🤖 Generating comprehensive summary with gemma3...
+## Sample Slide Show Summary
+
+This slide show, titled “Sample Slide Show,” was created by “Yours Truly” and published on “date of publication.” The presentation’s primary focus is an overview of WonderWidgets, highlighting their benefits and target audience. The initial slide, “Wake up to WonderWidgets!” serves as an introductory statement, likely designed to immediately capture the audience’s attention. The “Overview” slide further breaks down the presentation, detailing the key areas that will be covered. Specifically, it lists two core questions: “Why WonderWidgets are great” and “Who buys WonderWidgets,” suggesting a sales or marketing-oriented presentation. The slide show’s structure indicates a deliberate approach to introducing WonderWidgets, starting with a compelling headline and then systematically addressing the reasons for their appeal and the customer base they serve. The use of “Yours Truly” as the author suggests a personal or direct communication style. The source URL, https://httpbin.org/json, indicates this is a JSON representation of the slide show data, likely generated for testing or demonstration purposes rather than a live, interactive presentation.🌐 Fetching content from: https://httpbin.org/robots.txt
+🤖 Generating comprehensive summary with gemma3...
+## Robots.txt Analysis Summary
+
+This document analyzes the `robots.txt` file hosted at `https://httpbin.org/robots.txt`, a standard file used by web developers to instruct search engine crawlers (bots) about which parts of a website they are allowed to access and index. The primary purpose of this file is to manage search engine crawling, preventing the indexing of sensitive or unimportant content and optimizing crawl efficiency.  The file contains a single directive: `User-agent: *` and `Disallow: /deny`.
+
+The `User-agent: *` directive specifies that this rule applies to *all* user agents, which includes major search engines like Googlebot, Bingbot, and Yandexbot. This broad application indicates a desire to control access for all crawlers.  Following this directive, the `Disallow: /deny` rule explicitly prohibits all user agents from accessing the `/deny` directory on the website.
+
+The presence of `/deny` suggests a deliberate attempt to test or demonstrate a robots.txt rule.  The `httpbin.org` domain is a service specifically designed for testing HTTP requests and responses, making this a common practice.  The `/deny` directory likely returns a 404 Not Found error, confirming that the rule is functioning as intended.
+
+This simple `robots.txt` file effectively demonstrates the core functionality of the protocol: defining access restrictions for specific parts of a website.  It’s a fundamental tool for webmasters to control search engine behavior and maintain website integrity.  Analyzing this file provides a basic understanding of how robots.txt files are structured and utilized.  The use of `httpbin.org` for testing highlights the importance of using reliable testing environments when implementing and validating robots.txt configurations.  Ultimately, this file serves as a clear example of a basic, yet functional, robots.txt implementation.Exit code: 0
+=========================================
+
+TEST 40: Empty Query Search
+Command: ./hvsum -s --no-qna ''
+---
+🔍 Performing web search for: 
+🚀 Performing parallel web searches...
+Error: no search results found for query: 
+Exit code: 1
+=========================================
+
+TEST 41: Very Long Query
+Command: ./hvsum -s --no-qna 'this is a very long query that goes on and on and tests how the system handles extremely verbose input that might cause issues with processing or display formatting'
+---
+🔍 Performing web search for: this is a very long query that goes on and on and tests how the system handles extremely verbose input that might cause issues with processing or display formatting
+🚀 Performing parallel web searches...
+Error: no search results found for query: this is a very long query that goes on and on and tests how the system handles extremely verbose input that might cause issues with processing or display formatting
+Exit code: 1
+=========================================
+
+TEST 42: Interactive Help Commands
+Command: echo -e '/help\n/history\n/exit\nn\n' | ./hvsum https://httpbin.org/html
+---
+🌐 Fetching content from: https://httpbin.org/html
+This excerpt details the life and tragic fate of Perth, the blacksmith aboard the whaling ship in Herman Melville’s *Moby-Dick*. Perth, a skilled artisan, was perpetually employed by the ship’s crew, repairing and crafting their tools and equipment, demonstrating a quiet and diligent work ethic. His peculiar, slightly staggering gait initially sparked curiosity among the sailors, leading to the revelation of his deeply sorrowful past. Perth’s story unfolds as a tale of devastating loss: at nearly sixty, he suffered a horrific accident – the amputation of both feet – caused by a burglar, known as the “Bottle Conjuror,” who had infiltrated his home. 
+
+This burglary, fueled by a cunningly disguised entrance, resulted in the complete robbery of his possessions and the destruction of his family life. The incident occurred during a dark winter’s night, and the loss of his limbs was a direct consequence of this criminal act. Prior to this tragedy, Perth had enjoyed a fulfilling life as a respected craftsman, a devoted husband, and a father to three children, regularly attending church. 
+
+The narrative emphasizes the cruel irony of his demise, highlighting the timing of his suffering and the profound grief it caused his widow and children. Perth’s story serves as a poignant illustration of misfortune and the unpredictable nature of fate, adding a layer of melancholy to the broader themes of the novel, particularly concerning human vulnerability and the destructive power of chaos. His life, marked by both skill and sorrow, ultimately underscores the fragility of happiness and the potential for sudden, irreversible loss.🤖 Interactive Session: Cached Summary
+💡 Type /help for commands, /history to see full conversation, or /exit to quit
+
+
+🆘 Available Commands:
+  /help, /h         - Show this help
+  /history, /s      - Show conversation history for this session
+  /clear, /c        - Clear screen
+  /info, /i         - Show current session info
+  /exit, /bye, /quit - Exit interactive mode
+
+💡 Session Management:
+  - Sessions can be saved with custom names when exiting
+  - To resume a session, use: hvsum --session <name>
+  - List all sessions with: hvsum --list-sessions
+
+📜 Conversation History:
+  [Assistant] I'm ready to answer questions about: Cached Summary
+Please choose [S]ave, [D]iscard, or Delete [R]ecord:
+
+🗑️ Session discarded. Cache cleared.
+👋 Goodbye!
+Exit code: 0
+=========================================
+
+=== TEST SUITE COMPLETED ===
+Finished: Sat Jun 14 10:45:05 PM CEST 2025
+Results saved to: final_test_results_20250614_223430.txt

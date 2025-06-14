@@ -1,171 +1,0 @@
-Running test: CRISPR
-🌐 Fetching content from: https://en.wikipedia.org/wiki/CRISPR
-🔍 Enhancing summary with web search...
-🚀 Performing parallel searches...
-🤖 Generating comprehensive summary with gemma3...
-[KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â 
-  Okay, here’s a comprehensive summary of CRISPR-Cas systems, incorporating information from the  
-  Wikipedia article and the provided search results.                                              
-                                                                                                  
-  **CRISPR-Cas Systems: A Revolutionary Gene Editing Technology**                                 
-                                                                                                  
-  CRISPR-Cas (Clustered Regularly Interspaced Short Palindromic Repeats – CRISPR associated       
-  protein) systems are a naturally occurring defense mechanism used by bacteria and archaea to    
-  protect themselves against viruses and plasmids.  Scientists have harnessed this system to      
-  create a powerful gene editing tool with unprecedented precision.                               
-                                                                                                  
-  **How it Works – The Core Mechanism**                                                           
-                                                                                                  
-  1. **Viral Defense:** Originally, CRISPR-Cas systems evolved as an adaptive immune system. When 
-  a virus (or plasmid) infects a bacterium, the bacterium incorporates a small piece of the viral 
-  DNA into its own genome within the CRISPR region.                                               
-  2. **CRISPR RNA (crRNA) Production:** The CRISPR region then produces short RNA molecules called
-  crRNAs. Each crRNA contains a sequence that is complementary to a specific sequence in the      
-  invading virus or plasmid.                                                                      
-  3. **Cas Protein Guided Targeting:** The crRNA associates with a Cas protein (e.g., Cas9). This 
-  complex then scans the cell for DNA sequences that match the crRNA.                             
-  4. **DNA Cleavage:** When a match is found, the Cas protein (typically Cas9) cuts the target DNA,
-  disabling the virus or plasmid.                                                                 
-                                                                                                  
-  **CRISPR-Cas9: The Most Popular System**                                                        
-                                                                                                  
-  The most widely used CRISPR-Cas system is CRISPR-Cas9, which utilizes a single Cas9 protein     
-  guided                                                                                          
-  by a crRNA.  This system is incredibly versatile because:                                       
-                                                                                                  
-  • **Programmability:** Researchers can design new crRNAs to target virtually any DNA sequence.  
-  • **Double-Strand Breaks:** Cas9 creates double-strand breaks in DNA, leading to gene disruption
-  or allowing for precise gene insertion.                                                         
-  • **Base Editing:** Newer variations of Cas9 can perform precise base editing, changing single  
-  DNA letters without cutting the DNA strand.                                                     
-                                                                                                  
-  **Cascade – The Bacterial System**                                                              
-                                                                                                  
-  The search results highlight the importance of the *E. coli* Cascade system.  This system,      
-  studied extensively, demonstrates how CRISPR-Cas functions in bacteria. Key findings include:   
-                                                                                                  
-  • **PAM Recognition:** The Cascade system, like other CRISPR-Cas systems, requires a specific   
-  DNA sequence called a PAM (Protospacer Adjacent Motif) to be present immediately adjacent to the
-  target DNA. This PAM sequence is crucial for Cas9 binding and DNA cleavage.                     
-  • **Complex Assembly:** The Cascade system involves a complex assembly of proteins, including   
-  Cas6e, Cas5e, Cas7, and Cas2, all working together to recognize and cut DNA.                    
-  • **Transcriptional Regulation:** The Cascade system also plays a role in regulating gene       
-  expression, influencing the transcription of the CRISPR region itself.                          
-                                                                                                  
-  **Applications**                                                                                
-                                                                                                  
-  CRISPR-Cas technology has a vast range of applications, including:                              
-                                                                                                  
-  • **Gene Therapy:** Correcting genetic defects in human cells.                                  
-  • **Drug Discovery:** Identifying new drug targets.                                             
-  • **Agricultural Research:** Improving crop yields and disease resistance.                      
-  • **Basic Research:** Studying gene function and biological processes.                          
-                                                                                                  
-  **Key Differences Highlighted by Search Results:**                                              
-                                                                                                  
-  • The search results emphasize the bacterial origin and the complex, multi-protein assembly of  
-  the Cascade system, providing a deeper understanding of the underlying mechanism.               
-  • The information about PAM recognition and its role in Cas9 binding is reinforced by the search
-  results.                                                                                        
-  • The discussion of transcriptional regulation adds another layer of complexity to the system’s 
-  function.                                                                                       
-                                                                                                  
-  --------                                                                                        
-                                                                                                  
-  Would you like me to delve deeper into a specific aspect of CRISPR-Cas systems, such as:        
-                                                                                                  
-  • The different types of CRISPR-Cas systems?                                                    
-  • The ethical considerations surrounding CRISPR technology?                                     
-  • The latest advancements in CRISPR-Cas research?                                               
-
-🤖 Interactive Session: CRISPR (🔍 web search enabled)
-💡 Type /help for commands, /history to see full conversation, or /exit to quit
-
-[KGenerating detailed summary ✓
-[K🤔 Processing.[K🤔 Processing..[K
-[K
-  CRISPR stands for clustered regularly interspaced short palindromic repeats.                    
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K
-[K
-  CRISPR-Cas9 works for gene editing as follows: CRISPR-Cas9, utilizing CRISPR sequences as a     
-  guide,                                                                                          
-  allows Cas9 enzymes to recognize and open up specific strands of DNA that are complementary to  
-  the CRISPR sequence. This process enables researchers to edit genes within living organisms. The
-  CRISPR-Cas9 genome editing technique was recognized by the Nobel Prize in Chemistry in 2020     
-  awarded to Emmanuelle Charpentier and Jennifer Doudna. SEARCH_NEEDED: [a detailed explanation of
-  the mechanism of Cas9 enzyme and its interaction with DNA]                                      
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K
-[K
-  The development of the CRISPR-Cas9 genome editing technique was recognized by the Nobel Prize in
-  Chemistry in 2020 awarded to Emmanuelle Charpentier and Jennifer Doudna.                        
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.
-🔍 Searching for additional information...[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K
-[K
-  Yes, there are ethical concerns surrounding CRISPR technology. According to the search results, 
-  these concerns largely stem from the power and technical limitations of the technology itself.  
-  Specifically, there are concerns about the possibilities of limited on-target editing efficiency.
-  Furthermore, several countries, including those in Western Europe, have discouraged or banned   
-  research on germline editing due to these ethical and safety concerns. There’s an international 
-  effort led by the US, UK, and China to harmonize regulation of the application of genome editing
-  technologies. The search results highlight that CRISPR is a technology with the potential to be 
-  used in many different ways, raising many ethical questions.                                    
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...
-🔍 Searching for additional information...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K
-[K
-  A ‘gene drive’ is a self-propagating genetic element that biases inheritance within a population,
-  and it relates to CRISPR through the use of CRISPR technology to facilitate its creation and    
-  operation. According to the search results, gene drives involve inserting both the gene to be   
-  spread and genes coding for CRISPR proteins – specifically, Cas9 – into a donor template. This  
-  allows the CRISPR system to cut and repair the target DNA sequence, effectively spreading the   
-  gene drive throughout the population.                                                           
-                                                                                                  
-  Specifically, the search results detail different types of gene drives, such as "homing drives" 
-  which replace a wild-type allele with a copy of the drive element itself. The CRISPR system,    
-  guided by the gRNA and Cas9 protein, is fundamental to the mechanism of action, enabling the    
-  repeated cutting and repair that fuels the propagation of the gene drive. The search results    
-  emphasize that gene drives are a technologically advanced application of CRISPR, utilizing it to
-  create a self-sustaining mechanism for spreading a particular gene through a population.        
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.
-🔍 Searching for additional information...[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K
-[K
-  Yes, CRISPR has been used in human trials, and the results have been encouraging. According to  
-  the search results, in late 2023, the first-ever approval of CRISPR-based medicine, Casgevy, was
-  achieved. Casgevy is a cure for sickle cell disease (SCD) and transfusion-dependent beta        
-  thalassemia (TDT). More than 200 people have been treated with experimental CRISPR-based        
-  therapies in clinical trials, as highlighted by the search results. The document content        
-  specifically states that Victoria is one of more than 200 people treated with CRISPR-based      
-  therapies. These trials are focused on treating a variety of diseases, including cancer,        
-  hematological, endocrine, and immune system diseases, as well as in diagnostics, according to   
-  the search results.                                                                             
-
-
-
-[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K
-[K
-  According to the search results, some of the potential future applications of this technology   
-  include treating a variety of diseases, including cancer, hematological, endocrine, and immune  
-  system diseases, as well as in diagnostics.                                                     
-
-
-
-💾 Session saved as: crispr
-👋 Goodbye!
-
---- Test Case Finished: CRISPR ---
-
-

@@ -1,0 +1,89 @@
+Exit code: 0
+=========================================
+
+TEST 10: Search Only - Recent Topic
+Command: ./hvsum -s --no-qna 'artificial intelligence 2024'
+---
+🔍 Performing web search for: artificial intelligence 2024
+🚀 Performing parallel web searches...
+🤖 Generating comprehensive summary with gemma3...
+Here’s a comprehensive summary of the state of Artificial Intelligence in 2024, based solely on the provided search results:
+
+**Artificial Intelligence in 2024: Key Trends and Developments**
+
+According to the 2024 AI Index Report from Stanford HAI, and insights from Forbes and MIT Technology Review, 2024 is shaping up to be a significant year for Artificial Intelligence, marked by increased accessibility and broader adoption.
+
+**1. Increased Accessibility & Smaller Models:** A central trend highlighted across all sources is the move towards more accessible AI. The release of ChatGPT a year prior has opened the door for a wider range of individuals to engage with AI.  Furthermore, there’s a noticeable shift towards experimentation with “a million little AI models.” This suggests a move away from relying solely on large, complex models like ChatGPT, and towards a landscape where individuals and smaller teams can utilize and customize smaller, more specialized AI tools.
+
+**2. Practical Applications for Non-Tech Users:** MIT Technology Review predicts that generative AI is poised to become genuinely useful for the average person. This indicates a move beyond purely technical applications and a growing integration of AI into everyday tasks.
+
+**3. Top 5 AI Trends (Forbes):** Forbes identifies five key trends driving the AI landscape in 2024:
+    *   **Generative AI Expansion:** The continued growth and refinement of generative AI models remains a dominant force.
+    *   **Increased Customization:**  The trend of working with smaller, specialized AI models is accelerating.
+    *   **AI Integration into Daily Life:**  AI is becoming more seamlessly integrated into everyday activities.
+    *   **Rise of AI Agents:** (Implied from the broader trend) – The development and deployment of AI agents capable of performing complex tasks is expected to increase.
+    *   **Responsible AI Development:** (Implied from the broader trend) –  Growing focus on ethical considerations and responsible development practices within the AI field.
+
+**Source Attribution:** All information is derived from the provided DuckDuckGo links:
+*   [https://hai.stanford.edu/ai-index/2024-ai-index-report](https://hai.stanford.edu/ai-index/2024-ai-index-report)
+*   [https://www.technologyreview.com/2024/01/04/1086046/whats-next-for-ai-in-2024/](https://www.technologyreview.com/2024/01/04/1086046/whats-next-for-ai-in-2024/)
+*   [https://www.forbes.com/sites/bernardmarr/2023/11/01/the-top-5-artificial-intelligence-trends-for-2024/](https://www.forbes.com/sites/bernardmarr/2023/11/01/the-top-5-artificial-intelligence-trends-for-2024/)Exit code: 0
+=========================================
+
+TEST 11: URL with Search Enhancement
+Command: ./hvsum -s --no-qna https://httpbin.org/html
+---
+🌐 Fetching content from: https://httpbin.org/html
+This excerpt from Herman Melville’s *Moby-Dick* centers around the enigmatic figure of Perth, an aging blacksmith, and his unsettling presence aboard the *Pequod*. Perth’s daily routine – tirelessly hammering on harpoon heads and boat furniture – is presented with a stark, almost ritualistic solemnity, marked by a peculiar gait and a history shrouded in tragedy. He’s a man consumed by his craft, seemingly oblivious to the larger, more ominous events unfolding around him. 
+
+The narrative reveals that Perth’s life was once filled with domestic happiness: a loving wife, three children, and regular church attendance, all facilitated by his blacksmithing – even the ringing of his hammer served as a lullaby for his infants. However, this idyllic existence was brutally shattered by a home invasion perpetrated by a “Bottle Conjuror,” a burglar who robbed the family and, crucially, led the blacksmith to his death. This event is presented as a catalyst for a profound and inexplicable tragedy.
+
+Adding to the unsettling atmosphere, Perth’s work is directly linked to Ahab’s obsessive pursuit of Moby Dick. Ahab, aware of Perth’s utility, utilizes him extensively, modifying his boat and employing his skills to prepare for the hunt. The chapter emphasizes Ahab’s secretive preparations, highlighting his singular focus on confronting the whale.  Furthermore, the narrative introduces Fedallah, a mysterious and potentially dangerous figure who has quietly integrated himself into Ahab’s crew, suggesting a web of intrigue and hidden agendas.  Perth’s relentless work, coupled with these other developments, contributes to a growing sense of impending doom and underscores the novel’s exploration of obsession, fate, and the destructive nature of human ambition. The chapter’s focus on Perth’s seemingly pointless labor serves as a microcosm of the larger, chaotic forces at play in the story.Exit code: 0
+=========================================
+
+TEST 12: Markdown Output
+Command: ./hvsum -m --no-qna https://httpbin.org/json
+---
+🌐 Fetching content from: https://httpbin.org/json
+🤖 Generating comprehensive summary with gemma3...
+[KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ 
+  # Sample Slide Show Summary                                                                     
+                                                                                                  
+  ## Key Points                                                                                   
+                                                                                                  
+  • This slide show, titled "Sample Slide Show," was created by "Yours Truly" and published on    
+  “date of publication.”                                                                          
+  • The presentation’s primary focus is introducing WonderWidgets, highlighting their benefits and
+  identifying their target customer base.                                                         
+  • The initial slide, "Wake up to WonderWidgets!", serves as an introductory hook, immediately   
+  drawing attention to the product.                                                               
+  • The “Overview” slide details the core content of the presentation, outlining the two key areas
+  explored: the reasons why WonderWidgets are desirable and the demographic of potential buyers.  
+  • The presentation’s structure suggests a straightforward approach to product introduction,     
+  likely aimed at quickly conveying value propositions and market segmentation.                   
+                                                                                                  
+  ## Overview of Content                                                                          
+                                                                                                  
+  The slide show’s structure is built around a concise overview. The first slide, "Wake up to     
+  WonderWidgets!", immediately establishes the product's name and aims to generate interest. The  
+  subsequent “Overview” slide breaks down the presentation into two distinct sections.  The first 
+  section, implicitly covered in the “Wake up to WonderWidgets!” slide, likely details the        
+  advantages of using WonderWidgets.  The second section, also presented in the “Overview” slide, 
+  identifies the target audience for these widgets.  This suggests a marketing strategy focused on
+  clearly articulating the product's value and then tailoring the message to specific customer    
+  groups.  The use of a slide show format indicates a visual presentation, likely incorporating   
+  images or graphics alongside the text.  The source URL, https://httpbin.org/json, suggests this 
+  is a placeholder or test presentation, as it points to a service that returns JSON data – a     
+  common format for data exchange in web applications.  The lack of detailed content within the   
+  slides implies this is a preliminary draft or a demonstration of the slide show structure rather
+  than a fully developed marketing or sales presentation.  Further slides would be needed to      
+  elaborate on the specific features and benefits of WonderWidgets and to provide more granular   
+  information about the target customer segments.                                                 
+
+Exit code: 0
+=========================================
+
+TEST 13: Markdown + Search
+Command: ./hvsum -m -s --no-qna 'Docker containers'
+---
+🔍 Performing web search for: Docker containers
