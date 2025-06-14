@@ -1,10 +1,10 @@
 package main
 
 import (
-	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -12,7 +12,9 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/atotto/clipboard"
 	"github.com/charmbracelet/glamour"
+	"github.com/chzyer/readline"
 	"github.com/go-shiori/go-readability"
 	"github.com/ollama/ollama/api"
 	"github.com/spf13/pflag"
@@ -23,10 +25,12 @@ const appName = "hvsum"
 // Config holds all user-configurable settings
 type Config struct {
 	DefaultModel  string `json:"default_model"`
+	DisablePager  bool   `json:"disable_pager"`
+	DisableQnA    bool   `json:"disable_qna"`
 	SystemPrompts struct {
 		Summary  string `json:"summary"`
 		Question string `json:"question"`
-		FollowUp string `json:"follow_up"`
+		QnA      string `json:"qna"`
 		Markdown string `json:"markdown"`
 	} `json:"system_prompts"`
 	DefaultLength string `json:"default_length"` // short, medium, long, detailed
@@ -43,8 +47,10 @@ var lengthMap = map[string]string{
 var (
 	length     = pflag.StringP("length", "l", "", "Summary length: short, medium, long, detailed")
 	markdown   = pflag.BoolP("markdown", "M", false, "Format output as structured markdown")
+	copyToClip = pflag.BoolP("copy", "c", false, "Copy summary to clipboard")
+	saveToFile = pflag.StringP("save", "s", "", "Save summary to file")
 	showHelp   = pflag.BoolP("help", "h", false, "Show help message")
-	showConfig = pflag.BoolP("config", "c", false, "Show current configuration")
+	showConfig = pflag.Bool("config", false, "Show current configuration")
 )
 
 func main() {
@@ -85,13 +91,13 @@ func main() {
 	}
 	link := args[0]
 
-	// Determine the effective length setting for the initial summary
+	// Determine the effective length setting
 	effectiveLength := *length
 	if effectiveLength == "" {
 		effectiveLength = config.DefaultLength
 	}
 	if effectiveLength == "" {
-		effectiveLength = "detailed" // Fallback default
+		effectiveLength = "detailed" // fallback default
 	}
 
 	fmt.Fprintf(os.Stderr, "Fetching content from: %s\n", link)
@@ -102,47 +108,244 @@ func main() {
 	}
 
 	// Generate initial summary
-	initialPrompt := buildUserPrompt("", effectiveLength, textContent, pageTitle)
-	conversationContext, err := generateOllamaResponse(config.DefaultModel, config.SystemPrompts.Summary, initialPrompt, nil, *markdown)
+	initialSummary, err := generateInitialSummary(config, effectiveLength, *markdown, textContent, pageTitle)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error generating initial summary: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error generating summary: %v\n", err)
 		os.Exit(1)
 	}
 
-	startInteractiveSession(conversationContext, pageTitle, config, *markdown)
+	// Handle clipboard copy
+	if *copyToClip {
+		err := clipboard.WriteAll(initialSummary)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error copying to clipboard: %v\n", err)
+		} else {
+			fmt.Fprintf(os.Stderr, "Summary copied to clipboard!\n")
+		}
+	}
+
+	// Handle file save
+	if *saveToFile != "" {
+		err := os.WriteFile(*saveToFile, []byte(initialSummary), 0644)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error saving to file: %v\n", err)
+		} else {
+			fmt.Fprintf(os.Stderr, "Summary saved to %s\n", *saveToFile)
+		}
+	}
+
+	// Display summary - use pager if enabled, otherwise display directly
+	if config.DisablePager {
+		fmt.Fprintln(os.Stderr, "")
+		renderToConsole(initialSummary, *markdown)
+		if !config.DisableQnA {
+			fmt.Fprintln(os.Stderr, "\n"+strings.Repeat("─", 60))
+			fmt.Fprintln(os.Stderr, "Ask questions about the content above (Ctrl+C or Ctrl+D to exit):")
+		}
+	} else {
+		renderWithPager(initialSummary, *markdown)
+		if !config.DisableQnA {
+			fmt.Fprintln(os.Stderr, "Ask questions about the content above (Ctrl+C or Ctrl+D to exit):")
+		}
+	}
+
+	// Start interactive Q&A session if not disabled
+	if !config.DisableQnA {
+		startInteractiveSession(initialSummary, config, *markdown)
+	}
 }
 
-func startInteractiveSession(context []int, pageTitle string, config *Config, renderMarkdown bool) {
-	scanner := bufio.NewScanner(os.Stdin)
+func renderWithPager(content string, useMarkdown bool) {
+	finalContent := content
+	if useMarkdown {
+		rendered, err := glamour.Render(content, "auto")
+		if err != nil {
+			fmt.Printf("Markdown rendering failed. Using raw output:\n\n")
+		} else {
+			finalContent = rendered
+		}
+	}
+
+	// Use less with specific options for better display
+	cmd := exec.Command("less", "-R", "-S", "-F", "-X")
+	cmd.Stdin = strings.NewReader(finalContent)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	// Set the terminal for less
+	cmd.Env = append(os.Environ(), "LESS=-R -S -F -X")
+
+	if err := cmd.Run(); err != nil {
+		// Fallback to direct output if less fails
+		fmt.Print(finalContent)
+	}
+}
+
+func renderToConsole(content string, useMarkdown bool) {
+	finalContent := content
+	if useMarkdown {
+		rendered, err := glamour.Render(content, "auto")
+		if err != nil {
+			fmt.Printf("Markdown rendering failed. Using raw output:\n\n%s\n", content)
+		} else {
+			finalContent = rendered
+		}
+	}
+	fmt.Print(finalContent)
+	fmt.Println() // Add a newline for better spacing in chat
+}
+
+func renderAndDisplay(content string, useMarkdown bool) {
+	finalContent := content
+	if useMarkdown {
+		rendered, err := glamour.Render(content, "auto")
+		if err != nil {
+			fmt.Printf("Markdown rendering failed. Using raw output:\n\n")
+		} else {
+			finalContent = rendered
+		}
+	}
+
+	// Use a pager to display the content
+	pager := os.Getenv("PAGER")
+	if pager == "" {
+		pager = "less"
+	}
+	path, err := exec.LookPath(pager)
+	if err != nil {
+		// Pager not found, fallback to printing
+		fmt.Print(finalContent)
+		return
+	}
+
+	cmd := exec.Command(path, "-R")
+	cmd.Stdin = strings.NewReader(finalContent)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	if err := cmd.Run(); err != nil {
+		// Pager returned an error (e.g., user quit), just print as a fallback
+		fmt.Print(finalContent)
+	}
+}
+
+func generateInitialSummary(config *Config, length string, renderMarkdown bool, textContent, pageTitle string) (string, error) {
+	systemPrompt := config.SystemPrompts.Summary
+	if renderMarkdown {
+		systemPrompt += "\n\n" + config.SystemPrompts.Markdown
+	}
+	userPrompt := buildUserPrompt("", length, textContent, pageTitle)
+
+	fmt.Fprintf(os.Stderr, "Generating summary with %s...\n\n", config.DefaultModel)
+
+	client, err := api.ClientFromEnvironment()
+	if err != nil {
+		return "", fmt.Errorf("failed to connect to Ollama: %v", err)
+	}
+
+	stream := false // Never stream summary, so we can capture it
+	req := &api.GenerateRequest{
+		Model:  config.DefaultModel,
+		System: systemPrompt,
+		Prompt: userPrompt,
+		Stream: &stream,
+	}
+
+	var responseBuilder strings.Builder
+	err = client.Generate(context.Background(), req, func(resp api.GenerateResponse) error {
+		responseBuilder.WriteString(resp.Response)
+		return nil
+	})
+
+	if err != nil {
+		if strings.Contains(err.Error(), "model '"+config.DefaultModel+"' not found") {
+			return "", fmt.Errorf("model '%s' not found. Please run: ollama pull %s", config.DefaultModel, config.DefaultModel)
+		}
+		return "", fmt.Errorf("generation failed: %v", err)
+	}
+
+	return responseBuilder.String(), nil
+}
+
+func startInteractiveSession(initialSummary string, config *Config, renderMarkdown bool) {
+	client, err := api.ClientFromEnvironment()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Could not start interactive session: %v\n", err)
+		return
+	}
+
+	messages := []api.Message{
+		{
+			Role:    "system",
+			Content: config.SystemPrompts.QnA,
+		},
+		{
+			Role:    "assistant",
+			Content: "Here is the summary of the document we are discussing:\n\n" + initialSummary,
+		},
+	}
+
+	// Set up readline for proper terminal input handling
+	rl, err := readline.New("> ")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Could not initialize readline: %v\n", err)
+		return
+	}
+	defer rl.Close()
+
 	for {
-		fmt.Fprint(os.Stderr, "> ")
-		if !scanner.Scan() {
-			break // Exit on Ctrl+D or other EOF
+		question, err := rl.Readline()
+		if err != nil {
+			if err == readline.ErrInterrupt || err == io.EOF {
+				break
+			}
+			fmt.Fprintf(os.Stderr, "Error reading input: %v\n", err)
+			continue
 		}
 
-		question := scanner.Text()
 		if strings.TrimSpace(question) == "" {
 			continue
 		}
 
-		// For follow-up, we don't pass the full textContent again.
-		// The context from the previous turn handles memory.
-		// We use a specific, concise "short" length for answers.
-		followUpPrompt := buildUserPrompt(question, "short", "", pageTitle)
-		newContext, err := generateOllamaResponse(config.DefaultModel, config.SystemPrompts.FollowUp, followUpPrompt, context, renderMarkdown)
+		messages = append(messages, api.Message{Role: "user", Content: question})
+
+		isStreaming := !renderMarkdown // Stream if not using markdown
+		req := &api.ChatRequest{
+			Model:    config.DefaultModel,
+			Messages: messages,
+			Stream:   &isStreaming,
+		}
+
+		var responseBuilder strings.Builder
+		fmt.Fprintf(os.Stderr, "\n")
+		err = client.Chat(context.Background(), req, func(resp api.ChatResponse) error {
+			content := resp.Message.Content
+			responseBuilder.WriteString(content)
+			if isStreaming {
+				fmt.Print(content)
+			}
+			return nil
+		})
+		if !isStreaming { // Add a newline for markdown mode for better spacing
+			fmt.Fprintf(os.Stderr, "\n")
+		}
+
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error generating response: %v\n", err)
-			// Don't update context on error, just continue
 			continue
 		}
-		context = newContext // Update context for the next turn
+
+		fullResponse := responseBuilder.String()
+		messages = append(messages, api.Message{Role: "assistant", Content: fullResponse})
+
+		if !isStreaming {
+			renderToConsole(fullResponse, renderMarkdown)
+		} else {
+			fmt.Println() // Ensure there's a newline after streaming
+		}
 	}
 
-	if err := scanner.Err(); err != nil {
-		fmt.Fprintf(os.Stderr, "Error reading input: %v\n", err)
-	}
-
-	fmt.Fprintln(os.Stderr, "\nExiting.")
+	fmt.Fprintln(os.Stderr, "\nExiting interactive mode.")
 }
 
 func fetchAndParseURL(urlString string) (string, string, error) {
@@ -181,85 +384,39 @@ func fetchAndParseURL(urlString string) (string, string, error) {
 }
 
 func buildUserPrompt(userMessage, length, textContent, pageTitle string) string {
-	var instruction, lengthInstruction string
+	lengthInstruction, exists := lengthMap[length]
+	if !exists {
+		lengthInstruction = lengthMap["medium"]
+	}
 
+	var instruction string
 	if userMessage != "" {
-		// This prompt is for both the initial question and follow-ups.
-		// The `FollowUp` system prompt will guide the model for interactive mode.
-		lengthInstruction = "Your answer **must be a maximum of 2 sentences**. Be concise and directly answer the question."
-		instruction = fmt.Sprintf(`Question: "%s"
+		instruction = fmt.Sprintf(`Your task is to answer the following question based on the webpage content.
 
-CRITICAL LENGTH REQUIREMENT: %s`, userMessage, lengthInstruction)
+Question: "%s"
+
+CRITICAL LENGTH REQUIREMENT: %s
+
+IMPORTANT: Count your sentences/paragraphs as you write. When you reach the exact limit specified above, STOP immediately. Do not exceed the limit under any circumstances.
+
+Page title: %s
+
+REMINDER: Follow the length requirement exactly. Count as you go and stop when you reach the limit.`, userMessage, lengthInstruction, pageTitle)
 	} else {
-		// This is for the initial summary.
-		lengthInstruction, exists := lengthMap[length]
-		if !exists {
-			lengthInstruction = lengthMap["medium"]
-		}
 		instruction = fmt.Sprintf(`Your task is to create a comprehensive summary of the following webpage content.
 
 CRITICAL LENGTH REQUIREMENT: %s
 
-Page title: %s`, lengthInstruction, pageTitle)
+IMPORTANT: Count your sentences/paragraphs as you write. When you reach the exact limit specified above, STOP immediately. Do not exceed the limit under any circumstances.
+
+Page title: %s
+
+Focus on the main content, ignore navigation, footers, and boilerplate text.
+
+REMINDER: Follow the length requirement exactly. Count as you go and stop when you reach the limit.`, lengthInstruction, pageTitle)
 	}
 
-	// Only append the full webpage content if it's provided (i.e., for the initial summary)
-	if textContent != "" {
-		return fmt.Sprintf("%s\n\n--- WEBPAGE CONTENT ---\n%s", instruction, textContent)
-	}
-	return instruction
-}
-
-func generateOllamaResponse(model, system, prompt string, contextIn []int, renderMarkdown bool) ([]int, error) {
-	client, err := api.ClientFromEnvironment()
-	if err != nil {
-		return nil, fmt.Errorf("failed to connect to Ollama: %v", err)
-	}
-
-	stream := !renderMarkdown // Only stream when NOT using markdown
-	req := &api.GenerateRequest{
-		Model:   model,
-		System:  system,
-		Prompt:  prompt,
-		Stream:  &stream,
-		Context: contextIn,
-	}
-
-	var responseBuilder strings.Builder
-	var finalContext []int
-
-	fmt.Fprintf(os.Stderr, "\nGenerating response with %s...\n\n", model)
-	err = client.Generate(context.Background(), req, func(resp api.GenerateResponse) error {
-		responseBuilder.WriteString(resp.Response)
-
-		if !renderMarkdown {
-			fmt.Print(resp.Response)
-		}
-
-		if resp.Done {
-			finalContext = resp.Context
-		}
-		return nil
-	})
-
-	if err != nil {
-		if strings.Contains(err.Error(), "model '"+model+"' not found") {
-			return nil, fmt.Errorf("model '%s' not found. Please run: ollama pull %s", model, model)
-		}
-		return nil, fmt.Errorf("generation failed: %v", err)
-	}
-
-	if renderMarkdown {
-		response := responseBuilder.String()
-		rendered, err := glamour.Render(response, "auto")
-		if err != nil {
-			fmt.Printf("Markdown rendering failed. Raw output:\n\n%s\n", response)
-		} else {
-			fmt.Print(rendered)
-		}
-	}
-
-	return finalContext, nil
+	return fmt.Sprintf("%s\n\n--- WEBPAGE CONTENT ---\n%s", instruction, textContent)
 }
 
 func loadOrInitConfig() (*Config, error) {
@@ -296,46 +453,55 @@ func createDefaultConfig() *Config {
 	return &Config{
 		DefaultModel:  "llama3.2:latest",
 		DefaultLength: "detailed",
+		DisablePager:  false, // Pager enabled by default
+		DisableQnA:    false, // Q&A enabled by default
 		SystemPrompts: struct {
 			Summary  string `json:"summary"`
 			Question string `json:"question"`
-			FollowUp string `json:"follow_up"`
+			QnA      string `json:"qna"`
 			Markdown string `json:"markdown"`
 		}{
 			Summary: `You are a precise, high-quality web content summarizer. Your PRIMARY goal is to follow the exact length constraints provided.
 
 CRITICAL LENGTH ENFORCEMENT:
 - The length requirement is MANDATORY and OVERRIDES all other instructions
-- COUNT sentences as you write and STOP immediately when you reach the limit
+- COUNT sentences as you write: 1, 2, 3... and STOP immediately when you reach the limit
 - NEVER exceed the specified sentence count under any circumstances
+- If you have more to say but reach the limit, STOP anyway - this is not optional
 
 CONTENT RULES:
 - Focus only on the main article content, ignore navigation, ads, footers, and boilerplate
-- Be accurate and factual; do not add information not present in the source
+- Be accurate and factual - do not add information not present in the source
+- Structure your response logically with clear flow
+- Do not mention the source URL or publication details unless specifically relevant
+- End coherently even with strict limits
 
-REMEMBER: Length constraint compliance is your top priority.`,
+REMEMBER: Length constraint compliance is your top priority. Quality is secondary to following the exact sentence count.`,
 
 			Question: `You are a helpful assistant that answers questions based on webpage content. Your PRIMARY goal is to follow the exact length constraints provided.
 
 CRITICAL LENGTH ENFORCEMENT:
 - The length requirement is MANDATORY and OVERRIDES all other instructions
-- COUNT sentences as you write and STOP immediately when you reach the limit
+- COUNT sentences as you write: 1, 2, 3... and STOP immediately when you reach the limit
 - NEVER exceed the specified sentence count under any circumstances
+- If you have more to say but reach the limit, STOP anyway - this is not optional
 
 CONTENT RULES:
 - Answer the specific question asked using only information from the provided webpage
 - Be direct and precise in your response
+- If the webpage doesn't contain enough information to answer fully, say so
+- Provide context when helpful but stay focused on the question
+- End coherently even with strict limits
 
-REMEMBER: Length constraint compliance is your top priority.`,
+REMEMBER: Length constraint compliance is your top priority. Quality is secondary to following the exact sentence count.`,
 
-			FollowUp: `You are a helpful Q&A assistant. The user has already been given a summary of a document. Your task is to answer their follow-up questions based on the document's content, which is in your memory.
+			QnA: `You are an intelligent Q&A assistant. The user has just reviewed a document summary that you have provided. Your task is to answer their follow-up questions.
 
-RULES:
-- Answer concisely and directly.
-- Your answer **must be a maximum of 2 sentences**.
-- Rely on the information from the original document and our conversation history.
-- If you cannot answer based on the context you have, say so.
-- Do not re-introduce the topic; just answer the question.`,
+CRITICAL RULES:
+1.  **Be Concise**: Answer questions directly and concisely. Provide a short, focused response.
+2.  **Use Context First**: Prioritize your answers based on the provided document summary and conversation history.
+3.  **Supplement with General Knowledge**: You are encouraged to use your own general knowledge to provide a more complete answer. However, if you use external information, you MUST state that it is not from the provided document. For example: "According to my general knowledge..." or "The document doesn't mention this, but generally...".
+4.  **Stay on Topic**: Only answer questions related to the document or the ongoing conversation.`,
 
 			Markdown: `FORMAT YOUR ENTIRE RESPONSE AS CLEAN MARKDOWN WITH MANDATORY STRUCTURE:
 
@@ -391,6 +557,8 @@ func printConfig(config *Config) {
 	fmt.Printf("Current Configuration:\n")
 	fmt.Printf("Model: %s\n", config.DefaultModel)
 	fmt.Printf("Default Length: %s\n", config.DefaultLength)
+	fmt.Printf("Disable Pager: %t\n", config.DisablePager)
+	fmt.Printf("Disable Q&A: %t\n", config.DisableQnA)
 	fmt.Printf("Config Location: %s\n", getConfigPath())
 	fmt.Printf("\nAvailable lengths: short, medium, long, detailed\n")
 }
@@ -417,9 +585,11 @@ FLAGS:
 
 	fmt.Printf(`
 EXAMPLES:
-    %s https://example.com                               # Summary then interactive Q&A
-    %s -l short -M https://example.com                   # Short, markdown summary then Q&A
-    %s -c                                                # Show current configuration
+    %s https://example.com                           # Summary then interactive Q&A
+    %s -l short -M https://example.com               # Short, markdown summary then Q&A
+    %s -c https://example.com                        # Copy summary to clipboard
+    %s -s summary.txt https://example.com            # Save summary to file
+    %s --config                                      # Show current configuration
 
 LENGTH OPTIONS (for initial summary):
     short    - 2 sentences exactly
@@ -430,5 +600,7 @@ LENGTH OPTIONS (for initial summary):
 CONFIG:
     Configuration is stored at: ~/.config/hvsum/config.json
     Edit this file to customize the AI model and system prompts.
-`, appName, appName, appName)
+    Set "disable_pager": true to show summary directly in terminal.
+    Set "disable_qna": true to skip the interactive Q&A session.
+`, appName, appName, appName, appName, appName)
 }
