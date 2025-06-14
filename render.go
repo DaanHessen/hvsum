@@ -44,7 +44,8 @@ func RenderWithPager(content string, useMarkdown bool) {
 
 	// Set environment variables for less behavior
 	env := os.Environ()
-	env = append(env, "LESS=-R -S -F -X -E -Ps  -Pm  -PM ")
+	env = append(env, "LESS=-R -S -F -X -E")
+	env = append(env, "LESSCHARSET=utf-8")
 	cmd.Env = env
 
 	if err := cmd.Run(); err != nil {

@@ -92,6 +92,9 @@ func StartInteractiveSession(initialSummary, contextContent string, config *Conf
 			finalQuestion += enhancedContent + "\n\nPlease answer the question using both the document summary and the additional search results above."
 		}
 
+		// Enforce concise answers (2-3 sentences maximum)
+		finalQuestion += "\n\nCRITICAL REQUIREMENT: Provide a direct, concise answer in no more than a couple sentences. Do NOT add extraneous information."
+
 		messages = append(messages, api.Message{Role: "user", Content: finalQuestion})
 
 		isStreaming := !renderMarkdown // Stream if not using markdown
