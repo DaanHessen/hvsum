@@ -1,0 +1,216 @@
+Running test: WW2_Hitler
+Creating default configuration at: /home/daanh/.config/hvsum/config.json
+🌐 Fetching content from: https://en.wikipedia.org/wiki/World_War_II
+🔍 Enhancing summary with web search...
+🚀 Performing parallel searches...
+🤖 Generating comprehensive summary with gemma3...
+[KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¹ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¸ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¼ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ´ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary ¦ [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary § [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â [KGenerating detailed summary   [KGenerating detailed summary  [KGenerating detailed summary â 
+  Okay, here’s a comprehensive summary of World War II, incorporating information from the        
+  provided Wikipedia article and the supplemental search results, aiming for a detailed overview: 
+                                                                                                  
+  **World War II: A Global Conflict (1939-1945)**                                                 
+                                                                                                  
+  World War II was a global conflict, primarily fought between the Axis powers (Germany, Italy,   
+  and Japan) and the Allied powers (Great Britain, the United States, the Soviet Union, and       
+  numerous other nations). It was the deadliest conflict in human history, marked by unprecedented
+  levels of destruction and loss of life.                                                         
+                                                                                                  
+  **Origins and Early Stages (1939-1942):**                                                       
+                                                                                                  
+  The war’s roots lie in the unresolved issues of World War I, the rise of aggressive ideologies  
+  (particularly Nazism in Germany and militarism in Japan), and the failure of the League of      
+  Nations to maintain peace.  The immediate trigger was Germany’s invasion of Poland on September 
+  1, 1939, leading Britain and France to declare war on Germany.  The early years were            
+  characterized by Germany’s rapid military successes – the “Blitzkrieg” (lightning war) tactics, 
+  utilizing tanks, aircraft, and coordinated attacks, allowed them to quickly conquer Poland,     
+  Denmark, Norway, the Netherlands, Belgium, and France. The Battle of Britain (1940) saw the     
+  Royal Air Force (RAF) successfully defend the UK against the Luftwaffe’s bombing campaign,      
+  preventing a German invasion.                                                                   
+                                                                                                  
+  **Eastern Front and the Turning Point (1941-1942):**                                            
+                                                                                                  
+  Germany’s invasion of the Soviet Union in June 1941 (Operation Barbarossa) dramatically expanded
+  the scope of the war. Initially, the Germans made significant advances, but the vastness of the 
+  Soviet Union and the fierce resistance of the Red Army, combined with logistical challenges,    
+  stalled the German offensive. The Battle of Moscow (December 1941-January 1942) marked a crucial
+  turning point, halting the German advance.  Meanwhile, Japan’s surprise attack on Pearl Harbor  
+  (December 7, 1941) brought the United States into the war. The Japanese rapidly conquered vast  
+  territories in Southeast Asia and the Pacific.                                                  
+                                                                                                  
+  **The Tide Turns (1942-1945):**                                                                 
+                                                                                                  
+  1942 proved to be a pivotal year for the Allies. The Battle of Midway (June-August 1942) was a  
+  decisive naval victory for the United States, crippling the Japanese fleet.  On land, the Battle
+  of Stalingrad (November 1942 – February 1943) was a brutal and strategically vital victory for  
+  the Soviets, marking the beginning of the end for the German advance on the Eastern Front.  The 
+  Allied invasion of North Africa (Operation Torch, 1942) forced the Axis powers to divert        
+  resources.  The combined efforts of the Allies, particularly the Americans and Soviets,         
+  continued to push back the Axis forces across Europe. The D-Day landings in Normandy (June 6,   
+  1944) opened a new front in Western Europe. The Soviets relentlessly advanced from the East,    
+  while Allied forces liberated France and pushed into Germany.  The Battle of the Bulge (December
+  1944 – January 1945) was Germany’s last major offensive.  Germany surrendered unconditionally on
+  May 8, 1945 (V-E Day).                                                                          
+                                                                                                  
+  **The Pacific Theater:**                                                                        
+                                                                                                  
+  Throughout the war, the United States and its allies fought a protracted campaign against Japan 
+  in the Pacific.  Key battles included Guadalcanal, Iwo Jima, and Okinawa. The use of atomic     
+  bombs on Hiroshima and Nagasaki (August 6 and 9, 1945) led to Japan’s unconditional surrender (V-
+  J Day), effectively ending World War II.                                                        
+                                                                                                  
+  **Key Factors & Statistics:**                                                                   
+                                                                                                  
+  • **Casualties:** Estimated 70-85 million people died, including both military personnel and    
+  civilians.                                                                                      
+  • **Technological Advancements:** The war spurred significant advancements in aviation, radar,  
+  medicine, and cryptography.                                                                     
+  • **Global Impact:** World War II reshaped the geopolitical landscape, leading to the formation 
+  of the United Nations, the rise of the United States and the Soviet Union as superpowers, and   
+  the beginning of the Cold War.                                                                  
+                                                                                                  
+  **Sources:**                                                                                    
+                                                                                                  
+  This summary incorporates information from the Wikipedia article on World War II and the        
+  supplemental search results, including details about the Battle of Stalingrad, the Junkers Ju   
+  87, and the impact of the atomic bombings.                                                      
+                                                                                                  
+  --------                                                                                        
+                                                                                                  
+  Do you want me to delve deeper into a specific aspect of World War II (e.g., a particular       
+  battle, a technological innovation, or the impact of the war on a specific country)?            
+
+🤖 Interactive Session: World War II (🔍 web search enabled)
+💡 Type /help for commands, /history to see full conversation, or /exit to quit
+
+[KGenerating detailed summary ✓
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...
+🔍 Searching for additional information...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K[K
+
+  According to the document and the search results, Adolf Hitler died on April 30, 1945, in the   
+  Führerbunker in Berlin. After it became clear that Germany would lose the Battle of Berlin, he  
+  committed suicide via a gunshot to the head. Eva Braun, whom he had recently married, also took 
+  her own life. Both bodies were subsequently burned and buried. There were numerous attempts on  
+  Hitler’s life, the first occurring in 1921, but he survived many of these plots.                
+
+
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K
+[K
+  According to the document and the search results, Adolf Hitler died on April 30, 1945, in the   
+  Führerbunker in Berlin. After it became clear that Germany would lose the Battle of Berlin, he  
+  committed suicide via a gunshot to the head. Eva Braun, whom he had recently married, also took 
+  her own life. Both bodies were subsequently burned and buried.                                  
+                                                                                                  
+  There were numerous attempts on Hitler’s life, the first occurring in 1921, but he survived many
+  of these plots. SEARCH_NEEDED: Details about the attempts on Hitler's life prior to his death.  
+
+
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.
+🔍 Searching for additional information...[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K
+[K
+  According to the document and the supplemental search results, *Mein Kampf* itself does not     
+  explicitly state the reason for Hitler’s suicide. However, the search results provide           
+  significant context. Kenneth Burke’s 1939 analysis of *Mein Kampf* highlighted the core thesis  
+  of “the Jewish peril” as a driving force behind Hitler’s ideology. Furthermore, research        
+  conducted during World War II, including analysis by British Intelligence in 1942, suggested    
+  that Hitler's actions were fueled by deeply ingrained extremist beliefs and a delusional sense  
+  of destiny. While the document doesn’t detail the precise reasoning within the book itself, the 
+  search results reveal that his actions stemmed from a combination of racist, antisemitic, and   
+  messianic convictions.                                                                          
+
+
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K
+[K
+  According to the document and the recent conversation context, Eva Braun also took her own life 
+  on April 30, 1945, in the Führerbunker in Berlin. She committed suicide via a gunshot to the    
+  head, alongside Adolf Hitler. The document does not detail whether she was influenced by Hitler 
+  to end her life or if it was her own voluntary decision. SEARCH_NEEDED: Details regarding Eva   
+  Braun's motivations and influences leading to her suicide.                                      
+
+
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.
+🔍 Searching for additional information...[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K
+[K
+  Cyanide poisoning refers to the toxic effects caused by cyanide, a rapidly acting and highly    
+  lethal poison. The mechanism of action centers around cyanide’s ability to block the body’s     
+  cells’ ability to use oxygen, leading to a condition called histotoxic hypoxia. Specifically,   
+  cyanide ions combine with the trivalent iron of oxidized cytochrome oxidase within mitochondria.
+  This effectively prevents the reduction of cytochrome oxidase, which is crucial for cellular    
+  respiration – the process by which cells convert nutrients into energy. Without functional      
+  cytochrome oxidase, cells cannot utilize oxygen, leading to a severe lack of oxygen supply and  
+  ultimately cell death.                                                                          
+                                                                                                  
+  Several sources detail the different ways cyanide can enter the body and trigger this mechanism.
+  It can be inhaled as hydrogen cyanide gas, ingested through cyanide salts or contaminated foods 
+  (like lima beans and apricot pits), absorbed through the skin, or introduced intravenously. The 
+  symptoms of cyanide poisoning include altered mental status, seizures, hypotension, and         
+  metabolic acidosis – a buildup of acid in the body due to the disrupted cellular respiration.   
+  Medical treatment typically involves administering antidotes like hydroxocobalamin or sodium    
+  nitrite to counteract the effects of cyanide. These antidotes work by binding to the cyanide,   
+  preventing it from interfering with cellular respiration.                                       
+
+
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..
+🔍 Searching for additional information...[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K
+[K
+  The gas chambers utilized Zyklon B, a cyanide-based pesticide, to carry out mass murder. Zyklon 
+  B, originally marketed as a trade name for a pesticide, consisted of hydrogen cyanide (prussic  
+  acid) and included additives like diatomaceous earth. As evidenced by several search results,   
+  including detailed analyses of Auschwitz’s gas chambers by Pressac, Zyklon B was converted to a 
+  lethal gas when exposed to air. The process involved pellets of Zyklon B being introduced into  
+  airtight chambers. These chambers were typically small, as seen at camps like Ravensbrück and   
+  Stutthof, and were constructed to facilitate the quick and efficient killing of prisoners deemed
+  "unfit" for work.                                                                               
+                                                                                                  
+  The mechanism of action is explained in the document and reinforced by the search results. The  
+  pellets released hydrogen cyanide, which then interfered with cellular respiration. This        
+  disruption of the body's ability to use oxygen—known as histotoxic hypoxia—led to cell death    
+  and, ultimately, death of the individuals within the chamber. The search results highlight this 
+  process in detail, referencing studies and accounts of how the Nazis adapted Zyklon B for mass  
+  murder. The document and search results provide a comprehensive explanation of how this lethal  
+  poison was deployed within the concentration camps.                                             
+
+
+
+[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..
+🔍 Searching for additional information...[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K🤔 Processing...[K🤔 Processing.[K🤔 Processing..[K
+[K
+  Based on the available information, Hitler’s hatred of Jews stemmed from a complex and evolving 
+  set of factors, significantly influenced by his family history and personal experiences. It     
+  wasn’t simply a spontaneous hatred, but rather a product of several interwoven elements.        
+                                                                                                  
+  Initially, Hitler developed antisemitic sentiments during his time in Vienna (1908-1913) – a    
+  period marked by financial hardship and artistic rejection. He experienced considerable         
+  frustration and self-doubt, and this fueled a sense of resentment and scapegoating. This        
+  personal                                                                                        
+  turmoil formed the foundation of his antisemitic views.                                         
+                                                                                                  
+  Furthermore, Hitler’s family history played a crucial role. His father, Alois Hitler, was an    
+  illegitimate child and bore his mother’s surname, Schicklgruber, for the first 39 years of his  
+  life. This meant there was considerable uncertainty surrounding his paternity, a point of       
+  contention that fueled speculation and provided fertile ground for antisemitic narratives. The  
+  potential for a “blackmail letter” from Hitler’s nephew, William Patrick Hitler, threatening to 
+  reveal embarrassing information about Hitler's family, intensified these anxieties.             
+                                                                                                  
+  The document content and search results reveal a recurring theme: Hitler’s antisemitism wasn’t a
+  sudden development but rather solidified and strengthened over time. The search results         
+  highlight that historians have long been fascinated by the origins of Hitler’s hate.  Thomas    
+  Weber, author of "Hitler's First War" and "Becoming Hitler," suggests it wasn't a single,       
+  defined belief, but a shifting combination of resentment, scapegoating, and the anxieties       
+  created by his family’s uncertain origins.                                                      
+                                                                                                  
+  Crucially, the provided family history shows there was no evidence that Hitler himself was      
+  Jewish. While his father bore a different surname, and the circumstances surrounding his birth  
+  contributed to the overall environment of suspicion and resentment, there's no documentation to 
+  suggest that Hitler himself was part of the Jewish community. The focus on his family’s         
+  complicated and uncertain background and the personal anxieties he faced served to shape and    
+  reinforce his antisemitic worldview rather than being a reflection of his own ancestry.         
+
+
+
+💾 Session saved as: ww2_hitler
+👋 Goodbye!

@@ -22,6 +22,9 @@ func StartInteractiveSession(session *SessionData, config *Config, renderMarkdow
 	}
 	DebugLog(config, "Starting enhanced interactive session for: %s", session.ID)
 
+	// Clear screen for a "new window" feel
+	fmt.Print("\033[2J\033[H")
+
 	client, err := api.ClientFromEnvironment()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "❌ Could not connect to Ollama: %v\n", err)
@@ -391,6 +394,8 @@ INSTRUCTIONS: Your task is to answer the user's QUESTION using the provided cont
 	if strings.HasPrefix(initialResponse, "SEARCH_NEEDED:") {
 		needsSearch = true
 		modelSearchQuery = strings.TrimSpace(strings.TrimPrefix(initialResponse, "SEARCH_NEEDED:"))
+		// Clean up the query - remove brackets if present
+		modelSearchQuery = strings.Trim(modelSearchQuery, "[]")
 		DebugLog(config, "Model explicitly requested search with query: '%s'", modelSearchQuery)
 	} else if enableSearch && (len(initialResponse) < 35 || containsSearchTriggers(initialResponse)) {
 		// The model didn't ask for a search, but the response is too short or contains trigger
@@ -400,10 +405,9 @@ INSTRUCTIONS: Your task is to answer the user's QUESTION using the provided cont
 	}
 
 	if enableSearch && needsSearch {
-		DebugLog(config, "Initial response indicates search needed, performing automatic search")
+		DebugLog(config, "Search needed - performing automatic search")
 
-		// Generate search queries based on the question and missing information
-		// Include recent conversation for pronoun resolution
+		// Build context for search query generation
 		recentContext := ""
 		if len(session.Messages) >= 2 {
 			lastUserMsg := ""
@@ -423,17 +427,22 @@ INSTRUCTIONS: Your task is to answer the user's QUESTION using the provided cont
 			}
 		}
 
-		searchContext := fmt.Sprintf("%s.%s Question: %s", session.ContextContent[:Min(600, len(session.ContextContent))], recentContext, question)
-		searchQueries, err := generateSearchQueries(config, searchContext, fmt.Sprintf("find information to answer: %s", question), session.ID)
+		// Fix the parameters for generateSearchQueries - contextText first, then purpose (user's question)
+		searchContext := fmt.Sprintf("%s.%s", session.ContextContent[:Min(600, len(session.ContextContent))], recentContext)
+		searchQueries, err := generateSearchQueries(config, searchContext, question, session.ID)
 
-		// Prepend the model's suggested query to the list
+		// Prepend the model's suggested query to the list if it exists
 		if modelSearchQuery != "" {
 			searchQueries = append([]string{modelSearchQuery}, searchQueries...)
 		}
 
+		DebugLog(config, "Generated %d search queries, performing searches...", len(searchQueries))
+
 		if err == nil && len(searchQueries) > 0 {
 			fmt.Fprintf(os.Stderr, "\n🔍 Searching for additional information...")
 			searchResults := searchManager.PerformParallelSearches(searchQueries, 3, session.ID)
+
+			DebugLog(config, "Search completed, found %d results", len(searchResults))
 
 			if len(searchResults) > 0 {
 				DebugLog(config, "Found additional information via search, regenerating response")
@@ -475,8 +484,14 @@ INSTRUCTIONS: Provide a complete and comprehensive answer using the document con
 					// Cache the enhanced response
 					cacheManager.Set(cacheKey, finalResponse, session.ID)
 					return finalResponse, nil
+				} else {
+					DebugLog(config, "Error generating enhanced response: %v", err)
 				}
+			} else {
+				DebugLog(config, "No search results found")
 			}
+		} else {
+			DebugLog(config, "Search query generation failed or no queries: %v", err)
 		}
 
 		// If search failed or no results, return a helpful message
@@ -485,8 +500,10 @@ INSTRUCTIONS: Provide a complete and comprehensive answer using the document con
 		return fallbackResponse, nil
 	}
 
-	// Cache and return the initial response
-	cacheManager.Set(cacheKey, initialResponse, session.ID)
+	// Only cache responses that are NOT search requests
+	if !strings.HasPrefix(initialResponse, "SEARCH_NEEDED:") {
+		cacheManager.Set(cacheKey, initialResponse, session.ID)
+	}
 	return initialResponse, nil
 }
 
@@ -588,6 +605,14 @@ func getHistoryFile() string {
 // StartThinkingDots shows animated thinking indicator
 func StartThinkingDots(message string) chan struct{} {
 	stop := make(chan struct{})
+
+	// If output is redirected (like in tests), don't show animation
+	if isOutputRedirected() {
+		go func() {
+			<-stop // Just wait for stop signal
+		}()
+		return stop
+	}
 
 	go func() {
 		dots := ""

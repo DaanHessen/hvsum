@@ -288,60 +288,82 @@ Content:
 
 // generateSearchQueries uses AI to generate relevant search queries with caching
 func generateSearchQueries(config *Config, contextText, purpose string, sessionID string) ([]string, error) {
-	DebugLog(config, "Generating search queries for: %.100s...", contextText)
-
-	// Check cache first
 	cacheManager := NewCacheManager(config)
-	cacheKey := cacheManager.GetCacheKey(fmt.Sprintf("queries:%s:%s", contextText[:Min(200, len(contextText))], purpose))
+	cacheKey := cacheManager.GetCacheKey(fmt.Sprintf("queries:%s:%s", purpose, contextText[:Min(200, len(contextText))]))
+
 	var cachedQueries []string
 	if cacheManager.Get(cacheKey, &cachedQueries) {
 		DebugLog(config, "Cache hit for search queries")
 		return cachedQueries, nil
 	}
 
-	// Simplified prompt for faster processing
-	prompt := fmt.Sprintf(`Generate 2 specific search queries based on this context:
+	systemPrompt := `You are an expert at generating search queries. Your task is to analyze a user's question and the surrounding context to create highly specific, targeted search queries that will find the precise missing piece of information.
 
+**RULES:**
+1.  **Analyze the User's Goal**: Look at the most recent question and the conversation history. What is the user *really* asking for? Are they confused? Do they need a specific detail, a definition, or a comparison?
+2.  **Isolate the Ambiguity**: Identify the core uncertainty in the user's question. For example, if the user asks "Was it voluntary or influenced?", the key concepts are "voluntary" and "influence" in the context of the subject.
+3.  **Create Specific Queries**: Generate 2-3 queries that are laser-focused on resolving that ambiguity. Avoid generic queries.
+    *   **Bad Generic Query**: ` + "`Eva Braun death`" + `
+    *   **Good Specific Query**: ` + "`Eva Braun suicide voluntary or coerced by Hitler`" + `
+    *   **Good Specific Query**: ` + "`evidence of Hitler influencing Eva Braun's suicide`" + `
+4.  **Format**: Return ONLY the queries, one per line. Do not add any other text, numbers, or bullet points.
+`
+
+	// The 'purpose' field now contains the user's most recent question.
+	// The 'contextText' contains the conversation history and document summary.
+	userPrompt := fmt.Sprintf(`
+**Conversation Context & Document Summary:**
 %s
 
-Purpose: %s
+**User's Most Recent Question:**
+%s
 
-Return only 2 queries, one per line:`, contextText[:Min(500, len(contextText))], purpose)
+Based on the rules, generate specific search queries to answer the user's most recent question.`, contextText, purpose)
 
-	queries, err := callOllama(config, config.SystemPrompts.SearchQuery, prompt)
+	DebugLog(config, "Generating search queries for: %s", purpose)
+
+	client, err := api.ClientFromEnvironment()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not connect to Ollama: %v", err)
 	}
 
-	// Parse queries from response
-	lines := strings.Split(strings.TrimSpace(queries), "\n")
-	var parsedQueries []string
-	for _, line := range lines {
-		line = strings.TrimSpace(line)
-		if line != "" && !strings.HasPrefix(line, "#") {
-			// Remove common prefixes
-			line = strings.TrimPrefix(line, "- ")
-			line = strings.TrimPrefix(line, "* ")
-			line = strings.TrimPrefix(line, "1. ")
-			line = strings.TrimPrefix(line, "2. ")
-			if len(line) > 3 && len(line) < 200 {
-				parsedQueries = append(parsedQueries, line)
-			}
+	var responseBuilder strings.Builder
+	isStreaming := false // Not streaming for query generation
+	req := &api.ChatRequest{
+		Model: config.DefaultModel,
+		Messages: []api.Message{
+			{Role: "system", Content: systemPrompt},
+			{Role: "user", Content: userPrompt},
+		},
+		Stream:  &isStreaming,
+		Options: map[string]interface{}{"temperature": 0.2},
+	}
+
+	err = client.Chat(context.Background(), req, func(res api.ChatResponse) error {
+		responseBuilder.WriteString(res.Message.Content)
+		return nil
+	})
+
+	if err != nil {
+		return nil, fmt.Errorf("query generation failed: %v", err)
+	}
+
+	queries := strings.Split(strings.TrimSpace(responseBuilder.String()), "\n")
+	var cleanedQueries []string
+	for _, q := range queries {
+		// Remove any markdown list characters or extra whitespace
+		q = strings.TrimLeft(q, "-* ")
+		if q != "" {
+			cleanedQueries = append(cleanedQueries, q)
 		}
-		// Limit to maximum 2 queries for performance
-		if len(parsedQueries) >= 2 {
-			break
-		}
 	}
 
-	if len(parsedQueries) == 0 {
-		return nil, fmt.Errorf("no valid queries generated")
+	if len(cleanedQueries) > 0 {
+		cacheManager.Set(cacheKey, cleanedQueries, sessionID)
+		DebugLog(config, "Generated %d search queries", len(cleanedQueries))
 	}
 
-	// Cache the queries
-	cacheManager.Set(cacheKey, parsedQueries, sessionID)
-	DebugLog(config, "Generated %d search queries", len(parsedQueries))
-	return parsedQueries, nil
+	return cleanedQueries, nil
 }
 
 // callOllama makes a call to the Ollama API with better error handling

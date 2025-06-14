@@ -10,71 +10,58 @@ import (
 	"github.com/muesli/reflow/wordwrap"
 )
 
-// RenderWithPager displays content using the system pager
-func RenderWithPager(content string, useMarkdown bool) {
-	finalContent := content
-	if useMarkdown {
-		// Use a specific style for better readability
-		r, _ := glamour.NewTermRenderer(
-			glamour.WithAutoStyle(),
-			glamour.WithWordWrap(100),
-		)
-		rendered, err := r.Render(content)
-		if err != nil {
-			fmt.Printf("Markdown rendering failed. Using raw output:\n\n")
-		} else {
-			finalContent = rendered
-		}
-	}
-
-	// Invoke less with options
-	lessArgs := []string{
-		"-R",                   // render colour sequences raw
-		"-S",                   // chop long lines
-		"-F",                   // quit if one screen
-		"-X",                   // do not clear the screen on exit
-		"-E",                   // quit at end-of-file automatically
-		"--quit-on-intr",       // quit on interrupt (Ctrl+C)
-		"--mouse",              // enable mouse scrolling
-		"-Ps ", "-Pm ", "-PM ", // blank prompts to suppress ':' window
-	}
-
-	cmd := exec.Command("less", lessArgs...)
-	cmd.Stdin = strings.NewReader(finalContent)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	// Set environment variables for less behavior
-	env := os.Environ()
-	env = append(env, "LESSCHARSET=utf-8")
-	cmd.Env = env
-
-	if err := cmd.Run(); err != nil {
-		// Fallback to direct console output if less fails
-		RenderToConsole(content, useMarkdown)
-	}
+func createCustomRenderer() (*glamour.TermRenderer, error) {
+	// Use the glamour's WithStandardStyle option.
+	// We can't customize it as deeply as I thought without defining a full JSON stylesheet.
+	// This approach uses the built-in "dark" theme which is a good starting point.
+	return glamour.NewTermRenderer(
+		glamour.WithStandardStyle("dark"),
+		glamour.WithWordWrap(100),
+	)
 }
 
-// RenderToConsole displays content directly to the console with word wrapping
-func RenderToConsole(content string, useMarkdown bool) {
+// RenderContent handles all rendering, including pager and markdown.
+func RenderContent(content string, useMarkdown bool, forceNoPager bool) {
 	finalContent := content
 	if useMarkdown {
-		r, _ := glamour.NewTermRenderer(
-			glamour.WithAutoStyle(),
-			glamour.WithWordWrap(100),
-		)
-		rendered, err := r.Render(content)
-		if err != nil {
-			fmt.Printf("Markdown rendering failed. Using raw output:\n\n%s\n", content)
-			finalContent = content
-		} else {
-			finalContent = rendered
+		r, err := createCustomRenderer()
+		if err == nil {
+			rendered, renderErr := r.Render(content)
+			if renderErr == nil {
+				finalContent = rendered
+			} else {
+				// Don't print an error, just fall back to raw.
+				// The error is often about not being in a TTY, which is not critical.
+			}
 		}
-	} else {
-		// Wrap non-markdown text for better console readability
+	} else if forceNoPager { // Only wrap non-markdown when not using a pager
 		finalContent = wordwrap.String(content, 100)
 	}
 
-	fmt.Print(finalContent)
-	fmt.Println() // Add a newline for better spacing
+	if !forceNoPager {
+		// Invoke less with options
+		lessArgs := []string{
+			"-R", "-S", "-F", "-X", "-E", "--quit-on-intr", "--mouse",
+			"-Ps ", "-Pm ", "-PM ",
+		}
+		cmd := exec.Command("less", lessArgs...)
+		cmd.Stdin = strings.NewReader(finalContent)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		cmd.Env = append(os.Environ(), "LESSCHARSET=utf-8")
+
+		if err := cmd.Run(); err != nil {
+			// Fallback to direct console output if less fails
+			fmt.Print(finalContent)
+			fmt.Println()
+		}
+	} else {
+		fmt.Print(finalContent)
+		fmt.Println() // Add a newline for better spacing
+	}
+}
+
+// RenderToConsole is a convenience wrapper for interactive sessions that don't use the pager.
+func RenderToConsole(content string, useMarkdown bool) {
+	RenderContent(content, useMarkdown, true)
 }

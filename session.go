@@ -23,6 +23,7 @@ type SessionData struct {
 	LastAccessedAt time.Time     `json:"last_accessed_at"`
 	LastModified   time.Time     `json:"last_modified"`
 	SearchEnabled  bool          `json:"search_enabled"`
+	RenderMarkdown bool          `json:"render_markdown"`
 	MessageCount   int           `json:"message_count"`
 }
 
@@ -45,7 +46,7 @@ func NewSessionManager(config *Config) *SessionManager {
 }
 
 // CreateSession creates a new session
-func (sm *SessionManager) CreateSession(summary, contextContent, title string, enableSearch bool) (*SessionData, error) {
+func (sm *SessionManager) CreateSession(summary, contextContent, title string, enableSearch, renderMarkdown bool) (*SessionData, error) {
 	if !sm.config.SessionPersist {
 		return nil, nil // Sessions disabled
 	}
@@ -70,6 +71,7 @@ func (sm *SessionManager) CreateSession(summary, contextContent, title string, e
 		CreatedAt:      time.Now(),
 		LastAccessedAt: time.Now(),
 		SearchEnabled:  enableSearch,
+		RenderMarkdown: renderMarkdown,
 	}
 
 	if err := sm.SaveSession(session); err != nil {

@@ -137,7 +137,7 @@ func main() {
 	}
 
 	// Display results
-	RenderOutput(summary, useMarkdown, config.DisablePager || disablePager)
+	RenderContent(summary, useMarkdown, config.DisablePager || disablePager)
 
 	// Handle file saving
 	if saveToFile != "" {
@@ -167,6 +167,7 @@ func main() {
 			InitialSummary: summary,
 			ContextContent: content,
 			SearchEnabled:  enableSearch,
+			RenderMarkdown: useMarkdown,
 			CreatedAt:      time.Now(),
 			LastAccessedAt: time.Now(),
 			Messages: []api.Message{
@@ -229,7 +230,19 @@ func resumeSession(sessionName string, sessionManager *SessionManager, config *C
 	}
 
 	fmt.Printf("📂 Resuming session: %s\n", session.GetTitle())
-	StartInteractiveSession(session, config, useMarkdown, session.SearchEnabled)
+
+	// Command-line flags override session settings
+	finalRenderMarkdown := session.RenderMarkdown
+	if useMarkdown {
+		finalRenderMarkdown = true
+	}
+
+	finalSearchEnabled := session.SearchEnabled
+	if enableSearch {
+		finalSearchEnabled = true
+	}
+
+	StartInteractiveSession(session, config, finalRenderMarkdown, finalSearchEnabled)
 }
 
 // processInput handles both URLs and search queries with the new two-stage approach
@@ -245,16 +258,6 @@ func processInput(input string, config *Config, length string, useMarkdown, enab
 	return summary, content, title, err
 }
 
-// RenderOutput determines whether to use a pager or print to console.
-func RenderOutput(content string, useMarkdown bool, forceNoPager bool) {
-	if !forceNoPager {
-		RenderWithPager(content, useMarkdown)
-	} else {
-		RenderToConsole(content, useMarkdown)
-	}
-}
-
-// extractURLFromInput extracts URL if input is a URL
 func extractURLFromInput(input string) string {
 	if IsValidURL(input) {
 		return input

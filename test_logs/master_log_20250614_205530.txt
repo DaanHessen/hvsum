@@ -1,0 +1,8 @@
+Starting hvsum test suite...
+Timestamp: 20250614_205530
+=================================
+
+--- Starting Test Case: WW2_Hitler ---
+URL: https://en.wikipedia.org/wiki/World_War_II
+Log file: test_logs/WW2_Hitler_20250614_205530.log
+

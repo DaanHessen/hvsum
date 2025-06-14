@@ -6,9 +6,29 @@ import (
 	"time"
 )
 
+// isOutputRedirected checks if stderr is being redirected (like in tests)
+func isOutputRedirected() bool {
+	stat, err := os.Stderr.Stat()
+	if err != nil {
+		return false
+	}
+	// If stderr is not a character device (terminal), it's likely redirected
+	return (stat.Mode() & os.ModeCharDevice) == 0
+}
+
 // StartSpinner starts a more robust CLI spinner that properly clears the line.
+// Automatically disables when output is redirected to prevent log pollution.
 func StartSpinner(message string) chan struct{} {
 	stop := make(chan struct{})
+
+	// If output is redirected (like in tests), don't show spinner
+	if isOutputRedirected() {
+		go func() {
+			<-stop // Just wait for stop signal
+		}()
+		return stop
+	}
+
 	go func() {
 		spinner := `⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏`
 		i := 0
