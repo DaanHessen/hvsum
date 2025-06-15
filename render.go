@@ -11,12 +11,11 @@ import (
 )
 
 func createCustomRenderer() (*glamour.TermRenderer, error) {
-	// Use the glamour's WithStandardStyle option.
-	// We can't customize it as deeply as I thought without defining a full JSON stylesheet.
-	// This approach uses the built-in "dark" theme which is a good starting point.
+	// Use glamour's auto style for better terminal compatibility with glow-like appearance
+	// This provides the rich formatting with highlighted headers, proper colors, etc.
 	return glamour.NewTermRenderer(
-		glamour.WithStandardStyle("dark"),
-		glamour.WithWordWrap(100),
+		glamour.WithAutoStyle(),
+		glamour.WithWordWrap(120),
 	)
 }
 
@@ -35,20 +34,35 @@ func RenderContent(content string, useMarkdown bool, forceNoPager bool) {
 			}
 		}
 	} else if forceNoPager { // Only wrap non-markdown when not using a pager
-		finalContent = wordwrap.String(content, 100)
+		finalContent = wordwrap.String(content, 120)
 	}
 
 	if !forceNoPager {
-		// Invoke less with options
+		// Simple, clean less configuration for markdown rendering
 		lessArgs := []string{
-			"-R", "-S", "-F", "-X", "-E", "--quit-on-intr", "--mouse",
-			"-Ps ", "-Pm ", "-PM ",
+			"-R",             // Enable raw control characters (for colors)
+			"-S",             // Chop long lines instead of wrapping
+			"-F",             // Quit if entire file fits on screen
+			"-X",             // Don't send termcap initialization/deinitialization
+			"-E",             // Quit at end of file
+			"--quit-on-intr", // Quit on interrupt
+			"--mouse",        // Enable mouse
+			"-M",             // Long prompt with percentage
 		}
+
 		cmd := exec.Command("less", lessArgs...)
 		cmd.Stdin = strings.NewReader(finalContent)
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
-		cmd.Env = append(os.Environ(), "LESSCHARSET=utf-8")
+		cmd.Env = append(os.Environ(),
+			"LESSCHARSET=utf-8",
+			"LESS_TERMCAP_md=\033[1;36m",    // Bold cyan for headers
+			"LESS_TERMCAP_me=\033[0m",       // End bold
+			"LESS_TERMCAP_so=\033[1;44;37m", // Standout (search highlights)
+			"LESS_TERMCAP_se=\033[0m",       // End standout
+			"LESS_TERMCAP_us=\033[1;32m",    // Underline (green)
+			"LESS_TERMCAP_ue=\033[0m",       // End underline
+		)
 
 		if err := cmd.Run(); err != nil {
 			// Fallback to direct console output if less fails

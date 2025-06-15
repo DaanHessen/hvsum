@@ -41,7 +41,7 @@ func ProcessURL(urlStr string, config *Config, length string, useMarkdown, enabl
 	DebugLog(config, "Extracted %d characters from URL", len(content))
 	DebugLog(config, "Page title: %s", title)
 
-	// Two-stage summarization process
+	// Enhanced workflow: DeepSeek for detailed summary, Ollama for length reduction
 	finalSummary, err := generateTwoStageSummary(config, length, useMarkdown, enableSearch, content, title, urlStr, sessionID)
 	if err != nil {
 		return "", "", "", err
@@ -108,24 +108,24 @@ func ProcessSearchQuery(query string, config *Config, length string, useMarkdown
 	return finalSummary, finalSummary, query, nil
 }
 
-// generateTwoStageSummary implements the two-stage summarization process
+// generateTwoStageSummary implements the enhanced workflow with proper API usage
 func generateTwoStageSummary(config *Config, length string, useMarkdown, enableSearch bool, content, title, sourceURL string, sessionID string) (string, error) {
-	DebugLog(config, "Starting two-stage summarization process")
+	DebugLog(config, "Starting enhanced summarization workflow")
 
-	// Stage 1: Generate detailed summary with all content
+	// Stage 1: Generate detailed summary using DeepSeek (no length constraints)
 	detailedSummary, err := generateDetailedSummary(config, useMarkdown, enableSearch, content, title, sourceURL, sessionID)
 	if err != nil {
-		return "", fmt.Errorf("stage 1 failed: %v", err)
+		return "", fmt.Errorf("DeepSeek detailed summary failed: %v", err)
 	}
 
-	// Stage 2: Apply length constraint if not already detailed
+	// Stage 2: Apply length constraint using Ollama if needed (preserve detailed for markdown)
 	if length == "detailed" {
 		return detailedSummary, nil
 	}
 
 	finalSummary, err := applyLengthConstraint(config, useMarkdown, detailedSummary, length, sessionID)
 	if err != nil {
-		return "", fmt.Errorf("stage 2 failed: %v", err)
+		return "", fmt.Errorf("Ollama length reduction failed: %v", err)
 	}
 
 	return finalSummary, nil
@@ -152,22 +152,19 @@ func generateDetailedSummary(config *Config, useMarkdown, enableSearch bool, con
 		}
 	}
 
-	// Build detailed summary prompt
-	userPrompt := buildDetailedPrompt(content, title, sourceURL, searchResults)
+	// Build detailed summary prompt with explicit source verification instructions
+	userPrompt := buildDetailedPromptWithVerification(content, title, sourceURL, searchResults)
 
-	fmt.Fprintf(os.Stderr, "🤖 Generating comprehensive summary with %s...\n", config.DefaultModel)
+	// Always use DeepSeek for detailed summaries with no length constraints
+	summary, err := CallDeepSeekOrFallback(config, systemPrompt, userPrompt, useMarkdown)
 
-	var spinnerStop chan struct{}
-	if useMarkdown {
-		spinnerStop = StartSpinner("Generating detailed summary")
+	if err != nil {
+		return "", err
 	}
 
-	summary, err := callOllama(config, systemPrompt, userPrompt)
-	if spinnerStop != nil {
-		close(spinnerStop)
-	}
-
-	return summary, err
+	// DeepSeek already performs fact verification in its thinking process
+	// No additional verification needed to avoid double API calls
+	return summary, nil
 }
 
 // applyLengthConstraint reduces a detailed summary to the requested length
@@ -203,8 +200,9 @@ OUTPUT: Only the reduced summary, no meta-commentary.`, lengthInstruction)
 		return cachedReduction, nil
 	}
 
-	fmt.Fprintf(os.Stderr, "📝 Applying length constraint (%s)...\n", targetLength)
+	fmt.Fprintf(os.Stderr, "📝 Applying length constraint (%s) with Ollama...\n", targetLength)
 
+	// Always use Ollama for length reduction to save DeepSeek API costs
 	summary, err := callOllama(config, systemPrompt, userPrompt)
 	if err != nil {
 		return "", err
@@ -236,34 +234,34 @@ func generateSearchOnlySummaryTwoStage(config *Config, length string, useMarkdow
 	return finalSummary, nil
 }
 
-// generateDetailedSearchSummary creates comprehensive summary from search results
+// generateDetailedSearchSummary creates a comprehensive summary from search results with verification
 func generateDetailedSearchSummary(config *Config, useMarkdown bool, query string, searchResults []SearchResult, sessionID string) (string, error) {
 	systemPrompt := config.SystemPrompts.SearchOnly
 	if useMarkdown {
 		systemPrompt += "\n\n" + config.SystemPrompts.Markdown
 	}
 
-	userPrompt := fmt.Sprintf(`Create a comprehensive summary about: %s
+	userPrompt := fmt.Sprintf(`Based on the search results below, create a comprehensive summary for the query: "%s"
 
-Based on the following search results, provide a detailed summary covering all relevant aspects found. Synthesize information from multiple sources and organize it logically.
-
+SEARCH RESULTS:
 %s
 
-Create a thorough, well-structured summary that covers all important information from these search results.`, query, FormatSearchResults(searchResults))
+Create a detailed summary that synthesizes information from these search results. Remember to:
+1. Only use information explicitly found in the search results
+2. Attribute information to sources when possible
+3. Note any conflicting information between sources
+4. State clearly if information is insufficient for any aspect of the query`, query, FormatSearchResults(searchResults))
 
-	fmt.Fprintf(os.Stderr, "🤖 Generating comprehensive summary with %s...\n", config.DefaultModel)
+	// Use DeepSeek for detailed search summaries only
+	summary, err := CallDeepSeekOrFallback(config, systemPrompt, userPrompt, useMarkdown)
 
-	var spinnerStop chan struct{}
-	if useMarkdown {
-		spinnerStop = StartSpinner("Generating detailed summary")
+	if err != nil {
+		return "", err
 	}
 
-	summary, err := callOllama(config, systemPrompt, userPrompt)
-	if spinnerStop != nil {
-		close(spinnerStop)
-	}
-
-	return summary, err
+	// DeepSeek already performs fact verification in its thinking process
+	// No additional verification needed to avoid double API calls
+	return summary, nil
 }
 
 // buildDetailedPrompt creates a comprehensive prompt for detailed summarization
@@ -282,6 +280,28 @@ Content:
 	if sourceURL != "" {
 		prompt += fmt.Sprintf("\n\nSource URL: %s", sourceURL)
 	}
+
+	return prompt
+}
+
+// buildDetailedPromptWithVerification creates a comprehensive prompt for detailed summarization with verification instructions
+func buildDetailedPromptWithVerification(content, title, sourceURL string, searchResults []SearchResult) string {
+	prompt := fmt.Sprintf(`Create a comprehensive summary of the following content. Be thorough and cover all important aspects, key points, and relevant details.
+
+Title: %s
+Content:
+%s`, title, content)
+
+	if len(searchResults) > 0 {
+		prompt += FormatSearchResults(searchResults)
+		prompt += "\n\nUse both the webpage content and the search results to create a comprehensive summary."
+	}
+
+	if sourceURL != "" {
+		prompt += fmt.Sprintf("\n\nSource URL: %s", sourceURL)
+	}
+
+	prompt += "\n\nPlease verify the accuracy of this summary against the source content before accepting it."
 
 	return prompt
 }
@@ -444,6 +464,22 @@ Format as clean markdown:
 		spinnerStop = StartSpinner("Generating outline")
 	}
 
+	// Try DeepSeek first for outline generation if available
+	if ShouldUseDeepSeek(config) {
+		client := NewDeepSeekClient(config)
+		if client != nil {
+			outline, err := client.GenerateOutlineWithDeepSeek(summary, config, useMarkdown)
+			if err == nil {
+				if spinnerStop != nil {
+					close(spinnerStop)
+				}
+				cacheManager.Set(cacheKey, outline, sessionID)
+				return outline, nil
+			}
+			fmt.Fprintf(os.Stderr, "⚠️ DeepSeek outline generation failed, falling back to local model: %v\n", err)
+		}
+	}
+
 	outline, err := callOllama(config, systemPrompt, userPrompt)
 	if spinnerStop != nil {
 		close(spinnerStop)
@@ -456,4 +492,98 @@ Format as clean markdown:
 	// Cache the result
 	cacheManager.Set(cacheKey, outline, sessionID)
 	return outline, nil
+}
+
+// performFactVerification performs fact verification on the summary
+func performFactVerification(config *Config, summary, content string, searchResults []SearchResult, sessionID string) (string, error) {
+	// Create fact verification prompt
+	verificationPrompt := `You are a strict fact-checker. Your task is to verify if the summary contains ONLY information that can be found in the provided source content.
+
+VERIFICATION PROTOCOL:
+1. Check every factual claim in the summary against the source content
+2. Flag any information that cannot be directly found in the source
+3. Look for invented details, assumptions, or extrapolations not in the source
+4. Check for dramatic language or storytelling elements not present in source
+5. Verify all dates, numbers, names, and specific details
+
+If you find any hallucinations or invented content, provide a corrected version that removes only verified information from the source.
+
+RESPONSE FORMAT:
+If the summary is accurate: "VERIFIED: [original summary]"
+If corrections needed: "CORRECTED: [corrected summary with only verified information]"
+
+SOURCE CONTENT:
+` + content
+
+	if len(searchResults) > 0 {
+		verificationPrompt += "\n\nADDITIONAL SEARCH RESULTS:\n" + FormatSearchResults(searchResults)
+	}
+
+	verificationPrompt += "\n\nSUMMARY TO VERIFY:\n" + summary
+
+	// Call AI for verification
+	verificationSystem := `You are an expert fact-checker with strict protocols. Verify the summary contains ONLY information explicitly present in the source material. Do not allow any invented details, assumptions, or extrapolations.`
+
+	result, err := CallDeepSeekOrFallback(config, verificationSystem, verificationPrompt, false)
+	if err != nil {
+		return "", err
+	}
+
+	// Parse verification result
+	if strings.HasPrefix(result, "VERIFIED:") {
+		return strings.TrimSpace(strings.TrimPrefix(result, "VERIFIED:")), nil
+	} else if strings.HasPrefix(result, "CORRECTED:") {
+		correctedSummary := strings.TrimSpace(strings.TrimPrefix(result, "CORRECTED:"))
+		DebugLog(config, "Summary corrected for accuracy by fact verification")
+		return correctedSummary, nil
+	}
+
+	// If verification format is unexpected, return original with warning
+	DebugLog(config, "Unexpected verification response format")
+	return summary, nil
+}
+
+// performSearchFactVerification performs fact verification on search-based summaries
+func performSearchFactVerification(config *Config, summary string, searchResults []SearchResult, query string, sessionID string) (string, error) {
+	// Create search fact verification prompt
+	verificationPrompt := `You are a strict fact-checker. Your task is to verify if the search-based summary contains ONLY information that can be found in the provided search results.
+
+VERIFICATION PROTOCOL:
+1. Check every factual claim in the summary against the search results
+2. Flag any information that cannot be directly found in the search results
+3. Look for invented details, assumptions, or extrapolations not in the search results
+4. Check for dramatic language or storytelling elements not present in search results
+5. Verify all dates, numbers, names, and specific details
+
+If you find any hallucinations or invented content, provide a corrected version that removes only verified information from the search results.
+
+RESPONSE FORMAT:
+If the summary is accurate: "VERIFIED: [original summary]"
+If corrections needed: "CORRECTED: [corrected summary with only verified information]"
+
+SEARCH RESULTS:
+` + FormatSearchResults(searchResults)
+
+	verificationPrompt += "\n\nSUMMARY TO VERIFY:\n" + summary
+
+	// Call AI for verification
+	verificationSystem := `You are an expert fact-checker with strict protocols. Verify the summary contains ONLY information explicitly present in the search results. Do not allow any invented details, assumptions, or extrapolations.`
+
+	result, err := CallDeepSeekOrFallback(config, verificationSystem, verificationPrompt, false)
+	if err != nil {
+		return "", err
+	}
+
+	// Parse verification result
+	if strings.HasPrefix(result, "VERIFIED:") {
+		return strings.TrimSpace(strings.TrimPrefix(result, "VERIFIED:")), nil
+	} else if strings.HasPrefix(result, "CORRECTED:") {
+		correctedSummary := strings.TrimSpace(strings.TrimPrefix(result, "CORRECTED:"))
+		DebugLog(config, "Summary corrected for accuracy by search fact verification")
+		return correctedSummary, nil
+	}
+
+	// If verification format is unexpected, return original with warning
+	DebugLog(config, "Unexpected verification response format")
+	return summary, nil
 }
